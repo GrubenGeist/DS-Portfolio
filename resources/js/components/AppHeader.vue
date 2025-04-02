@@ -44,6 +44,31 @@ const mainNavItems: NavItem[] = [
         href: '/dashboard',
         icon: LayoutGrid,
     },
+    {
+        title: 'Testseite',
+        href: '/test',
+        icon: LayoutGrid,
+    },
+    {
+        title: 'Über Mich',
+        href: '/aboutme',
+        icon: LayoutGrid,
+    },
+    {
+        title: 'Projekte',
+        href: '/projects',
+        icon: LayoutGrid,
+    },
+    {
+        title: 'Dienstleistungen',
+        href: '/services',
+        icon: LayoutGrid,
+    },
+    {
+        title: 'Kontaktformular',
+        href: '/contactform',
+        icon: LayoutGrid,
+    },
 ];
 
 const rightNavItems: NavItem[] = [

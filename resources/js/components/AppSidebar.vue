@@ -19,6 +19,26 @@ const mainNavItems: NavItem[] = [
         href: '/test',
         icon: LayoutGrid,
     },
+    {
+        title: 'Über Mich',
+        href: '/aboutme',
+        icon: LayoutGrid,
+    },
+    {
+        title: 'Projekte',
+        href: '/projects',
+        icon: LayoutGrid,
+    },
+    {
+        title: 'Dienstleistungen',
+        href: '/services',
+        icon: LayoutGrid,
+    },
+    {
+        title: 'Kontaktformular',
+        href: '/contactform',
+        icon: LayoutGrid,
+    },
 ];
 
 const footerNavItems: NavItem[] = [

@@ -15,5 +15,21 @@ Route::get('test', function () {
     return Inertia::render('Test');
 })->middleware(['auth', 'verified'])->name('testseite');
 
+Route::get('aboutme', function () {
+    return Inertia::render('Aboutme');
+})->middleware(['auth', 'verified'])->name('Über Mich');
+
+Route::get('projects', function () {
+    return Inertia::render('Projects');
+})->middleware(['auth', 'verified'])->name('Projekte');
+
+Route::get('services', function () {
+    return Inertia::render('Services');
+})->middleware(['auth', 'verified'])->name('Dienstleistungen');
+
+Route::get('contactform', function () {
+    return Inertia::render('Contactform');
+})->middleware(['auth', 'verified'])->name('Kontaktformular');
+
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';
