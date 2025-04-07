@@ -13,12 +13,11 @@ defineProps<Props>();
 </script>
 
 <template>
-    <div class="mx-auto w-full overflow-hidden grid place-items-center mx-auto">
     <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
-        width="500" 
+        width="250" 
         zoomAndPan="magnify" 
         viewBox="0 0 375 374.999991" 
-        height="500" 
+        height="250" 
         preserveAspectRatio="xMidYMid meet" 
         version="1.0">
         <defs>
@@ -89,7 +88,7 @@ defineProps<Props>();
             </g>
             </g>
     </svg>
-    </div>
+    
     <!--
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 42" :class="className" v-bind="$attrs">
         <path

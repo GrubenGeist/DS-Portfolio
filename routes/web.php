@@ -17,7 +17,7 @@ Route::get('test', function () {
 
 Route::get('aboutme', function () {
     return Inertia::render('Aboutme');
-})->middleware(['auth', 'verified'])->name('Über Mich');
+})->middleware([])->name('Über Mich');
 
 Route::get('projects', function () {
     return Inertia::render('Projects');
