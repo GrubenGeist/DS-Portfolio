@@ -104,7 +104,7 @@ import WebsiteLogoIcon from '@/components/WebsiteLogoIcon.vue';
             </div>
         </div>
 
-  <GuestLayout :breadcrumbs="breadcrumbs">
+  <AppLayout :breadcrumbs="breadcrumbs">
     <template>
       <h1 class="text-3xl font-bold bg-muted p-10 text-white dark:border-r lg:flex">Hello World</h1>
     </template>
@@ -122,7 +122,7 @@ import WebsiteLogoIcon from '@/components/WebsiteLogoIcon.vue';
     <template #footer>
       <p class="text-sm">Kontaktiere uns bei Fragen: <a href="mailto:info@example.com" class="text-blue-500">info@example.com</a></p>
     </template>
-  </GuestLayout>
+  </AppLayout>
   </div>
 </template>
 
