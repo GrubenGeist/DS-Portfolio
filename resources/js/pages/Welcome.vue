@@ -65,9 +65,12 @@ import WebsiteLogoIcon from '@/components/WebsiteLogoIcon.vue';
 
 <template>
     <Head title="Startseite">
+        
         <link rel="preconnect" href="https://rsms.me/" />
         <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
+        
     </Head>
+
 
     <div class="flex min-h-screen flex-col items-center bg-[#FDFDFC] p-6 text-[#1b1b18] dark:bg-[#0a0a0a] lg:justify-center lg:p-8">
         <header class="not-has-[nav]:hidden mb-6 w-full max-w-[335px] text-sm lg:max-w-4xl">
@@ -96,14 +99,14 @@ import WebsiteLogoIcon from '@/components/WebsiteLogoIcon.vue';
         </header>
 
         <div class="flex-1 container mx-auto">
-            <div class="w-full overflow-hidden grid place-items-center ">        
+            <div class="container 	max-width: 1536px; overflow-hidden grid place-items-center mx-auto bg-muted p-10 text-white dark:border-r lg:flex ">        
                 <WebsiteLogoIcon/>
             </div>
         </div>
 
   <GuestLayout :breadcrumbs="breadcrumbs">
-    <template #header>
-      <h1 class="text-3xl font-bold text-blue-600">Hello World</h1>
+    <template>
+      <h1 class="text-3xl font-bold bg-muted p-10 text-white dark:border-r lg:flex">Hello World</h1>
     </template>
 
     <p class="mt-4 text-lg">
