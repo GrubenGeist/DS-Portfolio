@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import AuthBase from '@/layouts/AuthLayout.vue';
-import { Head, useForm } from '@inertiajs/vue3';
+import { Head, useForm, router } from '@inertiajs/vue3';
 import { LoaderCircle } from 'lucide-vue-next';
 
 const form = useForm({
@@ -13,11 +13,13 @@ const form = useForm({
     email: '',
     password: '',
     password_confirmation: '',
+    role: 'gast', // Standardwert
 });
 
 const submit = () => {
     form.post(route('register'), {
         onFinish: () => form.reset('password', 'password_confirmation'),
+        onSuccess: () => router.visit('/home'), // Weiterleitung nach erfolgreicher Registrierung
     });
 };
 </script>
@@ -55,7 +57,7 @@ const submit = () => {
                 </div>
 
                 <div class="grid gap-2">
-                    <Label for="password_confirmation"></Label>
+                    <Label for="password_confirmation">Passwort bestätigen</Label>
                     <Input
                         id="password_confirmation"
                         type="password"
@@ -68,6 +70,16 @@ const submit = () => {
                     <InputError :message="form.errors.password_confirmation" />
                 </div>
 
+                <div>
+                    <label for="role">Rolle auswählen</label>
+                    <select id="role" v-model="form.role">
+                        <option value="gast">Gast</option>
+                        <option value="betrieb">Betrieb</option>
+                        <option value="admin">Admin</option>
+                    </select>
+                    <div v-if="form.errors.role">{{ form.errors.role }}</div>
+                </div>
+
                 <Button type="submit" class="mt-2 w-full" tabindex="5" :disabled="form.processing">
                     <LoaderCircle v-if="form.processing" class="h-4 w-4 animate-spin" />
                     Account anlegen
@@ -75,7 +87,7 @@ const submit = () => {
             </div>
 
             <div class="text-center text-sm text-muted-foreground">
-                Hast du bereits ein Account? 
+                Hast du bereits ein Account?
                 <TextLink :href="route('login')" class="underline underline-offset-4" :tabindex="6">Log in</TextLink>
             </div>
         </form>

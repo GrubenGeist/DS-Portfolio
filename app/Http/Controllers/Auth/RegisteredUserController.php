@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\Role; // HINZUGEFÜGT: Importieren Sie das Role Model
+use App\Providers\RouteServiceProvider;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -32,8 +34,9 @@ class RegisteredUserController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|string|lowercase|email|max:255|unique:'.User::class,
+            'email' => 'required|string|lowercase|email|max:255|unique:' . User::class,
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'role' => ['required', 'string', 'in:gast,betrieb,admin'], // HINZUGEFÜGT: Validierung der Rolle
         ]);
 
         $user = User::create([
@@ -41,6 +44,13 @@ class RegisteredUserController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
+
+        // HINZUGEFÜGT: Holen Sie die Rolle anhand des Slugs
+        $role = Role::where('slug', $request->role)->firstOrFail();
+
+        // HINZUGEFÜGT: Weisen Sie die Rolle dem Benutzer zu
+        $user->role()->associate($role);
+        $user->save(); // HINZUGEFÜGT: Speichern Sie den Benutzer mit der Rolle
 
         event(new Registered($user));
 

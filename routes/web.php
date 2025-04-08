@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use App\Http\Controllers\Admin\UserController;
 
 Route::get('/', function () {
     return Inertia::render('Welcome');
@@ -30,6 +31,15 @@ Route::get('services', function () {
 Route::get('contactform', function () {
     return Inertia::render('Contactform');
 })->middleware(['auth', 'verified'])->name('Kontaktformular');
+
+
+Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
+    Route::get('/users', [UserController::class, 'index'])->name('admin.users.index');
+    Route::get('/users/{user}/edit-role', [UserController::class, 'editRole'])->name('admin.users.editRole');
+    Route::put('/users/{user}/update-role', [UserController::class, 'updateRole'])->name('admin.users.updateRole');
+    Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('admin.users.destroy');
+});
+
 
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';

@@ -95,6 +95,14 @@ services:
                 - ping
             retries: 3
             timeout: 5s
+    adminer:
+        image: adminer
+        ports:
+            - '8080:8080' 
+        networks:
+            - sail
+        depends_on:
+            - mariadb 
 networks:
     sail:
         driver: bridge
