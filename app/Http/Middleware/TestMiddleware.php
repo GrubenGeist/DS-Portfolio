@@ -4,10 +4,9 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\View;
 use Symfony\Component\HttpFoundation\Response;
 
-class HandleAppearance
+class TestMiddleware
 {
     /**
      * Handle an incoming request.
@@ -16,8 +15,7 @@ class HandleAppearance
      */
     public function handle(Request $request, Closure $next): Response
     {
-        View::share('appearance', $request->cookie('appearance') ?? 'system');
-
+        dd('TestMiddleware hit! TES'); // Debugging: Stoppt die Ausführung und zeigt diese Meldung
         return $next($request);
     }
 }

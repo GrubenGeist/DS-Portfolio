@@ -1,45 +1,75 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
-use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\BetriebController;
+use App\Http\Controllers\Controller;
+use App\Http\Controllers\Auth\RegisteredUserController;
 
-Route::get('/', function () {
-    return Inertia::render('Welcome');
-})->name('welcome');
+/*Route::get('/test-middleware', function () {
+    return 'Test Page';
+});
+*/
 
-Route::get('dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
-
-Route::get('test', function () {
-    return Inertia::render('Test');
-})->middleware(['auth', 'verified'])->name('testseite');
-
-Route::get('aboutme', function () {
-    return Inertia::render('Aboutme');
-})->middleware([])->name('Über Mich');
-
-Route::get('projects', function () {
-    return Inertia::render('Projects');
-})->middleware(['auth', 'verified'])->name('Projekte');
-
-Route::get('services', function () {
-    return Inertia::render('Services');
-})->middleware(['auth', 'verified'])->name('Dienstleistungen');
-
-Route::get('contactform', function () {
-    return Inertia::render('Contactform');
-})->middleware(['auth', 'verified'])->name('Kontaktformular');
+    Route::get('/test-middleware', function () {
+    dd('TestMiddleware hit!');
+    })->middleware('auth');
 
 
-Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
-    Route::get('/users', [UserController::class, 'index'])->name('admin.users.index');
-    Route::get('/users/{user}/edit-role', [UserController::class, 'editRole'])->name('admin.users.editRole');
-    Route::put('/users/{user}/update-role', [UserController::class, 'updateRole'])->name('admin.users.updateRole');
-    Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('admin.users.destroy');
+
+// Routen, die Gäste sehen dürfen
+/*Route::middleware(['guest'])->group(function () {
+
+    Route::get('/test-middleware', function () {
+    dd('TestMiddleware hit!');
+    })->middleware('auth');
+
+ /*   Route::get('/', function () {
+        return view('welcome');
+    })->name('welcome');
+
+    Route::get('/register', [RegisteredUserController::class, 'create'])->name('register');
+
+
 });
 
+// Routen, die alle authentifizierten Benutzer sehen dürfen
+Route::middleware(['auth'])->group(function () {
+    
+    Route::get('/home', [Controller::class, 'index'])->name('home');
+});
+
+// Routen, die nur Administratoren sehen dürfen
+Route::middleware(['auth', 'role:admin'])->group(function () {
+    
+    Route::get('/admin/dashboard', [AdminController::class, 'dashboard']);
+
+    Route::get('dashboard', function () {
+        return Inertia::render('Dashboard');
+    })->name('dashboard');
+
+    Route::get('test', function () {
+        return Inertia::render('Test');
+    })->middleware(['verified'])->name('testseite');
+
+    Route::get('projects', function () {
+        return Inertia::render('Projects');
+    })->middleware(['verified'])->name('Projekte');
+
+    Route::get('services', function () {
+        return Inertia::render('Services');
+    })->middleware(['verified'])->name('Dienstleistungen');
+
+    Route::get('contactform', function () {
+        return Inertia::render('Contactform');
+    })->middleware(['verified'])->name('Kontaktformular');
+});
+
+// Routen, die nur Benutzer mit der Rolle "Betrieb" sehen dürfen
+Route::middleware(['auth', 'role:betrieb'])->group(function () {
+    
+    Route::get('/betrieb/bereich1', [BetriebController::class, 'bereich1']); */
+//});
 
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';
