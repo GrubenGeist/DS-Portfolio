@@ -18,7 +18,7 @@ use Inertia\Response;
 class RegisteredUserController extends Controller
 {
     /**
-     * Zeigt die Registrierungsseite an.
+     * Show the registration page.
      */
     public function create(): Response
     {
@@ -26,7 +26,7 @@ class RegisteredUserController extends Controller
     }
 
     /**
-     * Bearbeiten Sie eine eingehende Registrierungsanfrage.
+     * Handle an incoming registration request.
      *
      * @throws \Illuminate\Validation\ValidationException
      */
@@ -56,6 +56,6 @@ class RegisteredUserController extends Controller
 
         Auth::login($user);
 
-
+        return to_route('dashboard');
     }
 }
