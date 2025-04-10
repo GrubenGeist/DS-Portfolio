@@ -19,7 +19,7 @@ const form = useForm({
 const submit = () => {
     form.post(route('register'), {
         onFinish: () => form.reset('password', 'password_confirmation'),
-        onSuccess: () => router.visit('/welcome'), // Weiterleitung nach erfolgreicher Registrierung
+        onSuccess: () => router.visit('/'), // Weiterleitung nach erfolgreicher Registrierung
     });
 };
 </script>
@@ -70,7 +70,7 @@ const submit = () => {
                     <InputError :message="form.errors.password_confirmation" />
                 </div>
 
-                <div>
+                <div class="grid gap-2">
                     <label for="role">Rolle auswählen</label>
                     <select id="role" v-model="form.role">
                         <option value="gast">Gast</option>
