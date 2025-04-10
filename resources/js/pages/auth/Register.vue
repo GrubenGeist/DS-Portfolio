@@ -19,7 +19,7 @@ const form = useForm({
 const submit = () => {
     form.post(route('register'), {
         onFinish: () => form.reset('password', 'password_confirmation'),
-        onSuccess: () => router.visit('/home'), // Weiterleitung nach erfolgreicher Registrierung
+        onSuccess: () => router.visit('/welcome'), // Weiterleitung nach erfolgreicher Registrierung
     });
 };
 </script>
