@@ -1,6 +1,19 @@
 {
+    "name": "last_init_npm",
+    "version": "1.0.0",
     "private": true,
+    "description": "To make it easy for you to get started with GitLab, here's a list of recommended next steps.",
+    "repository": {
+        "type": "git",
+        "url": "ssh://git@gitlab.computer-manufaktur.de:22123/dstrauss/portfolio.git"
+    },
+    "license": "ISC",
+    "author": "",
     "type": "module",
+    "main": "eslint.config.js",
+    "directories": {
+        "test": "tests"
+    },
     "scripts": {
         "build": "vite build",
         "build:ssr": "vite build && vite build --ssr",
@@ -8,19 +21,6 @@
         "format": "prettier --write resources/",
         "format:check": "prettier --check resources/",
         "lint": "eslint . --fix"
-    },
-    "devDependencies": {
-        "@eslint/js": "^9.19.0",
-        "@types/node": "^22.13.5",
-        "@vue/eslint-config-typescript": "^14.3.0",
-        "eslint": "^9.17.0",
-        "eslint-config-prettier": "^10.0.1",
-        "eslint-plugin-vue": "^9.32.0",
-        "prettier": "^3.4.2",
-        "prettier-plugin-organize-imports": "^4.1.0",
-        "prettier-plugin-tailwindcss": "^0.6.9",
-        "typescript-eslint": "^8.23.0",
-        "vue-tsc": "^2.2.4"
     },
     "dependencies": {
         "@inertiajs/vue3": "^2.0.0-beta.3",
@@ -41,6 +41,19 @@
         "vite": "^6.2.0",
         "vue": "^3.5.13",
         "ziggy-js": "^2.4.2"
+    },
+    "devDependencies": {
+        "@eslint/js": "^9.19.0",
+        "@types/node": "^22.13.5",
+        "@vue/eslint-config-typescript": "^14.3.0",
+        "eslint": "^9.17.0",
+        "eslint-config-prettier": "^10.0.1",
+        "eslint-plugin-vue": "^9.32.0",
+        "prettier": "^3.4.2",
+        "prettier-plugin-organize-imports": "^4.1.0",
+        "prettier-plugin-tailwindcss": "^0.6.9",
+        "typescript-eslint": "^8.23.0",
+        "vue-tsc": "^2.2.4"
     },
     "optionalDependencies": {
         "@rollup/rollup-linux-x64-gnu": "4.9.5",

@@ -55,7 +55,6 @@ const breadcrumbs: BreadcrumbItem[] = [
                  </div>
                </section>
              </div>
-
             </div>
         </GuestLayout>
     </template>

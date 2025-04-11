@@ -19,7 +19,7 @@ const form = useForm({
 const submit = () => {
     form.post(route('register'), {
         onFinish: () => form.reset('password', 'password_confirmation'),
-        onSuccess: () => router.visit('/welcome'), // Weiterleitung nach erfolgreicher Registrierung
+        onSuccess: () => router.visit('/'), // Weiterleitung nach erfolgreicher Registrierung
     });
 };
 </script>
@@ -70,7 +70,7 @@ const submit = () => {
                     <InputError :message="form.errors.password_confirmation" />
                 </div>
 
-                <div>
+                <!--<div class="grid gap-2">
                     <label for="role">Rolle auswählen</label>
                     <select id="role" v-model="form.role">
                         <option value="gast">Gast</option>
@@ -78,7 +78,7 @@ const submit = () => {
                         <option value="admin">Admin</option>
                     </select>
                     <div v-if="form.errors.role">{{ form.errors.role }}</div>
-                </div>
+                </div> -->
 
                 <Button type="submit" class="mt-2 w-full" tabindex="5" :disabled="form.processing">
                     <LoaderCircle v-if="form.processing" class="h-4 w-4 animate-spin" />

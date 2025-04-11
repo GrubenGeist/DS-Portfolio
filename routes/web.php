@@ -43,3 +43,18 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
 
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';
+
+
+//Verfügbare Benutzer Rollen
+
+/**
+ * ---------------------------------
+ * |id:  | Bezeichnung:  | Slug:   |
+ * |-------------------------------|
+ * |id_1 | Administrator | admin   |
+ * |id_2 | Betrieb       | betrieb |
+ * |id_3 | Gast          | gast    |
+ * ---------------------------------
+ * bspw.: ->middleware(['auth', 'verified', 'role:betrieb'])
+ * als Parameter
+ */
