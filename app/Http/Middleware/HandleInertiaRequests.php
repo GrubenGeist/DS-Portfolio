@@ -1,11 +1,10 @@
 <?php
 
 namespace App\Http\Middleware;
-
+use Tighten\Ziggy\Ziggy;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
-use Tighten\Ziggy\Ziggy;
 
 class HandleInertiaRequests extends Middleware
 {
@@ -44,12 +43,25 @@ class HandleInertiaRequests extends Middleware
             'name' => config('app.name'),
             'quote' => ['message' => trim($message), 'author' => trim($author)],
             'auth' => [
-                'user' => $request->user(),
+                // Prüfen ob User eingeloggt ist
+                'user' => $request->user() ? [
+                    // Nur spezifische, bekannte Daten übergeben
+                    'id' => $request->user()->id,
+                    'name' => $request->user()->name,
+                    'email' => $request->user()->email,
+                    // Hier holen wir die Rollen explizit mit der Spatie-Methode
+                    // Das gibt ein Array mit Rollen-Namen zurück, z.B. ['Admin']
+                    'roles' => $request->user()->getRoleNames(),
+                    // Optional: Wenn du Permissions brauchst:
+                    // 'permissions' => $request->user()->getPermissionNames(),
+                ] : null, // Wenn nicht eingeloggt, ist user null
             ],
+            // DIESER TEIL IST KORREKT FÜR ZIGGY:
             'ziggy' => [
-                ...(new Ziggy)->toArray(),
-                'location' => $request->url(),
+                ...(new Ziggy)->toArray(), // Holt alle Routen von Ziggy
+                'location' => $request->url(), // Fügt die aktuelle URL hinzu
             ],
+            // ENDE DES ZIGGY-TEILS
         ];
     }
 }

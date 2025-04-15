@@ -4,51 +4,45 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
-use App\Models\Role;
+use Spatie\Permission\Models\Role; // Korrekter Import
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Validation\Rule; // Korrekter Import
 use Inertia\Inertia;
 use Inertia\Response;
 
 class UserController extends Controller
 {
-    /**
-     * Display a listing of the users.
-     */
     public function index(): Response
     {
-        $users = User::with('role')->get(); // Laden Sie die Rolle jedes Benutzers
+        // Log::info('UserController@index called.'); // Debug log entfernt
+        $users = User::with('roles')->get();
+        // Log::info('Users fetched count: ' . $users->count()); // Debug log entfernt
         return Inertia::render('Admin/Users/Index', ['users' => $users]);
     }
 
-    /**
-     * Show the form for editing the specified user's role.
-     */
     public function editRole(User $user): Response
     {
         $roles = Role::all();
-        return Inertia::render('Admin/Users/EditRole', ['user' => $user, 'roles' => $roles]);
+        return Inertia::render('Admin/Users/EditRole', [
+            'user' => $user,
+            'roles' => $roles
+        ]);
     }
 
-    /**
-     * Update the role of the specified user.
-     */
     public function updateRole(Request $request, User $user): RedirectResponse
     {
-        $request->validate([
-            'role' => ['required', 'string', 'in:admin,betrieb,gast'], // Validierung der Rolle
+        $validated = $request->validate([
+            'role' => [
+                'required',
+                'string',
+                Rule::exists('roles', 'name')
+            ]
         ]);
-
-        $role = Role::where('slug', $request->role)->firstOrFail();
-        $user->role()->associate($role);
-        $user->save();
-
+        $user->syncRoles([$validated['role']]);
         return redirect()->route('admin.users.index')->with('success', 'Rolle erfolgreich aktualisiert.');
     }
 
-    /**
-     * Remove the specified user from storage.
-     */
     public function destroy(User $user): RedirectResponse
     {
         $user->delete();

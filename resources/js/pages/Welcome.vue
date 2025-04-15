@@ -1,4 +1,5 @@
-<script setup>
+<script setup lang="ts">
+import { route } from 'ziggy-js';
 import GuestLayout from '@/layouts/GuestLayout.vue';
 import { Head, Link } from '@inertiajs/vue3';
 import WebsiteLogoIcon from '@/components/WebsiteLogoIcon.vue';
@@ -40,11 +41,11 @@ import WebsiteLogoIcon from '@/components/WebsiteLogoIcon.vue';
                 </div>
 
 
-                <div id="card_panel" class="flex-1 p-10 bg-muted font-bold dark:border-r text-white text-3xl rounded">
+                <div id="card_panel" class="flex-1 mt-8 p-10 bg-muted font-bold dark:border-r text-white text-3xl rounded">
                     <div class="grid grid-cols-2 grid-rows-5 gap-4 grid-flow-dense lg:grid-cols-3">
-                      <div class="row-span-3 p-4 pr-6 bg-stone-500 border-1-8 border-transparent rounded-md shadow-md space-y-2">
-                        <h2 class="text-lg font-bold text-black"> CARD HEADER </h2>
-                        <div class="text-lg font-bold text-black break-normal text-wrap break-all mx-auto flex-1 mt-8 text-2xl font-bold bg-muted p-3 rounded-md shadow-md space-y-2 rounded">
+                      <div class="row-span-3 p-4 pr-6 bg-stone-100 border-1-8 border-transparent rounded-md shadow-md space-y-2">
+                        <h2 class="text-lg font-bold text-black"> Sonstige Programmier Sprachen: </h2>
+                        <div class="text-lg font-bold text-black break-normal text-wrap break-all mx-auto flex-1 mt-8 text-2xl font-bold bg-green-300 p-3 rounded-md shadow-md space-y-2 rounded">
                           <ul class="list-none">
                              <li> Python</li>
                              <li> C#</li>
@@ -52,28 +53,28 @@ import WebsiteLogoIcon from '@/components/WebsiteLogoIcon.vue';
                              </ul>
                         </div>
                       </div>
-                      <div class="row-span-3 p-4 pr-6 bg-stone-500 border-1-8 border-transparent rounded-md shadow-md space-y-2">
-                        <h2 class="text-lg font-bold text-black"> CARD HEADER </h2>
+                      <div class="row-span-3 p-4 pr-6 bg-stone-100 border-1-8 border-transparent rounded-md shadow-md space-y-2">
+                        <h2 class="text-lg font-bold text-black"> Programmiersprachen Web: </h2>
                         <div class="text-lg font-bold text-black break-normal text-wrap break-all mx-auto flex-1 mt-8 text-2xl font-bold bg-red-300 p-3 rounded-md shadow-md space-y-2 rounded lg:flex ">
                           <ul class="list-none">
-                             <li> Python</li>
-                             <li> C#</li>
-                             <li> C+ +</li>
+                             <li> HTML</li>
+                             <li> JavaScript</li>
+                             <li> PHP</li>
                              </ul>
                         </div>                      
                       </div>
-                      <div class="row-span-3 p-4 pr-6 bg-stone-500 border-1-8 border-transparent rounded-md shadow-md space-y-2">
-                        <h2 class="text-lg font-bold text-black"> CARD HEADER </h2>
+                      <div class="row-span-3 p-4 pr-6 bg-stone-100 border-1-8 border-transparent rounded-md shadow-md space-y-2">
+                        <h2 class="text-lg font-bold text-black"> Frameworks: </h2>
                         <div class="text-lg font-bold text-black break-normal text-wrap break-all mx-auto flex-1 mt-8 text-2xl font-bold bg-yellow-300 p-3 rounded-md shadow-md space-y-2 rounded lg:flex ">
                           <ul class="list-none">
-                             <li> Python</li>
-                             <li> C#</li>
-                             <li> C+ +</li>
+                             <li> Drupal</li>
+                             <li> Laravel</li>
+                             <li> Typ03</li>
                              </ul>
                         </div> 
                       </div>
-                      <div class="col-span-3 row-span-3 p-4 pr-6 bg-stone-500 border-1-8 border-transparent rounded-md shadow-md space-y-2">
-                        <h2 class="text-lg font-bold text-black"> CARD HEADER </h2>
+                      <div class="col-span-3 row-span-3 p-4 pr-6 bg-stone-100 border-1-8 border-transparent rounded-md shadow-md space-y-2">
+                        <h2 class="text-lg font-bold text-black"> Weitere Information: </h2>
                         <p class=" text-lg font-bold text-blackbreak-normal text-wrap max-h-full font-bold bg-blue-300 p-3 rounded-md shadow-md space-y-2">
                           Lorem Ipsum is simply dummy text of the printing and typesetting industry. 
                           Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, 
