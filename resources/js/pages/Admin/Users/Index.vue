@@ -81,11 +81,12 @@ const destroy = (id) => {
           </td>
           -->
 
-          
-          <td class= "grid grid-cols-2 grid-rows-1 gap-4 grid-flow-dense lg:grid-cols-3" >
-            <Link class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" :href="route('admin.users.editRole', user.id)">Rolle bearbeiten</Link>
-            <button @click="destroy(user.id)" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Löschen</button>
+          <div>
+          <td class= "grid grid-cols-2 grid-rows-1 gap-3 grid-dense .text-center lg:grid-cols-3">
+            <Link class="col-span-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" :href="route('admin.users.editRole', user.id)">Rolle bearbeiten</Link>
+            <button @click="destroy(user.id)" class="col-span-1 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Löschen</button>
           </td>
+          </div>
         </tr>
       </tbody>
     </table>
@@ -103,7 +104,7 @@ table {
 th, td {
   border: 1px solid #ddd;
   padding: 8px;
-  text-align: left;
+  text-align: center;
 }
 th {
   background-color: #f2f2f2;
