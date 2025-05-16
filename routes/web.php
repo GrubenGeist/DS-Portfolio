@@ -1,117 +1,77 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
-use App\Http\Controllers\Admin\UserController; // Sicherstellen, dass der Pfad korrekt ist
-use App\Http\Controllers\ProfileController; // Import hinzugefügt
+use App\Http\Controllers\Admin\UserController;   // Für Admin-Benutzerverwaltung
+use App\Http\Controllers\ProfileController;     // Für Benutzerprofile
+use App\Http\Controllers\PageController;        // Für allgemeine Seiten
 
-// --- Öffentliche Routen ---
-// Zugänglich für Gäste, Company, Admin
-// keine middleware = öffentlich
-Route::get('/', function () {
-    return Inertia::render('Welcome');
-})->name('welcome');
+// --- Öffentliche Routen (für Gäste und eingeloggte User) ---
+// Werden jetzt vom PageController bedient
+Route::get('/', [PageController::class, 'welcome'])->name('welcome');
+Route::get('contactform', [PageController::class, 'contactForm'])->name('Kontaktformular');
 
-Route::get('contactform', function () {
-    return Inertia::render('Contactform');
-})->name('Kontaktformular');
 
 // --- Routen, die Login erfordern ---
-// Gruppieren wir sie für bessere Übersicht
 Route::middleware(['auth', 'verified'])->group(function () {
+  
+    // Dashboard (Nur für Admin) -> PageController
+    Route::get('dashboard', [PageController::class, 'dashboard'])
+        ->name('dashboard')
+        ->middleware('role:Admin');
 
-    // +++ VERSCHOBEN +++ Profil-Routen hierhin verschoben (benötigen Authentifizierung)
-    // Route zum Anzeigen/Bearbeiten des Profils des eingeloggten Benutzers
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    // Optional, aber oft nützlich: Routen zum Aktualisieren und Löschen des Profils
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    // +++ ENDE VERSCHOBEN +++
+    // Testseite (Admin ODER Company) -> PageController
+    Route::get('test', [PageController::class, 'testPage'])
+        ->name('test') // Name 'test' wie in deiner alten web.php
+        ->middleware('role:Admin|Company');
 
-    //Nur für Admin Zugänglich
-    Route::get('dashboard', function () {
-        return Inertia::render('Dashboard');
-    })->name('dashboard')->middleware('role:Admin');
+    // Projekte (Admin ODER Company) -> PageController
+    Route::get('projects', [PageController::class, 'projects'])
+        ->name('projects')
+        ->middleware('role:Admin|Company');
 
-    // --- AUSKOMMENTIERT --- Grund: Doppelte Definition mit gleichem Namen 'testseite' weiter unten.
-    // Route::get('test', function () {
-    //     return Inertia::render('Test');
-    // })->name('testseite')->middleware('role:Admin');
-    // --- ENDE AUSKOMMENTIERT ---
+    // Dienstleistungen (Admin ODER Company) -> PageController
+    Route::get('services', [PageController::class, 'services'])
+        ->name('services')
+        ->middleware('role:Admin|Company');
 
-    // -- Zugänglich für ALLE eingeloggten (Admin, Company) --
-    /*Route::get('contactform', function () {
-        return Inertia::render('Contactform');
-    })->name('Kontaktformular');*/
-
-
-    // -- Zugänglich für Admin ODER Company --
-    // HINWEIS: Diese Route hat denselben Namen 'testseite' wie die auskommentierte oben.
-    // Laravel registriert normalerweise nur die letzte Definition mit einem Namen.
-    // Diese hier erlaubt Admin ODER Company, was vermutlich gewünscht ist.
-    Route::get('test', function () {
-        return Inertia::render('Test');
-    })->name('test')
-        ->middleware('role:Admin|Company'); // Erlaube Admin ODER Company
-
-    Route::get('projects', function () {
-        return Inertia::render('Projects');
-    })->name('projects')
-        ->middleware('role:Admin|Company'); // Erlaube Admin ODER Company
-
-    Route::get('services', function () {
-        return Inertia::render('Services');
-    })->name('services')
-        ->middleware('role:Admin|Company'); // Erlaube Admin ODER Company
-
-    Route::get('aboutme', function () {
-        return Inertia::render('Aboutme');
-    })->name('aboutme')
-        ->middleware('role:Admin|Company'); // Erlaube Admin ODER Company
+    // Über Mich (Admin ODER Company) -> PageController
+    Route::get('aboutme', [PageController::class, 'aboutMe'])
+        ->name('aboutme')
+        ->middleware('role:Admin|Company');
 
 }); // Ende der auth & verified Gruppe
 
 
-// --- Admin-Bereich ---
-// Wichtig: Rolle auf 'Admin' (groß) geändert, passend zum Seeder und Gate::before
-Route::middleware(['auth', 'verified', 'role:Admin']) // Rolle angepasst auf 'Admin'
-    ->prefix('admin') // Prefix bleibt
-    ->name('admin.') // Routennamen-Prefix hinzufügen für Klarheit (optional aber gut)
+// --- Admin-Bereich (für Benutzerverwaltung durch UserController) ---
+// Dieser Teil bleibt strukturell wie in deiner "alten web.php"
+Route::middleware(['auth', 'verified', 'role:Admin'])
+    ->prefix('admin')
+    ->name('admin.')
     ->group(function () {
-        // Routennamen werden jetzt admin.users.index etc.
         Route::get('/users', [UserController::class, 'index'])->name('users.index');
         Route::get('/users/{user}/edit-role', [UserController::class, 'editRole'])->name('users.editRole');
         Route::put('/users/{user}/update-role', [UserController::class, 'updateRole'])->name('users.updateRole');
         Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
-
-        // Hier könnten weitere Admin-Routen hinzukommen
-        // Beispiel: Route für das Erstellen von Usern (geschützt durch Permission)
-        // Route::get('/users/create', [UserController::class, 'create'])
-        //       ->name('users.create')
-        //       ->middleware('can:create user'); // Braucht Permission 'create user'
-        // Route::post('/users', [UserController::class, 'store'])
-        //       ->name('users.store')
-        //       ->middleware('can:create user');
-});
+        // Weitere spezifische Admin-Routen, die den UserController nutzen...
+    });
 
 
 // --- Include weiterer Routen-Dateien ---
-// HINWEIS: Stelle sicher, dass 'settings.php' und 'auth.php' keine Routen definieren,
-// die mit den hier definierten kollidieren (insbesondere die Profil-Routen, falls Breeze/Jetstream genutzt wurde).
-require __DIR__.'/settings.php';
-require __DIR__.'/auth.php';
+// Diese Zeilen übernimmst du aus deiner "alten web.php"
+if (file_exists(__DIR__.'/settings.php')) { // Gute Praxis: Existenz prüfen
+    require __DIR__.'/settings.php';
+}
+require __DIR__.'/auth.php'; // Für Login, Passwort Reset, etc. von Laravel
 
 
-
-//Verfügbare Benutzer Rollen
-/**
- * ---------------------------------------
- * |id:  | Bezeichnung:  | Slug:         |
- * |-------------------------------------|
- * |id_1 | Administrator | Admin         |
- * |id_2 | Company       | Company       |
- * |     | Gast(user)    | Gast(User)    |
- * ---------------------------------------
- * bspw.: ->middleware(['auth', 'verified', 'role:betrieb'])
- * als Parameter
- */
+/*
+Verfügbare Benutzer Rollen (zur Information aus deiner alten web.php):
+---------------------------------------
+|id:  | Bezeichnung:   | Slug:         |
+|-------------------------------------|
+|id_1 | Administrator | Admin         |
+|id_2 | Company       | Company       |
+|     | Gast(user)    | Gast(User)    |
+---------------------------------------
+bspw.: ->middleware(['auth', 'verified', 'role:Company'])
+*/

@@ -49,11 +49,10 @@ const mainNavItems: NavItem[] = [
         icon: LayoutGrid,
     },
     {
-        title: 'Über Mich',
-        href: '/aboutme',
+        title: 'Kontaktformular',
+        href: '/contactform',
         icon: LayoutGrid,
     },
-
 ];
 
 const rightNavItems: NavItem[] = [
@@ -173,13 +172,13 @@ const rightNavItems: NavItem[] = [
                                 >
                                     Log in
                                 </Link>
-
+                                <!--
                                 <Link :href="route('register')"
                                     :class="['inline-block rounded-sm border border-[#19140035] px-5 py-1.5 text-sm leading-normal text-[#1b1b18] hover:border-[#1915014a] dark:border-[#3E3E3A] dark:text-[#EDEDEC] dark:hover:border-[#62605b]', { 'opacity-50 pointer-events-none': isGast }]"
                                 >
                                     Regestrieren
                                 </Link>
-
+                                -->
                             </div>
                         </div>
                     </div>

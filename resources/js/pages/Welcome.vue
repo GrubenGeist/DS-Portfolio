@@ -1,16 +1,23 @@
 <script setup lang="ts">
 import { route } from 'ziggy-js';
-import GuestLayout from '@/layouts/GuestLayout.vue';
+import AppLayout from '@/layouts/AppLayout.vue';
 import { Head, Link } from '@inertiajs/vue3';
 import WebsiteLogoIcon from '@/components/WebsiteLogoIcon.vue';
+import { BreadcrumbItem } from '@/types';
 
+const breadcrumbs: BreadcrumbItem[] = [
+    {
+        title: 'Startseite',
+        href: '/',
+    },
+];
 
 </script>
 
 
 <template>
 
-  <GuestLayout :breadcrumbs="breadcrumbs">
+  <AppLayout :breadcrumbs="breadcrumbs">
 
                 <div class="w-full grid place-items-center mx-auto bg-muted p-10 dark:border-r">        
                     <WebsiteLogoIcon/>
@@ -57,9 +64,9 @@ import WebsiteLogoIcon from '@/components/WebsiteLogoIcon.vue';
                         <h2 class="text-lg font-bold text-black"> Programmiersprachen Web: </h2>
                         <div class="text-lg font-bold text-black break-normal text-wrap break-all mx-auto flex-1 mt-8 text-2xl font-bold bg-red-300 p-3 rounded-md shadow-md space-y-2 rounded lg:flex ">
                           <ul class="list-none">
-                             <li> HTML</li>
-                             <li> JavaScript</li>
-                             <li> PHP</li>
+                             <li>HTML</li>
+                             <li>JavaScript</li>
+                             <li>PHP</li>
                              </ul>
                         </div>                      
                       </div>
@@ -67,9 +74,9 @@ import WebsiteLogoIcon from '@/components/WebsiteLogoIcon.vue';
                         <h2 class="text-lg font-bold text-black"> Frameworks: </h2>
                         <div class="text-lg font-bold text-black break-normal text-wrap break-all mx-auto flex-1 mt-8 text-2xl font-bold bg-yellow-300 p-3 rounded-md shadow-md space-y-2 rounded lg:flex ">
                           <ul class="list-none">
-                             <li> Drupal</li>
-                             <li> Laravel</li>
-                             <li> Typ03</li>
+                             <li>Drupal</li>
+                             <li>Laravel</li>
+                             <li>TYPO3</li>
                              </ul>
                         </div> 
                       </div>
@@ -89,7 +96,7 @@ import WebsiteLogoIcon from '@/components/WebsiteLogoIcon.vue';
           <p class="text-sm">Kontaktiere uns bei Fragen: <a href="mailto:info@example.com" class="-500">info@example.com</a></p>
         </template> -->
 
-  </GuestLayout>
+  </AppLayout>
 
         <div id="site-footer" class="w-full mt-8 text-3xl font-bold bg-muted p-10 dark:border-r">
           <p class="text-sm">Kontaktiere uns bei Fragen: <a href="mailto:dennis-strauss@web.de" class="-500">dennis-strauss@web.de</a></p>

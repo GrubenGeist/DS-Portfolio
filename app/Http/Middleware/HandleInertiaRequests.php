@@ -5,6 +5,7 @@ use Tighten\Ziggy\Ziggy;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
+use Illuminate\Support\Facades\Route as LaravelRoute;
 
 class HandleInertiaRequests extends Middleware
 {
@@ -36,32 +37,32 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
-        [$message, $author] = str(Inspiring::quotes()->random())->explode('-');
-
+        [$message, $author] = str(\Illuminate\Foundation\Inspiring::quotes()->random())->explode('-'); // Illuminate\Foundation\Inspiring für Inspiring::quotes()
+    
+        $loggedInUser = $request->user(); // Benutzer einmal holen
+    
         return [
             ...parent::share($request),
             'name' => config('app.name'),
             'quote' => ['message' => trim($message), 'author' => trim($author)],
             'auth' => [
-                // Prüfen ob User eingeloggt ist
-                'user' => $request->user() ? [
-                    // Nur spezifische, bekannte Daten übergeben
-                    'id' => $request->user()->id,
-                    'name' => $request->user()->name,
-                    'email' => $request->user()->email,
-                    // Hier holen wir die Rollen explizit mit der Spatie-Methode
-                    // Das gibt ein Array mit Rollen-Namen zurück, z.B. ['Admin']
-                    'roles' => $request->user()->getRoleNames(),
-                    // Optional: Wenn du Permissions brauchst:
-                    // 'permissions' => $request->user()->getPermissionNames(),
-                ] : null, // Wenn nicht eingeloggt, ist user null
+                'user' => $loggedInUser ? [
+                    'id' => $loggedInUser->id,
+                    'name' => $loggedInUser->name,
+                    'email' => $loggedInUser->email,
+                    'roles' => $loggedInUser->getRoleNames()->toArray(), // ->toArray() ist gut für Konsistenz
+                    // ---- HIER DIE NEUEN FELDER HINZUFÜGEN ----
+                    'avatar' => $loggedInUser->avatar ?? null, // Beispiel, falls du ein Avatar-Feld hast
+                    'email_verified_at' => $loggedInUser->email_verified_at ? $loggedInUser->email_verified_at->toIso8601String() : null,
+                    'created_at' => $loggedInUser->created_at ? $loggedInUser->created_at->toIso8601String() : null,
+                    'updated_at' => $loggedInUser->updated_at ? $loggedInUser->updated_at->toIso8601String() : null,
+                ] : null,
             ],
-            // DIESER TEIL IST KORREKT FÜR ZIGGY:
             'ziggy' => [
-                ...(new Ziggy)->toArray(), // Holt alle Routen von Ziggy
-                'location' => $request->url(), // Fügt die aktuelle URL hinzu
+                ...(new Ziggy)->toArray(),
+                'location' => $request->url(),
             ],
-            // ENDE DES ZIGGY-TEILS
+            'canRegister' => LaravelRoute::has('register'),
         ];
     }
 }

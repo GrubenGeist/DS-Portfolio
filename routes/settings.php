@@ -1,21 +1,46 @@
 <?php
 
 use App\Http\Controllers\Settings\PasswordController;
+use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Settings\ProfileController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use App\Http\Controllers;
+use App\Http\Controllers\SettingsController; 
 
-Route::middleware('auth')->group(function () {
-    Route::redirect('settings', '/settings/profile');
+Route::middleware(['auth', 'verified']) // 'verified' hier hinzufügen, wenn alle Settings-Seiten es erfordern
+    ->prefix('settings')                // URL-Präfix /settings/...
+    ->name('settings.')                 // Routennamen-Präfix settings....
+    ->group(function () {
 
-    Route::get('settings/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('settings/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('settings/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    // wenn /settings eine Standard-Unterseite haben soll.
+    Route::get('/', [SettingsController::class, 'index'])->name('index'); // Leitet /settings zu /settings/profile
 
-    Route::get('settings/password', [PasswordController::class, 'edit'])->name('password.edit');
-    Route::put('settings/password', [PasswordController::class, 'update'])->name('password.update');
+    // Profil-Routen
+    Route::get('profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    Route::get('settings/appearance', function () {
-        return Inertia::render('settings/Appearance');
-    })->name('appearance');
+    // PasswordController-Routen
+    Route::get('password', [PasswordController::class, 'edit'])->name('password.edit');
+    Route::put('password', [PasswordController::class, 'update'])->name('password.update');
+
+    // Appearance-Route
+    Route::get('appearance', function () {
+        return Inertia::render('settings/Appearance', [
+            'breadcrumbs' => [
+                ['label' => 'Einstellungen', 'href' => route('settings.index')],
+                ['label' => 'Erscheinungsbild'],
+            ]
+        ]);
+    })->name('appearance'); // settings.appearance
+
+    // Diese Routen sind nur für Admins zugänglich
+    Route::middleware(['role:Admin'])->prefix('users')->name('users.')->group(function () {
+        Route::get('/', [UserController::class, 'index'])->name('index'); // Ergibt: settings.users.index
+        Route::get('/{user}/edit-role', [UserController::class, 'editRole'])->name('editRole'); // settings.users.editRole
+        Route::put('/{user}/update-role', [UserController::class, 'updateRole'])->name('updateRole'); // settings.users.updateRole
+        Route::delete('/{user}', [UserController::class, 'destroy'])->name('destroy'); // settings.users.destroy
+    });
+
 });

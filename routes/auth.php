@@ -11,10 +11,12 @@ use App\Http\Controllers\Auth\VerifyEmailController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function () {
+    /*
     Route::get('register', [RegisteredUserController::class, 'create'])
         ->name('register');
 
     Route::post('register', [RegisteredUserController::class, 'store']);
+    */
 
     Route::get('login', [AuthenticatedSessionController::class, 'create'])
         ->name('login');
@@ -56,3 +58,15 @@ Route::middleware('auth')->group(function () {
         ->name('logout');
 });
 
+    // --- NEU: Registrierungsrouten NUR FÜR ADMINS ---
+    // Diese Routen verwenden weiterhin den RegisteredUserController von Breeze,
+    // sind aber jetzt durch auth, verified (optional) und role:Admin geschützt.
+    // Die URLs bleiben /register, aber die Namen könnten zur Klarheit angepasst werden,
+    // oder du behältst sie bei, wenn keine andere 'register'-Route mehr existiert.
+    Route::middleware(['verified', 'role:Admin'])->group(function () { // 'verified' ist optional
+        Route::get('register', [RegisteredUserController::class, 'create'])
+            ->name('admin.register.form'); // Eindeutiger Name, um Konflikte zu vermeiden
+
+        Route::post('register', [RegisteredUserController::class, 'store'])
+            ->name('admin.register.store'); // Eindeutiger Name
+    });

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import AuthCustomLayout from '@/layouts/auth/custom/AuthCustomLayout.vue'; // Passe dies an dein Layout an
+import AppLayout from '@/layouts/AppLayout.vue'; // Passe dies an dein Layout an
 import { Head } from '@inertiajs/vue3';
 import { defineProps } from 'vue'; // Import für defineProps
 
@@ -23,7 +23,7 @@ const props = defineProps<{
 <template>
     <Head title="Profil" />
 
-    <AuthCustomLayout>
+    <AppLayout>
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">Profil Einstellungen</h2>
         </template>
@@ -51,5 +51,5 @@ const props = defineProps<{
                 </div>
             </div>
         </div>
-    </AuthCustomLayout>
+    </AppLayout>
 </template>

@@ -40,12 +40,12 @@ class UserController extends Controller
             ]
         ]);
         $user->syncRoles([$validated['role']]);
-        return redirect()->route('admin.users.index')->with('success', 'Rolle erfolgreich aktualisiert.');
+        return redirect()->route('settings.users.index')->with('success', 'Rolle erfolgreich aktualisiert.');
     }
 
     public function destroy(User $user): RedirectResponse
     {
         $user->delete();
-        return redirect()->route('admin.users.index')->with('success', 'Benutzer erfolgreich gelöscht.');
+        return redirect()->route('settings.users.index')->with('success', 'Benutzer erfolgreich gelöscht.');
     }
 }

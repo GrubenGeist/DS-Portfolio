@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-import AuthCustomLayout from '@/layouts/auth/custom/AuthCustomLayout.vue'; // Pfad prüfen!
+import AppLayout from '@/layouts/AppLayout.vue'; // Pfad prüfen!
 import { type BreadcrumbItem } from '@/types';
 import { Head, Link, router } from '@inertiajs/vue3';
 import PlaceholderPattern from '../components/PlaceholderPattern.vue'; // Pfad prüfen!
@@ -62,12 +62,12 @@ loadUsers();
 <template>
     <Head title="Dashboard" />
 
-    <AuthCustomLayout :breadcrumbs="breadcrumbs">
+    <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
             <div class="grid auto-rows-min gap-4 md:grid-cols-3">
                 <div class="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
                     <PlaceholderPattern />
-                    <p class="absolute inset-0 flex items-center justify-center"> <Link :href="route('profile.edit')" class="text-white z-10">Mein Profil</Link>
+                    <p class="absolute inset-0 flex items-center justify-center"> <Link :href="route('settings.profile.edit')" class="text-white z-10">Mein Profil</Link>
                     </p>
                 </div>
                 <div class="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
@@ -86,5 +86,5 @@ loadUsers();
                 </p>
             </div>
         </div>
-    </AuthCustomLayout>
+    </AppLayout>
 </template>

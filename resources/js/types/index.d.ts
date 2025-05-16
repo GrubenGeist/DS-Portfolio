@@ -8,7 +8,7 @@ export interface Auth {
 
 export interface BreadcrumbItem {
     title: string;
-    href: string;
+    href?: string;
 }
 
 export interface NavItem {
@@ -29,10 +29,10 @@ export interface User {
     id: number;
     name: string;
     email: string;
-    avatar?: string;
-    email_verified_at: string | null;
-    created_at: string;
-    updated_at: string;
+    avatar?: string; 
+    email_verified_at: string | null; 
+    created_at: string | null;     
+    updated_at: string | null;     
 }
 
 export type BreadcrumbItemType = BreadcrumbItem;

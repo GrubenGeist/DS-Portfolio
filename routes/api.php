@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 // Passe den Pfad zum Controller ggf. an, falls du einen separaten API-Controller hast/erstellst
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\ContactFormController;
 
 /* ... (Standardkommentarblock) ... */
 
@@ -24,3 +25,5 @@ Route::middleware('auth:sanctum')->group(function () {
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::post('/contact', [ContactFormController::class, 'submit'])->name('contact.submit');

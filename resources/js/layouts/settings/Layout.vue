@@ -2,27 +2,25 @@
 import Heading from '@/components/Heading.vue';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
-import { type NavItem } from '@/types';
+import { type NavItem } from '@/types'; // Stelle sicher, dass NavItem hier 'href' und 'title' hat, aber nicht zwingend 'icon'
 import { Link, usePage } from '@inertiajs/vue3';
+import { computed } from 'vue'; // computed importieren
+import { route } from 'ziggy-js'; // route importieren, falls noch nicht geschehen (scheint aber schon da zu sein)
 
+// Navigationsitems für die Sidebar der Settings-Seite
 const sidebarNavItems: NavItem[] = [
-    {
-        title: 'Profile',
-        href: '/settings/profile',
-    },
-    {
-        title: 'Password',
-        href: '/settings/password',
-    },
-    {
-        title: 'Appearance',
-        href: '/settings/appearance',
-    },
+    { title: 'Profile', href: route('settings.profile.edit') },
+    { title: 'Password', href: route('settings.password.edit') },
+    { title: 'Appearance', href: route('settings.appearance') },
 ];
 
-const page = usePage();
+const page = usePage(); // usePage<SharedData>() wenn du SharedData typisiert hast
 
-const currentPath = page.props.ziggy?.location ? new URL(page.props.ziggy.location).pathname : '';
+const currentPath = computed(() => page.props.ziggy?.location ? new URL(page.props.ziggy.location).pathname : '');
+
+// --- NEU: Admin-Status holen ---
+const userRoles = computed(() => page.props.auth.user?.roles || []);
+const isAdmin = computed(() => userRoles.value.includes('Admin'));
 </script>
 
 <template>
@@ -43,14 +41,15 @@ const currentPath = page.props.ziggy?.location ? new URL(page.props.ziggy.locati
                             {{ item.title }}
                         </Link>
                     </Button>
+                
                     
-                        <Link
-                            :href="route('register')"
-                            class="inline-block rounded-sm border border-[#19140035] px-5 py-1.5 text-sm leading-normal text-[#1b1b18] hover:border-[#1915014a] dark:border-[#3E3E3A] dark:text-[#EDEDEC] dark:hover:border-[#62605b]"
-                        >
-                            Neuen User Regestrieren
-                        </Link>
-                    
+                    <Link
+                        v-if="isAdmin" 
+                        :href="route('admin.register.form')" 
+                        class="mt-2 inline-block rounded-sm border border-[#19140035] px-5 py-1.5 text-sm leading-normal text-[#1b1b18] hover:border-[#1915014a] dark:border-[#3E3E3A] dark:text-[#EDEDEC] dark:hover:border-[#62605b]"
+                    >
+                        Neuen User Registrieren
+                    </Link>
                 </nav>
             </aside>
 
