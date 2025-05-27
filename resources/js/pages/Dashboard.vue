@@ -1,90 +1,138 @@
 <script setup lang="ts">
-
-import AppLayout from '@/layouts/AppLayout.vue'; // Pfad prüfen!
+import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem } from '@/types';
-import { Head, Link, router } from '@inertiajs/vue3';
-import PlaceholderPattern from '../components/PlaceholderPattern.vue'; // Pfad prüfen!
-import AppLogoIcon from '@/components/AppLogoIcon.vue'; // Pfad prüfen!
+import { Head, Link, router, usePage } from '@inertiajs/vue3'; // usePage ist schon da
+import PlaceholderPattern from '../components/PlaceholderPattern.vue';
+import AppLogoIcon from '@/components/AppLogoIcon.vue';
 import { route } from 'ziggy-js';
+import { computed, ref } from 'vue'; // ref für usersList, computed für abgeleitete Zustände
 
-const breadcrumbs: BreadcrumbItem[] = [
-    {
-        title: 'Dashboard',
-        // Hinweis: Wenn du hier klickbar machen willst, stelle sicher,
-        // dass die Route 'dashboard' (klein) existiert und im Frontend bekannt ist.
-        // href: route('dashboard'), // Beispiel, falls 'dashboard' Route existiert und in Ziggy ist
-        href: '/dashboard', // Sicherer, wenn Name unklar oder für einfachen Pfad
-    },
-];
-
-// Diese Funktion bleibt erhalten, wird aber im Template unten nicht verwendet.
-// Sie nutzt den korrekten Routennamen 'profile.edit'.
-function goToProfile() {
-    router.visit(route('profile.edit'));
+// Definiere den Typ für einen Benutzer, wie er vom Controller kommt
+interface User {
+    id: number;
+    name: string;
+    email: string;
+    roles: { name: string }[];
+    // Füge hier weitere Felder hinzu, die vom Controller kommen
 }
 
-// Diese Funktion bleibt erhalten, um die Benutzerdaten zu laden.
-// Der 500-Fehler, den sie auslöst, muss im Backend behoben werden (siehe laravel.log).
+// Props, die vom Controller (PageController@dashboard) übergeben werden
+const props = defineProps<{
+    // breadcrumbs?: BreadcrumbItem[]; // Kommt jetzt über page.props ins Layout
+    initialUsers: User[];
+    userFetchError?: string | null; // Fehlermeldung vom Controller
+}>();
+
+defineOptions({ layout: AppLayout }); // Weise das Hauptlayout zu
+
+// Die Breadcrumbs kommen jetzt über page.props (vom Controller an Inertia::render übergeben)
+// und werden vom AppLayout konsumiert. Wir definieren sie hier nicht mehr lokal.
+// const breadcrumbs: BreadcrumbItem[] = [
+//     {
+//         title: 'Dashboard',
+//         href: route('dashboard'),
+//     },
+// ];
+
+// Verwende die initialen Benutzerdaten aus den Props
+const usersList = ref<User[]>(props.initialUsers);
+const isLoadingUsers = ref(false); // Nicht mehr initial am Laden, da Daten schon da sind
+const localUserFetchError = ref<string | null>(props.userFetchError || null);
+
+
+// Die loadUsers-Funktion wird nicht mehr in onMounted aufgerufen,
+// könnte aber für ein manuelles Neuladen (z.B. per Button) beibehalten werden.
+// Fürs Erste kommentieren wir den automatischen Aufruf aus.
+/*
 async function loadUsers() {
-   try {
-        const response = await fetch(route('api.users.index'));
-        // Prüfen, ob die Antwort erfolgreich war (Status 2xx)
+    isLoadingUsers.value = true;
+    localUserFetchError.value = null;
+    try {
+        const response = await fetch(route('api.users.index'), {
+            headers: {
+                'Accept': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest',
+            },
+            credentials: 'include',
+        });
+
         if (!response.ok) {
-            // Wenn nicht OK (z.B. 500er), Fehler werfen oder loggen
-            console.error(`Error fetching users: ${response.status} ${response.statusText}`);
-            // Optional: Versuche, den Fehlertext zu lesen, falls es kein HTML ist
-            // const errorText = await response.text();
-            // console.error('Server response:', errorText);
-            return; // Funktion hier beenden
+            let errorResponseMessage = `HTTP error! Status: ${response.status} ${response.statusText}`;
+            // ... (deine detailliertere Fehlerbehandlung von vorher) ...
+            console.error('Error fetching users (details):', errorResponseMessage);
+            localUserFetchError.value = errorResponseMessage;
+            return;
         }
-        // Nur parsen, wenn Antwort OK war
-        const users = await response.json();
-        console.log('Geladene Benutzer:', users); // Log angepasst für Klarheit
-   } catch (error) {
+        const data = await response.json();
+        usersList.value = data;
+    } catch (error: any) {
         console.error('Fehler beim Laden der Benutzer:', error);
-        // Hier könnten auch Netzwerkfehler etc. landen
-   }
+        localUserFetchError.value = error.message || 'Ein unbekannter Fehler ist aufgetreten.';
+    } finally {
+        isLoadingUsers.value = false;
+    }
 }
 
-// --- GELÖSCHT --- Die folgende Funktion und der console.log wurden entfernt,
-// --- da sie den 'users.profile'-Fehler verursachten.
-// function getUserProfileUrl(userId) {
-//  return route('users.profile', { id: userId });
-// }
-// console.log(getUserProfileUrl(5));
-// --- ENDE GELÖSCHT ---
+onMounted(() => {
+    // loadUsers(); // Nicht mehr automatisch beim Mounten aufrufen
+});
+*/
 
-// Ruft loadUsers() auf, wenn die Komponente geladen wird.
-loadUsers();
+function goToProfile() {
+    router.visit(route('settings.profile.edit'));
+}
 
 </script>
 
 <template>
     <Head title="Dashboard" />
 
-    <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
             <div class="grid auto-rows-min gap-4 md:grid-cols-3">
                 <div class="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
                     <PlaceholderPattern />
-                    <p class="absolute inset-0 flex items-center justify-center"> <Link :href="route('settings.profile.edit')" class="text-white z-10">Mein Profil</Link>
+                    <p class="absolute inset-0 flex items-center justify-center">
+                        <Link :href="route('settings.profile.edit')" class="text-white z-10">Mein Profil</Link>
                     </p>
                 </div>
                 <div class="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
                     <PlaceholderPattern />
-                    <p class="absolute inset-0 flex items-center justify-center"> <AppLogoIcon class="h-16 w-16 z-10"/> </p>
+                    <p class="absolute inset-0 flex items-center justify-center">
+                        <AppLogoIcon class="h-16 w-16 z-10"/>
+                    </p>
                 </div>
                 <div class="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
                     <PlaceholderPattern />
-                    <p class="absolute inset-0 flex items-center justify-center text-white z-10"> TEST
+                    <p class="absolute inset-0 flex items-center justify-center text-white z-10">
+                        {{ isLoadingUsers ? 'Lade Benutzer...' : `Anzahl Benutzer: ${usersList.length}` }}
                     </p>
                 </div>
             </div>
-            <div class="relative min-h-[100vh] flex-1 rounded-xl border border-sidebar-border/70 dark:border-sidebar-border md:min-h-min">
-                <PlaceholderPattern />
-                <p class="absolute inset-0 flex items-center justify-center text-white z-10"> TEST
-                </p>
+            <div class="relative min-h-[calc(100vh-20rem)] flex-1 rounded-xl border border-sidebar-border/70 dark:border-sidebar-border p-4 md:min-h-min">
+                <PlaceholderPattern v-if="isLoadingUsers && !localUserFetchError" />
+
+                <div v-if="localUserFetchError" class="text-red-500 p-4 bg-red-100 border border-red-400 rounded">
+                    <h3 class="font-bold">Fehler beim Laden der Benutzerdaten:</h3>
+                    <p>{{ localUserFetchError }}</p>
+                </div>
+
+                <div v-if="!isLoadingUsers && !localUserFetchError && usersList.length > 0">
+                    <h2 class="text-xl font-semibold mb-3 dark:text-white">Benutzerliste (Initial geladen)</h2>
+                    <ul class="list-disc pl-5 dark:text-gray-300">
+                        <li v-for="user in usersList" :key="user.id">
+                            {{ user.name }} ({{ user.email }}) - Rollen: {{ user.roles.map(r => r.name).join(', ') || 'Keine' }}
+                        </li>
+                    </ul>
+                </div>
+                <div v-if="!isLoadingUsers && !localUserFetchError && usersList.length === 0" class="dark:text-gray-400">
+                    Keine Benutzerdaten initial geladen.
+                </div>
+                <!--{/* Button zum manuellen Nachladen, falls gewünscht*/}-->
+                <button @click="loadUsers" :disabled="isLoadingUsers" class="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 disabled:opacity-50">
+                    Benutzer neu laden
+                </button>
+                
             </div>
         </div>
-    </AppLayout>
+
 </template>

@@ -11,12 +11,14 @@ use Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets;
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
         web: __DIR__.'/../routes/web.php',
+        api: __DIR__.'/../routes/api.php',
+        apiPrefix: 'api',
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->encryptCookies(except: ['appearance']);
-
+        $middleware->statefulApi();
         $middleware->web(append: [
             HandleAppearance::class,
             HandleInertiaRequests::class,
@@ -33,7 +35,14 @@ return Application::configure(basePath: dirname(__DIR__))
             // 'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         ]);
         // --- Ende der Alias-Definition ---
+        //    // app/Http/Kernel.php (Beispiel für L10)
+        //'api' => [
+        //    \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
+        //    // ... andere api middleware
+        //],
     })
+
+
     ->withProviders([
         AuthServiceProvider::class, // Stellt sicher, dass dieser Provider geladen wird
         App\Providers\RouteServiceProvider::class,

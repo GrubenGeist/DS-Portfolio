@@ -13,9 +13,11 @@ export interface BreadcrumbItem {
 
 export interface NavItem {
     title: string;
-    href: string;
-    icon?: LucideIcon;
-    isActive?: boolean;
+    href?: string; // Wird für Top-Level-Dropdown-Trigger optional
+    icon: Component;
+    showToGuests?: boolean;
+    roles?: string[];
+    children?: AppNavItem[]; // NEU: Für Untermenüpunkte
 }
 
 export interface SharedData extends PageProps {

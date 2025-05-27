@@ -13,7 +13,7 @@ use App\Http\Controllers\ContactFormController;
 Route::middleware('auth:sanctum')->group(function () {
 
     // Deine Route für die Benutzerliste
-    Route::get('/users', [UserController::class, 'index']) // Verweist auf die Index-Methode
+    Route::get('/users', [UserController::class, 'indexApi']) // Verweist auf die Index-Methode
          ->name('api.users.index');                   // <<< Der wichtige Name!
 
     // Hier könnten weitere API-Routen hinzukommen, z.B. für einen einzelnen User

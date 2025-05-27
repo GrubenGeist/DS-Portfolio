@@ -3,8 +3,16 @@ import UserInfo from '@/components/UserInfo.vue';
 import { DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
 import type { User } from '@/types';
 import { Link, usePage } from '@inertiajs/vue3';
-import { LogOut, Settings, Users as UsersIcon, UserPlus as UserPlusIcon  } from 'lucide-vue-next';
+import {
+    LogOut,
+    Settings,
+    Users as UsersIcon,
+    UserPlus as UserPlusIcon,
+    LayoutGrid as DashboardIcon, // Icon für Dashboard
+    FileText as TestIcon // Oder UserCog, je nachdem, welches Icon du für die Testseite möchtest
+} from 'lucide-vue-next';
 import { computed } from 'vue';
+import { route } from 'ziggy-js'; // Ziggy importieren
 
 interface Props {
     user: User;
@@ -31,8 +39,27 @@ const isAdmin = computed(() => currentUserRoles.value.includes('Admin'));
             </Link>
         </DropdownMenuItem>
 
+        <!--- Admin-spezifische Links --->
         <template v-if="isAdmin">
-            <DropdownMenuSeparator />
+            <DropdownMenuSeparator /> <!---{/* Optische Trennung für die Admin-Sektion */}-->
+
+            <!---{/* NEU: Link zum Dashboard für Admins */}-->
+            <DropdownMenuItem :as-child="true">
+                <Link class="block w-full" :href="route('dashboard')" as="button">
+                    <DashboardIcon class="mr-2 h-4 w-4" />
+                    Dashboard
+                </Link>
+            </DropdownMenuItem>
+        
+            <!---{/* NEU: Link zur Testseite für Admins */}-->
+            <DropdownMenuItem :as-child="true">
+                <Link class="block w-full" :href="route('test')" as="button">
+                    <TestIcon class="mr-2 h-4 w-4" /> <!---{/* Oder UserCog, wenn passender */}-->
+                    Testseite (Admin)
+                </Link>
+            </DropdownMenuItem>
+
+            <!---{/* Bestehende Admin-Links */}-->
             <DropdownMenuItem :as-child="true">
                 <Link class="block w-full" :href="route('settings.users.index')" as="button">
                     <UsersIcon class="mr-2 h-4 w-4" />

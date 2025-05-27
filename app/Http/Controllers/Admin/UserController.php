@@ -30,6 +30,19 @@ class UserController extends Controller
         ]);
     }
 
+    public function indexApi(Request $request): JsonResponse
+    {
+        try {
+            // Hole die Benutzerdaten, eventuell mit Paginierung für eine API
+            $users = User::with('roles')->get(); // oder User::paginate(15);
+
+            return response()->json($users); // Gib die Benutzer als JSON zurück
+        } catch (\Exception $e) {
+            Log::error('API /api/users Error: ' . $e->getMessage() . ' Stack: ' . $e->getTraceAsString());
+            return response()->json(['message' => 'Fehler beim Abrufen der Benutzerdaten.'], 500);
+        }
+    }
+
     public function updateRole(Request $request, User $user): RedirectResponse
     {
         $validated = $request->validate([
