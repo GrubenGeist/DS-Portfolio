@@ -1,5 +1,4 @@
 import type { PageProps } from '@inertiajs/core';
-import type { LucideIcon } from 'lucide-vue-next';
 import type { Config } from 'ziggy-js';
 
 export interface Auth {
@@ -31,10 +30,10 @@ export interface User {
     id: number;
     name: string;
     email: string;
-    avatar?: string; 
-    email_verified_at: string | null; 
-    created_at: string | null;     
-    updated_at: string | null;     
+    avatar?: string;
+    email_verified_at: string | null;
+    created_at: string | null;
+    updated_at: string | null;
 }
 
 export type BreadcrumbItemType = BreadcrumbItem;

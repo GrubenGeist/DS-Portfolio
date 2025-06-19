@@ -7,8 +7,8 @@ import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import type { DefineComponent } from 'vue';
 import { createApp, h } from 'vue'; // createApp und h sind schon da
 import { ZiggyVue } from 'ziggy-js';
-import { initializeTheme } from './composables/useAppearance';
 import './bootstrap';
+import { initializeTheme } from './composables/useAppearance';
 
 // NEU: Importiere deine Kontaktformular-Komponente
 import ContactForm from './components/ContactForm.vue'; // Stelle sicher, dass der Pfad korrekt ist

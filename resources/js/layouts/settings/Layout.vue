@@ -16,7 +16,7 @@ const sidebarNavItems: NavItem[] = [
 
 const page = usePage(); // usePage<SharedData>() wenn du SharedData typisiert hast
 
-const currentPath = computed(() => page.props.ziggy?.location ? new URL(page.props.ziggy.location).pathname : '');
+const currentPath = computed(() => (page.props.ziggy?.location ? new URL(page.props.ziggy.location).pathname : ''));
 
 // --- NEU: Admin-Status holen ---
 const userRoles = computed(() => page.props.auth.user?.roles || []);
@@ -41,11 +41,10 @@ const isAdmin = computed(() => userRoles.value.includes('Admin'));
                             {{ item.title }}
                         </Link>
                     </Button>
-                
-                    
+
                     <Link
-                        v-if="isAdmin" 
-                        :href="route('admin.register.form')" 
+                        v-if="isAdmin"
+                        :href="route('admin.register.form')"
                         class="mt-2 inline-block rounded-sm border border-[#19140035] px-5 py-1.5 text-sm leading-normal text-[#1b1b18] hover:border-[#1915014a] dark:border-[#3E3E3A] dark:text-[#EDEDEC] dark:hover:border-[#62605b]"
                     >
                         Neuen User Registrieren

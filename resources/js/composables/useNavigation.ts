@@ -1,21 +1,18 @@
 // resources/js/composables/useNavigation.ts
-import { computed, type Component } from 'vue';
 import { usePage } from '@inertiajs/vue3';
+import { computed, type Component } from 'vue';
 import { route } from 'ziggy-js';
 
 // Importiere Icons - stelle sicher, dass alle verwendeten Icons hier sind.
 // Info, Briefcase, SettingsIcon werden jetzt auch für die Kinder von "Über Mich" verwendet.
 import {
-    Home,
-    FileText,
-    Info,         // Für "Über Mich" (Parent und Kind)
-    LayoutGrid,   // Für "Dashboard" (falls es wieder in die Hauptnavigation käme)
-    Briefcase,    // Für "Projekte" (Kind von "Über Mich")
-    Settings as SettingsIcon, // Für "Dienstleistungen" (Kind von "Über Mich")
-    UserCog,      // Für "Testseite (Admin)" (falls es wieder in die Hauptnavigation käme)
+    BookOpen, // Für "Dashboard" (falls es wieder in die Hauptnavigation käme)
+    Briefcase,
+    FileText, // Für "Testseite (Admin)" (falls es wieder in die Hauptnavigation käme)
     Folder,
-    BookOpen,
-    // ChevronDown wird im AppHeader.vue für den visuellen Indikator des Dropdowns benötigt, nicht hier.
+    Home,
+    Info, // Für "Projekte" (Kind von "Über Mich")
+    Settings as SettingsIcon,
 } from 'lucide-vue-next';
 
 // Das AppNavItem Interface ist bereits gut vorbereitet mit optionalem href und children.
@@ -39,37 +36,39 @@ export function useNavigation() {
     const allMainNavItems: AppNavItem[] = [
         { title: 'Startseite', href: route('welcome'), icon: Home, showToGuests: true },
         { title: 'Kontaktformular', href: route('Kontaktformular'), icon: FileText, showToGuests: true },
-        { // --- ÄNDERUNG: "Über Mich" wird zum Dropdown-Parent ---
-            title: 'Über Mich',
+        {
+            // --- ÄNDERUNG: "Über Mich" wird zum Dropdown-Parent ---
+            title: 'Weitere Informationen',
             icon: Info, // Icon für den Hauptpunkt "Über Mich"
             // href: route('aboutme'), // Entferne oder behalte href, je nachdem, ob "Über Mich" selbst klickbar sein soll.
-                                     // Wenn es nur das Dropdown öffnet, ist kein href nötig.
-                                     // Wenn es auch eine eigene Seite hat, sollte ein Kind-Element darauf verlinken (siehe unten).
+            // Wenn es nur das Dropdown öffnet, ist kein href nötig.
+            // Wenn es auch eine eigene Seite hat, sollte ein Kind-Element darauf verlinken (siehe unten).
             roles: ['Company', 'Admin'], // Sichtbarkeit des Haupt-Dropdown-Punkts
             showToGuests: false,
-            children: [ // --- NEU: Untermenüpunkte für "Über Mich" ---
+            children: [
+                // --- NEU: Untermenüpunkte für "Über Mich" ---
                 {
                     title: 'Über Mich Seite', // Expliziter Link zur "Über Mich"-Inhaltsseite
-                    href: route('aboutme'),   // Verweist auf die existierende 'aboutme'-Route
-                    icon: Info,             // Kann dasselbe oder ein anderes Icon sein
+                    href: route('aboutme'), // Verweist auf die existierende 'aboutme'-Route
+                    icon: Info, // Kann dasselbe oder ein anderes Icon sein
                     roles: ['Company', 'Admin'],
                     showToGuests: false,
                 },
                 {
                     title: 'Projekte',
                     href: route('projects'),
-                    icon: Briefcase,        // Icon für Projekte
+                    icon: Briefcase, // Icon für Projekte
                     roles: ['Company', 'Admin'],
                     showToGuests: false,
                 },
                 {
                     title: 'Dienstleistungen',
                     href: route('services'),
-                    icon: SettingsIcon,     // Icon für Dienstleistungen
-                    roles: ['Admin'],       // Rollen spezifisch für dieses Subitem (ggf. anpassen)
+                    icon: SettingsIcon, // Icon für Dienstleistungen
+                    roles: ['Admin'], // Rollen spezifisch für dieses Subitem (ggf. anpassen)
                     showToGuests: false,
                 },
-            ]
+            ],
         },
         // { title: 'Über Mich', href: route('aboutme'), icon: Info, roles: ['Company', 'Admin'], showToGuests: false }, // ALTER "Über Mich"-Eintrag ist jetzt Teil des Dropdowns
         // { title: 'Dashboard', href: route('dashboard'), icon: LayoutGrid, roles: ['Admin'] }, // Bereits aus der Hauptnavigation entfernt
@@ -83,14 +82,14 @@ export function useNavigation() {
     // auch wenn es selbst keinen href hat, aber sichtbare Kinder.
     const filteredMainNavItems = computed(() => {
         return allMainNavItems
-            .map(item => {
+            .map((item) => {
                 // Wenn das Item Kinder hat, filtere zuerst die Kinder
                 if (item.children && item.children.length > 0) {
-                    const visibleChildren = item.children.filter(child => {
+                    const visibleChildren = item.children.filter((child) => {
                         if (isGuest.value) return !!child.showToGuests;
                         if (child.showToGuests && (!child.roles || child.roles.length === 0)) return true;
                         if (!child.roles || child.roles.length === 0) return child.showToGuests !== false;
-                        return child.roles.some(role => userRoles.value.includes(role));
+                        return child.roles.some((role) => userRoles.value.includes(role));
                     });
 
                     // Wenn es sichtbare Kinder gibt, gib das Parent-Item mit den gefilterten Kindern zurück
@@ -107,9 +106,9 @@ export function useNavigation() {
                 if (isGuest.value) return !!item.showToGuests ? item : null;
                 if (item.showToGuests && (!item.roles || item.roles.length === 0)) return item;
                 if (!item.roles || item.roles.length === 0) return item.showToGuests !== false ? item : null;
-                return item.roles.some(role => userRoles.value.includes(role)) ? item : null;
+                return item.roles.some((role) => userRoles.value.includes(role)) ? item : null;
             })
-            .filter(item => item !== null) as AppNavItem[]; // Entferne null-Einträge und typisiere korrekt
+            .filter((item) => item !== null) as AppNavItem[]; // Entferne null-Einträge und typisiere korrekt
     });
 
     // Rechte Navigations-Items und deren Filterung bleiben wie zuvor
@@ -117,7 +116,9 @@ export function useNavigation() {
         { title: 'Repository', href: 'https://github.com/dein-repo', icon: Folder, showToGuests: true },
         { title: 'Dokumentation', href: 'https://deine-doku.de', icon: BookOpen, showToGuests: true },
     ];
-    const filteredRightNavItems = computed(() => { /* ... deine bestehende Filterlogik ... */ });
+    const filteredRightNavItems = computed(() => {
+        /* ... deine bestehende Filterlogik ... */
+    });
 
     const canRegister = computed(() => page.props.canRegister);
     const showAdminSpecificLinks = isAdmin;

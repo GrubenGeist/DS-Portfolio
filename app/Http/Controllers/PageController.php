@@ -4,9 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\User; // **WICHTIG: User-Model importieren**
 use Illuminate\Support\Facades\Log; // **WICHTIG: Log-Fassade importieren**
+use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
-use Inertia\Response as InertiaResponse;
-use Illuminate\Support\Facades\Route; // Für route() in Breadcrumbs
+use Inertia\Response as InertiaResponse; // Für route() in Breadcrumbs
 
 class PageController extends Controller
 {
@@ -42,12 +42,12 @@ class PageController extends Controller
                     'id' => $user->id,
                     'name' => $user->name,
                     'email' => $user->email,
-                    'roles' => $user->roles->map(fn($role) => ['name' => $role->name])->all(),
+                    'roles' => $user->roles->map(fn ($role) => ['name' => $role->name])->all(),
                     // Füge hier weitere benötigte Felder hinzu, die Dashboard.vue direkt braucht
                 ];
             })->all();
         } catch (\Exception $e) {
-            Log::error('Fehler beim Laden der Benutzer für das Dashboard im PageController: ' . $e->getMessage());
+            Log::error('Fehler beim Laden der Benutzer für das Dashboard im PageController: '.$e->getMessage());
             $errorLoadingUsers = 'Benutzerdaten konnten nicht initial geladen werden.';
         }
 

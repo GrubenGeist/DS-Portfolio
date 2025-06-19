@@ -4,12 +4,12 @@ import { DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSep
 import type { User } from '@/types';
 import { Link, usePage } from '@inertiajs/vue3';
 import {
+    LayoutGrid as DashboardIcon,
     LogOut,
-    Settings,
-    Users as UsersIcon,
+    Settings, // Icon für Dashboard
+    FileText as TestIcon, // Oder UserCog, je nachdem, welches Icon du für die Testseite möchtest
     UserPlus as UserPlusIcon,
-    LayoutGrid as DashboardIcon, // Icon für Dashboard
-    FileText as TestIcon // Oder UserCog, je nachdem, welches Icon du für die Testseite möchtest
+    Users as UsersIcon,
 } from 'lucide-vue-next';
 import { computed } from 'vue';
 import { route } from 'ziggy-js'; // Ziggy importieren
@@ -41,7 +41,8 @@ const isAdmin = computed(() => currentUserRoles.value.includes('Admin'));
 
         <!--- Admin-spezifische Links --->
         <template v-if="isAdmin">
-            <DropdownMenuSeparator /> <!---{/* Optische Trennung für die Admin-Sektion */}-->
+            <DropdownMenuSeparator />
+            <!---{/* Optische Trennung für die Admin-Sektion */}-->
 
             <!---{/* NEU: Link zum Dashboard für Admins */}-->
             <DropdownMenuItem :as-child="true">
@@ -50,11 +51,12 @@ const isAdmin = computed(() => currentUserRoles.value.includes('Admin'));
                     Dashboard
                 </Link>
             </DropdownMenuItem>
-        
+
             <!---{/* NEU: Link zur Testseite für Admins */}-->
             <DropdownMenuItem :as-child="true">
                 <Link class="block w-full" :href="route('test')" as="button">
-                    <TestIcon class="mr-2 h-4 w-4" /> <!---{/* Oder UserCog, wenn passender */}-->
+                    <TestIcon class="mr-2 h-4 w-4" />
+                    <!---{/* Oder UserCog, wenn passender */}-->
                     Testseite (Admin)
                 </Link>
             </DropdownMenuItem>

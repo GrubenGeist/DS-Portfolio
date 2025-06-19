@@ -1,12 +1,12 @@
 <?php
-use App\Providers\AuthServiceProvider;
+
 use App\Http\Middleware\HandleAppearance;
 use App\Http\Middleware\HandleInertiaRequests;
+use App\Providers\AuthServiceProvider;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets;
-
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -36,12 +36,11 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
         // --- Ende der Alias-Definition ---
         //    // app/Http/Kernel.php (Beispiel für L10)
-        //'api' => [
+        // 'api' => [
         //    \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
         //    // ... andere api middleware
-        //],
+        // ],
     })
-
 
     ->withProviders([
         AuthServiceProvider::class, // Stellt sicher, dass dieser Provider geladen wird

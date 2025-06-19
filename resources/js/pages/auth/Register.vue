@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import AuthBase from '@/layouts/AuthLayout.vue';
-import { Head, useForm, router } from '@inertiajs/vue3';
+import { Head, router, useForm } from '@inertiajs/vue3';
 import { LoaderCircle } from 'lucide-vue-next';
 
 const form = useForm({
@@ -22,19 +22,33 @@ const submit = () => {
         onSuccess: () => router.visit('/'), // Weiterleitung nach erfolgreicher Registrierung
     });
 };
+const goBack = () => {
+    // Nutzt die eingebaute "Zurück"-Funktion des Browsers
+    window.history.back();
+};
 </script>
 
 <template>
-    <AuthBase title="Erstelle dein Account" description="Trage deine Daten vollständig in das Formular ein">
+    <AuthBase title="Erstelle einen Neuen Account" description="Trage die Daten vollständig in das Formular ein">
         <Head title="Register" />
 
         <form @submit.prevent="submit" class="flex flex-col gap-6">
             <div class="grid gap-6">
                 <div class="grid gap-2">
                     <Label for="name">Name</Label>
-                    <Input id="name" type="text" required autofocus :tabindex="1" autocomplete="name" v-model="form.name" placeholder="Vor-/Nachname" />
+                    <Input
+                        id="name"
+                        type="text"
+                        required
+                        autofocus
+                        :tabindex="1"
+                        autocomplete="name"
+                        v-model="form.name"
+                        placeholder="Vor-/Nachname"
+                    />
                     <InputError :message="form.errors.name" />
                 </div>
+
 
                 <div class="grid gap-2">
                     <Label for="email">E-Mail</Label>
@@ -86,10 +100,9 @@ const submit = () => {
                 </Button>
             </div>
 
-            <div class="text-center text-sm text-muted-foreground">
-                Hast du bereits ein Account?
-                <TextLink :href="route('login')" class="underline underline-offset-4" :tabindex="6">Log in</TextLink>
-            </div>
+
+
+
         </form>
     </AuthBase>
 </template>

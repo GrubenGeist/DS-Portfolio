@@ -88,9 +88,9 @@ const breadcrumbs: BreadcrumbItem[] = [
                       <div class="col-span-3 row-span-3 p-4 pr-6 dark:text-white border-1-8 border-transparent rounded-md shadow-md space-y-2">
                         <h2 class="text-lg font-bold text-black dark:text-white"> Weitere Information: </h2>
                         <p class=" text-lg font-bold text-black dark:text-white text-wrap max-h-full font-bold  p-3 rounded-md shadow-md space-y-2">
-                          Sind sie ein Unternehmen?<br>
-                          Erfahren Sie mehr über meine Fähigkeiten und Projekte: <a href= http://localhost/projects class="text-blue dark:text-blue"> http://localhost/projects </a> <br>
-                          Oder kontaktieren Sie mich direkt:<a href= http://localhost/contactform class="-500"> http://localhost/contactform </a><br>
+                          <strong>Sind sie ein Unternehmen? </strong> <br>
+                          Erfahren Sie mehr über meine Fähigkeiten und Projekte: <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-0,5 px-2 rounded-full" onclick="document.location='/projects'">Hier Klicken!</button> <br>
+                          Oder kontaktieren Sie mich direkt über das Kontaktformular: <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-0,5 px-2 rounded-full" onclick="document.location='/contactform '">Hier Klicken!</button><br>
                         </p>
                       </div>
                     </div>

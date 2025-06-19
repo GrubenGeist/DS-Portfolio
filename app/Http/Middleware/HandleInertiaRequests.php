@@ -1,11 +1,12 @@
 <?php
 
 namespace App\Http\Middleware;
-use Tighten\Ziggy\Ziggy;
+
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Http\Request;
-use Inertia\Middleware;
 use Illuminate\Support\Facades\Route as LaravelRoute;
+use Inertia\Middleware;
+use Tighten\Ziggy\Ziggy;
 
 class HandleInertiaRequests extends Middleware
 {
@@ -38,9 +39,9 @@ class HandleInertiaRequests extends Middleware
     public function share(Request $request): array
     {
         [$message, $author] = str(\Illuminate\Foundation\Inspiring::quotes()->random())->explode('-'); // Illuminate\Foundation\Inspiring für Inspiring::quotes()
-    
+
         $loggedInUser = $request->user(); // Benutzer einmal holen
-    
+
         return [
             ...parent::share($request),
             'name' => config('app.name'),

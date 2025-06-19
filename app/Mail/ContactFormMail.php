@@ -1,18 +1,13 @@
 <?php
+
 namespace App\Mail;
+
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
-use Illuminate\Mail\Mailables\Content; // Für den Inhalt der E-Mail
-use Illuminate\Mail\Mailables\Envelope; // Für Betreff, Absender, Empfänger
-use Illuminate\Mail\Mailables\Address;  // Für E-Mail-Adressen
+use Illuminate\Mail\Mailables\Address; // Für den Inhalt der E-Mail
+use Illuminate\Mail\Mailables\Content; // Für Betreff, Absender, Empfänger
+use Illuminate\Mail\Mailables\Envelope;  // Für E-Mail-Adressen
 use Illuminate\Queue\SerializesModels;
-
-
-
-
-
-
 
 class ContactFormMail extends Mailable
 {
@@ -28,14 +23,14 @@ class ContactFormMail extends Mailable
     public function envelope(): Envelope // Umschlag-Infos
     {
         // Konstruiere den vollen Namen für die Anzeige
-        $fullName = trim(($this->data['firstName'] ?? '') . ' ' . ($this->data['lastName'] ?? ''));
+        $fullName = trim(($this->data['firstName'] ?? '').' '.($this->data['lastName'] ?? ''));
 
         return new Envelope(
             from: new Address($this->data['email'], $fullName ?: 'Kontaktformular Nutzer'), // Fallback, falls Name leer
             replyTo: [
-                new Address($this->data['email'], $fullName ?: 'Kontaktformular Nutzer')
+                new Address($this->data['email'], $fullName ?: 'Kontaktformular Nutzer'),
             ],
-            subject: 'Neue Kontaktanfrage von ' . ($fullName ?: $this->data['email']), // Betreff anpassen
+            subject: 'Neue Kontaktanfrage von '.($fullName ?: $this->data['email']), // Betreff anpassen
         );
     }
 
@@ -52,6 +47,7 @@ class ContactFormMail extends Mailable
             ],
         );
     }
+
     public function attachments(): array
     {
         return [];

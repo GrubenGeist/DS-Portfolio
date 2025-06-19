@@ -45,7 +45,7 @@ return [
         'sanctum' => [
             'driver' => 'sanctum', // Sagt Laravel, den Sanctum-Treiber zu verwenden
             'provider' => null,    // Provider ist oft null für API-Token-Authentifizierung
-                                   // Manchmal 'users', falls eine User-Verknüpfung nötig ist
+            // Manchmal 'users', falls eine User-Verknüpfung nötig ist
         ],
         // --- ENDE HINZUGEFÜGT ---
 

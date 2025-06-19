@@ -3,10 +3,9 @@
 namespace App\Http\Controllers\Settings; // WICHTIG: Namespace angepasst
 
 use App\Http\Controllers\Controller;     // Basis-Controller importieren
-use Illuminate\Http\Request;             // Request-Objekt importieren
+use App\Models\User;             // Request-Objekt importieren
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Validation\Rule;
-use App\Models\User;
 use Inertia\Inertia;
 use Inertia\Response as InertiaResponse;
 
@@ -21,31 +20,31 @@ class ProfileController extends Controller // Erbt vom Basis-Controller
         // Annahme: Die Vue-Komponente für das Profil ist 'Profile/Edit.vue'
         // oder 'Settings/ProfileEdit.vue' o.ä.
 
-            $loggedInUser = Auth::user(); // **Benutzer holen**
-    
-            if (!$loggedInUser) {
-                // Sollte durch Middleware abgedeckt sein, aber als Fallback
-                return redirect()->route('login');
-            }
-    
-            return Inertia::render('Profile/Edit', [ // **ANPASSEN: Stelle sicher, dass dies der korrekte Pfad zu deiner Edit.vue ist**
-                                                    // z.B. 'Settings/ProfileEdit' wenn sie dort liegt, oder nur 'ProfileEdit'
-                // Aktiviere diese Zeilen, wenn du sie benötigst und MustVerifyEmail importiert ist
-                // 'mustVerifyEmail' => $loggedInUser instanceof \Illuminate\Contracts\Auth\MustVerifyEmail,
-                'status' => session('status'),
-                'user' => [ // **HIER IST DIE FEHLENDE USER-PROP**
-                    'id'    => $loggedInUser->id,
-                    'name'  => $loggedInUser->name,
-                    'email' => $loggedInUser->email,
-                    // Füge hier alle weiteren Felder hinzu, die deine Edit.vue erwartet oder die du anzeigen möchtest
-                    // z.B. 'avatar' => $loggedInUser->avatar,
-                ],
-                'breadcrumbs' => [
-                    ['label' => 'Einstellungen', 'href' => route('settings.profile.edit')],
-                    ['label' => 'Profil bearbeiten'],
-                ]
-            ]);
+        $loggedInUser = Auth::user(); // **Benutzer holen**
+
+        if (! $loggedInUser) {
+            // Sollte durch Middleware abgedeckt sein, aber als Fallback
+            return redirect()->route('login');
         }
+
+        return Inertia::render('Profile/Edit', [ // **ANPASSEN: Stelle sicher, dass dies der korrekte Pfad zu deiner Edit.vue ist**
+            // z.B. 'Settings/ProfileEdit' wenn sie dort liegt, oder nur 'ProfileEdit'
+            // Aktiviere diese Zeilen, wenn du sie benötigst und MustVerifyEmail importiert ist
+            // 'mustVerifyEmail' => $loggedInUser instanceof \Illuminate\Contracts\Auth\MustVerifyEmail,
+            'status' => session('status'),
+            'user' => [ // **HIER IST DIE FEHLENDE USER-PROP**
+                'id' => $loggedInUser->id,
+                'name' => $loggedInUser->name,
+                'email' => $loggedInUser->email,
+                // Füge hier alle weiteren Felder hinzu, die deine Edit.vue erwartet oder die du anzeigen möchtest
+                // z.B. 'avatar' => $loggedInUser->avatar,
+            ],
+            'breadcrumbs' => [
+                ['label' => 'Einstellungen', 'href' => route('settings.profile.edit')],
+                ['label' => 'Profil bearbeiten'],
+            ],
+        ]);
+    }
 
     /**
      * Update the user's profile information.

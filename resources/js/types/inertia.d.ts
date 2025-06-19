@@ -3,7 +3,8 @@
 import { PageProps as InertiaPagePropsOriginal } from '@inertiajs/core';
 
 // Definiere die Struktur deines User-Objekts, wie es vom Backend kommt
-export interface AppUser { // Exportiere, falls du es woanders direkt importieren willst
+export interface AppUser {
+    // Exportiere, falls du es woanders direkt importieren willst
     id: number;
     name: string;
     email: string;
@@ -17,7 +18,8 @@ export interface AppUser { // Exportiere, falls du es woanders direkt importiere
 
 // Erweitere die globalen PageProps von Inertia
 declare module '@inertiajs/core' {
-    interface PageProps extends InertiaPagePropsOriginal { // Erweitere die Original-PageProps
+    interface PageProps extends InertiaPagePropsOriginal {
+        // Erweitere die Original-PageProps
         auth: {
             user: AppUser | null; // Verwende den oben definierten AppUser-Typ
         };
@@ -30,12 +32,13 @@ declare module '@inertiajs/core' {
             // Weitere Ziggy-spezifische Eigenschaften
         };
         canRegister: boolean;
-        name?: string;         // z.B. app.name
+        name?: string; // z.B. app.name
         quote?: {
             message: string;
             author: string;
         };
-        breadcrumbs?: Array<{ // Wird von Controllern für die aktuelle Seite gesetzt
+        breadcrumbs?: Array<{
+            // Wird von Controllern für die aktuelle Seite gesetzt
             title: string;
             href?: string;
         }>;

@@ -35,13 +35,13 @@ class AuthServiceProvider extends ServiceProvider
         // Definiert die Gate::before Regel
         Gate::before(function ($user, $ability) {
             // Debugging-Log: Prüfen, ob die Closure erreicht wird
-            Log::info('Gate::before check running for user ID: ' . $user->id);
+            Log::info('Gate::before check running for user ID: '.$user->id);
 
             // Prüft, ob der Benutzer die Rolle 'Admin' hat (achte auf Groß/Kleinschreibung!)
             $isAdmin = $user->hasRole('Admin');
 
             // Debugging-Log: Was ist das Ergebnis der Rollenprüfung?
-            Log::info('User ID ' . $user->id . ' has Admin role? ' . ($isAdmin ? 'Yes' : 'No'));
+            Log::info('User ID '.$user->id.' has Admin role? '.($isAdmin ? 'Yes' : 'No'));
 
             // Wenn $isAdmin true ist, gib true zurück (Zugriff erlaubt, weitere Checks übersprungen)
             // Wenn $isAdmin false ist, gib null zurück (normale Checks laufen weiter)

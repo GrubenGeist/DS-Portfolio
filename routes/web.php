@@ -1,19 +1,18 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Admin\UserController;   // Für Admin-Benutzerverwaltung
-use App\Http\Controllers\ProfileController;     // Für Benutzerprofile
-use App\Http\Controllers\PageController;        // Für allgemeine Seiten
+use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\PageController;   // Für Admin-Benutzerverwaltung
+// Für Benutzerprofile
+use Illuminate\Support\Facades\Route;        // Für allgemeine Seiten
 
 // --- Öffentliche Routen (für Gäste und eingeloggte User) ---
 // Werden jetzt vom PageController bedient
 Route::get('/', [PageController::class, 'welcome'])->name('welcome');
 Route::get('contactform', [PageController::class, 'contactForm'])->name('Kontaktformular');
 
-
 // --- Routen, die Login erfordern ---
 Route::middleware(['auth', 'verified'])->group(function () {
-  
+
     // Dashboard (Nur für Admin) -> PageController
     Route::get('dashboard', [PageController::class, 'dashboard'])
         ->name('dashboard')
@@ -41,7 +40,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 }); // Ende der auth & verified Gruppe
 
-
 // --- Admin-Bereich (für Benutzerverwaltung durch UserController) ---
 // Dieser Teil bleibt strukturell wie in deiner "alten web.php"
 Route::middleware(['auth', 'verified', 'role:Admin'])
@@ -55,14 +53,12 @@ Route::middleware(['auth', 'verified', 'role:Admin'])
         // Weitere spezifische Admin-Routen, die den UserController nutzen...
     });
 
-
 // --- Include weiterer Routen-Dateien ---
 // Diese Zeilen übernimmst du aus deiner "alten web.php"
 if (file_exists(__DIR__.'/settings.php')) { // Gute Praxis: Existenz prüfen
     require __DIR__.'/settings.php';
 }
 require __DIR__.'/auth.php'; // Für Login, Passwort Reset, etc. von Laravel
-
 
 /*
 Verfügbare Benutzer Rollen (zur Information aus deiner alten web.php):

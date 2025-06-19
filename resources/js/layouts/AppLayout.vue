@@ -9,8 +9,6 @@ interface Props {
 withDefaults(defineProps<Props>(), {
     breadcrumbs: () => [],
 });
-
-
 </script>
 
 <template>
