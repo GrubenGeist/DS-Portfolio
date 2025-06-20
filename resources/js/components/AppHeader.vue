@@ -52,7 +52,7 @@ const {
 // `usePage` von Inertia gibt uns Zugriff auf seiten-spezifische Daten, z.B. die aktuelle URL.
 const page = usePage();
 // Fallback-Bild, falls ein Benutzer keinen Avatar hat.
-const defaultAvatar = '/images/default-avatar.png';
+const defaultAvatar = '';
 
 // Definiert die Props, die diese Komponente von außen annehmen kann.
 interface Props {
