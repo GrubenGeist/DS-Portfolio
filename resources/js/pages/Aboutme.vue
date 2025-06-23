@@ -3,6 +3,7 @@ import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/vue3';
 import BannerWithImage from '../components/BannerWithImage.vue';
+import AppLogoIcon from '../components/AppLogoIcon.vue';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -17,11 +18,12 @@ const breadcrumbs: BreadcrumbItem[] = [
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
-            <div class="grid auto-rows-min gap-4 md:grid-cols-3"></div>
-            <div class="container">
-                <BannerWithImage>
-                    <p>TEST</p>
-                </BannerWithImage>
+            <div class="grid place-items-center auto-rows-min gap-4 md:grid-cols-3"></div>
+            <div class="container ">
+                <AppLogoIcon/>
+                <BannerWithImage/>
+                    
+                
 
                 <section class="about-me">
                     <h2>Über mich</h2>

@@ -1,6 +1,11 @@
 <script setup lang="ts">
 import AppHeaderLayout from '@/layouts/app/AppHeaderLayout.vue';
 import type { BreadcrumbItemType } from '@/types';
+import Footer from '@/components/Footer.vue';
+
+// --- KORREKTUR 1: Fehlende Imports hinzufügen ---
+import { Link } from '@inertiajs/vue3';
+import { route } from 'ziggy-js';
 
 interface Props {
     breadcrumbs?: BreadcrumbItemType[];
@@ -14,5 +19,51 @@ withDefaults(defineProps<Props>(), {
 <template>
     <AppHeaderLayout :breadcrumbs="breadcrumbs">
         <slot />
+        <br>
     </AppHeaderLayout>
+
+    <Footer>
+        <div class="grid grid-cols-1 place-items-center md:grid-cols-3 lg:grid-cols-4  gap-10">
+
+          <div class="space-y-3">
+            <h3 class="font-bold text-lg text-gray-900 dark:text-white">Motto</h3>
+            <p class="text-sm ">
+              Wachse immer ein Stück über dich Hinaus!
+            </p>
+          </div>
+
+          <div class="space-y-3">
+            <h3 class="font-bold text-lg text-gray-900 dark:text-white">Rechtliches</h3>
+            <ul class="space-y-2 text-sm">
+              <li><Link :href="route('welcome')" class="hover:text-blue-500">Impressum</Link></li>
+              <li><Link :href="route('welcome')" class="hover:text-blue-500">Datenschutzerklärung</Link></li>
+            </ul>
+          </div>
+
+          <div class="space-y-3">
+            <h3 class="font-bold text-lg text-gray-900 dark:text-white">Socialmedia</h3>
+            <ul class="space-y-2 text-sm">
+              <li><a href="https://www.linkedin.com/in/dennis-strauß-902a69220/" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
+              <li><a href="https://www.linkedin.com/in/dennis-strauß-902a69220/" target="_blank" rel="noopener noreferrer">Instagram</a></li>
+            </ul>
+          </div>
+
+          <div class="space-y-3">
+            <h3 class="font-bold text-lg text-gray-900 dark:text-white">Kontakt</h3>
+             <p class="text-sm">
+              <ul><li><Link :href="route('Kontaktformular')" class="hover:text-blue-500">Kontakt</Link></li></ul><br>
+                Fragen oder Projektideen? <br>
+                <a href="mailto:dennis-strauss@web.de" class="text-blue-600 dark:text-blue-400 hover:underline">
+                  dennis-strauss@web.de
+                </a>
+             </p>
+          </div>
+
+        </div>
+
+        <div class="mt-10 pt-8 border-t border-gray-300 dark:border-gray-700 text-center text-sm">
+          <p>&copy; {{ new Date().getFullYear() }} Dennis Strauß. Alle Rechte vorbehalten.</p>
+        </div>
+      </Footer>
+
 </template>

@@ -23,7 +23,7 @@ const className = computed(() => props.class);
             </p>
         </div>
         <div class="flex justify-center md:w-1/2">
-            <img src="https://placehold.co/300x300" alt="Dein Bild" class="h-64 w-64 rounded-full" />
+            <img src="../images/bannertest.png" alt="Dein Bild" class="h-64 w-64 rounded-full" />
         </div>
     </section>
 </template>

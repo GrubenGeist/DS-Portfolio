@@ -35,7 +35,7 @@ export function useNavigation() {
     // Hauptnavigations-Items definieren
     const allMainNavItems: AppNavItem[] = [
         { title: 'Startseite', href: route('welcome'), icon: Home, showToGuests: true },
-        { title: 'Kontaktformular', href: route('Kontaktformular'), icon: FileText, showToGuests: true },
+        // { title: 'Kontaktformular', href: route('Kontaktformular'), icon: FileText, showToGuests: true },
         {
             // --- ÄNDERUNG: "Über Mich" wird zum Dropdown-Parent ---
             title: 'Weitere Informationen',
