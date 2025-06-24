@@ -33,16 +33,16 @@ const updateRole = () => {
 const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Einstellungen', href: route('settings.profile.edit') }, // Oder settings.index
     { title: 'Benutzerverwaltung', href: route('settings.users.index') }, // Korrekter Link zurück
-    { title: `Rolle für ${props.user.name} bearbeiten` },
+    { title: `Rolle für ${props.user.first_name} ${props.user.last_name} bearbeiten` },
 ];
 </script>
 
 <template>
-    <Head :title="`Rolle für ${user.name} bearbeiten`" />
+    <Head :title="`Rolle für ${user.first_name} ${user.last_name} bearbeiten`" />
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="mx-auto max-w-2xl px-4 py-8 sm:px-6 lg:px-8">
             <h1 class="mb-6 text-2xl font-semibold">
-                Rolle bearbeiten für <span class="font-bold">{{ user.name }}</span>
+                Rolle bearbeiten für <span class="font-bold">{{ user.first_name }} {{ user.last_name }}</span>
             </h1>
             <form @submit.prevent="updateRole" class="space-y-6 rounded-lg bg-white p-6 shadow-md">
                 <div>

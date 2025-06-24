@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { Link } from '@inertiajs/vue3';
+import { ref } from 'vue'; // <-- 1. ref importieren
+import { useTilt } from '@/composables/useTilt'; // <-- 2. Unseren neuen Tilt-Composable importieren
 
 // defineProps definiert die "Eigenschaften" (Props), die diese Komponente von außen annehmen kann.
 // So machen wir sie wiederverwendbar.
@@ -11,10 +13,16 @@ defineProps<{
     buttonHref: string;    // Die URL, zu der der Button führt
     tags?: string[];       // Eine optionale Liste von Tags
 }>();
+
+// 3. Eine Template-Referenz erstellen, um auf das DOM-Element zugreifen zu können
+const cardElement = ref(null);
+
+// 4. Unseren Composable aufrufen und ihm die Referenz übergeben
+useTilt(cardElement);
 </script>
 
 <template>
-    <div class="max-w-sm w-full dark:text-white border-1-8 border-transparent rounded-md shadow-md space-y-2 overflow-hidden bg-white dark:bg-gray-800">
+    <div ref="cardElement" class="max-w-sm w-full dark:text-white border-1-8 border-transparent rounded-md shadow-md space-y-2 overflow-hidden bg-white dark:bg-gray-800">
         <img class="rounded-t-md p-0 w-full h-48 object-cover" :src="imageUrl" alt="Card Image">
 
         <div class="px-6 py-4">

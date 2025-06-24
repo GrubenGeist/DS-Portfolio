@@ -58,8 +58,8 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 <!----------------------------------------------------------------------------------------------------------------------------------------------->
 
-<div id="card_panel" class="flex-1 mt-8 p-10 bg-muted dark:border-r rounded">
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center">
+<div id="card_panel" class="flex-1 mt-8 p-10 bg-muted dark:border-r rounded ">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center" style="perspective: 2000px;">
                 
                     <InfoCard
                         :image-url="projectImageUrl"

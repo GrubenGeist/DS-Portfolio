@@ -53,13 +53,13 @@ const isAdmin = computed(() => currentUserRoles.value.includes('Admin'));
             </DropdownMenuItem>
 
             <!---{/* NEU: Link zur Testseite für Admins */}-->
-            <DropdownMenuItem :as-child="true">
+           <!--- <DropdownMenuItem :as-child="true">
                 <Link class="block w-full" :href="route('test')" as="button">
                     <TestIcon class="mr-2 h-4 w-4" />
-                    <!---{/* Oder UserCog, wenn passender */}-->
+                    <!---{/* Oder UserCog, wenn passender */}
                     Testseite (Admin)
                 </Link>
-            </DropdownMenuItem>
+            </DropdownMenuItem> -->
 
             <!---{/* Bestehende Admin-Links */}-->
             <DropdownMenuItem :as-child="true">
