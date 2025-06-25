@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Log; // **WICHTIG: Log-Fassade importieren**
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Inertia\Response as InertiaResponse; // Für route() in Breadcrumbs
+use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 class PageController extends Controller
 {
@@ -27,34 +29,50 @@ class PageController extends Controller
         ]);
     }
 
-    public function dashboard(): InertiaResponse // Für Admin-Dashboard
+    public function dashboard(Request $request): InertiaResponse
     {
         $usersForDashboard = [];
         $errorLoadingUsers = null;
-
+    
         try {
-            // Lade die Benutzerdaten direkt hier. Diese Logik ist ähnlich
-            // zu der, die du in Admin\UserController@indexApi hattest.
-            // Stelle sicher, dass die User-Daten so formatiert sind,
-            // wie Dashboard.vue sie in der 'initialUsers'-Prop erwartet.
-            $usersForDashboard = User::with('roles')->get()->map(function ($user) {
+            // 1. Wir starten mit dem Query Builder.
+            $query = User::query();
+    
+            // 2. Wende den Datumsfilter an, wenn die Checkbox NICHT gesetzt ist.
+            if (!$request->boolean('show_all')) {
+                $tenDaysAgo = Carbon::now()->subDays(10);
+                $query->where('last_login_at', '>=', $tenDaysAgo);
+            }
+    
+            // 3. Führe die (möglicherweise gefilterte) Abfrage aus UND lade die Rollen.
+            //    WICHTIG: Wir arbeiten jetzt mit der $query-Variable weiter!
+            $users = $query->with('roles')->get();
+    
+            // 4. Transformiere das Ergebnis der gefilterten Abfrage.
+            $usersForDashboard = $users->map(function ($user) {
+                $isOnline = $user->last_login_at && $user->last_login_at->gt(now()->subMinutes(5));
+    
                 return [
                     'id' => $user->id,
                     'name' => $user->name,
                     'email' => $user->email,
+                    'last_login_at' => $user->last_login_at,
                     'roles' => $user->roles->map(fn ($role) => ['name' => $role->name])->all(),
-                    // Füge hier weitere benötigte Felder hinzu, die Dashboard.vue direkt braucht
+                    'is_online' => $isOnline,
                 ];
             })->all();
+    
         } catch (\Exception $e) {
-            Log::error('Fehler beim Laden der Benutzer für das Dashboard im PageController: '.$e->getMessage());
-            $errorLoadingUsers = 'Benutzerdaten konnten nicht initial geladen werden.';
+            Log::error('Fehler beim Laden der Benutzer für das Dashboard: '.$e->getMessage());
+            $errorLoadingUsers = 'Benutzerdaten konnten nicht geladen werden.';
         }
-
+    
         return Inertia::render('Dashboard', [
-            'breadcrumbs' => [['label' => 'Dashboard', 'href' => route('dashboard')]], // 'href' für Konsistenz hinzugefügt
-            'initialUsers' => $usersForDashboard,      // **Benutzerdaten als Prop übergeben**
-            'userFetchError' => $errorLoadingUsers,  // **Eventuelle Fehlermeldung übergeben**
+            'initialUsers' => $usersForDashboard,
+            'userFetchError' => $errorLoadingUsers,
+            'filters' => [
+                'show_all' => $request->boolean('show_all'),
+            ]
         ]);
     }
 

@@ -37,17 +37,18 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 <template>
     <AppLayout :breadcrumbs="breadcrumbs">
+        <div class="flex-1 container mx-auto dark:border-r md:text-center">
+            <section class="my-10" aria-labelledby="slider-heading">
 
-        <section class="my-10" aria-labelledby="slider-heading">
-                 
-            <Slider :images="sliderImages" />
-        </section>
-
+                <Slider :images="sliderImages" />
+            </section>
+        </div>
+        
         <div class="flex-1 container mx-auto">
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mt-8 bg-muted p-10 dark:border-r md:text-center">
-                <h1 class="md:col-span-2 p-4 pr-6 dark:text-white text-justify border-1-8 border-transparent rounded-md shadow-md space-y-2 text-4xl font-bold bg-muted">Willkommen auf meinem Portfolio</h1>
-                <p class="md:col-span-2 p-4 pr-6 dark:text-white text-justify border-1-8 border-transparent rounded-md shadow-md space-y-2 text-2xl">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mt-8 bg-muted p-2 md:pr-96 md:pl-96 dark:border-r md:text-center">
+                <h1 class="col-span-2 md:col-span-2 dark:text-white pl-1 pr-1 md:text-justify border-1-8 border-transparent rounded-md shadow-md space-y-1 text-2xl font-bold bg-muted">Willkommen auf meinem Portfolio</h1>
+                <p class="col-span-2 md:col-span-2 p-2 dark:text-white md:text-justify  border-1-8 border-transparent rounded-md shadow-md space-y-2 text-m">
                     Sie suchen einen IT-Anwendungsentwickler, der Ihre Visionen in strukturierten Code verwandelt? <br><br>
                     Hallo, ich bin Dennis Strauß. Als kreativer und lösungsorientierter Anwendungsentwickler helfe ich Unternehmen und Organisationen dabei, ihre digitalen Ziele zu erreichen.<br><br>
                     Mein Schwerpunkt liegt auf der Webentwicklung in den Programmiersprachen PHP, JavaScript, HTML, CSS, Typescript und den Frameworks Laravel, Drupal, TypO3, WordPress.<br><br>

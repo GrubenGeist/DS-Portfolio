@@ -23,7 +23,7 @@ withDefaults(defineProps<Props>(), {
     </AppHeaderLayout>
 
     <Footer>
-        <div class="grid grid-cols-1 place-items-center md:grid-cols-3 lg:grid-cols-4  gap-10">
+        <div class="grid grid-cols-1 px-2 md:place-items-center md:grid-cols-3 lg:grid-cols-4  gap-10">
 
           <div class="space-y-3">
             <h3 class="font-bold text-lg text-gray-900 dark:text-white">Motto</h3>

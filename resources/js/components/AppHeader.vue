@@ -95,7 +95,7 @@ const activeItemStyles = computed(
 <template>
     <div>
         <div class="border-b border-sidebar-border/80">
-            <div class="mx-auto flex h-16 items-center px-4 md:max-w-7xl">
+            <div class="flex h-16 w-full items-center px-2 md:px-2">
 
                 <div class="lg:hidden">
                     <Sheet>
@@ -120,7 +120,7 @@ const activeItemStyles = computed(
                 </div>
 
                 <div class="hidden h-full items-center lg:flex">
-                    <Link :href="route('welcome')" class="mr-6">
+                    <Link :href="route('welcome')" class="mr-12">
                         <AppLogoIcon class="size-7 fill-current text-black dark:text-white" />
                     </Link>
                     
@@ -212,7 +212,7 @@ const activeItemStyles = computed(
         </div>
 
         <div v-if="props.breadcrumbs && props.breadcrumbs.length > 0" class="flex w-full border-b border-sidebar-border/70">
-            <div class="mx-auto flex h-12 w-full items-center justify-start px-4 text-sm text-muted-foreground md:max-w-7xl">
+            <div class="flex h-12 w-full items-center justify-start px-2 md:px-44 text-sm text-muted-foreground">
                 <Breadcrumbs :breadcrumbs="props.breadcrumbs" />
             </div>
         </div>
