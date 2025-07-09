@@ -8,15 +8,15 @@ import { BreadcrumbItem } from '@/types'; // Typ-Definition für die Breadcrumbs
 import InfoCard from '@/components/InfoCard.vue'; // Pfad anpassen, falls nötig
 
 // ----------------------------Images Imports------------------------------------------------
-import projectImageUrl from '../images/Projects.png'; // Passe den relativen Pfad ggf. an
-import contactImageUrl from '../images/ContactUs.png';
-import certificatesImageUrl from '../images/Certificates.png';
+import projectImageUrl from '/public/images/Projects.png'; // Passe den relativen Pfad ggf. an
+import contactImageUrl from '/public/images/ContactUs.png';
+import certificatesImageUrl from '/public/images/Certificates.png';
 
 import Slider from '@/components/Slider.vue'; // <-- NEU: Slider importieren
 // --- NEU: Bilder für den Slider importieren und Liste erstellen ---
-import slideImage1 from '../images/slider/slider.png'; // Erstelle einen Ordner /resources/images/slider
-import slideImage2 from '../images/slider/slider1.png';
-import slideImage3 from '../images/slider/slider2.png';
+import slideImage1 from '/public/images/slider/slider.png'; // Erstelle einen Ordner /resources/images/slider
+import slideImage2 from '/public/images/slider/slider1.png';
+import slideImage3 from '/public/images/slider/slider2.png';
 
 const sliderImages = [
   { src: slideImage1, alt: 'Beschreibung für Bild 1, wichtig für Barrierefreiheit' },
