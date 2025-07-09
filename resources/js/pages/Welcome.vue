@@ -1,97 +1,99 @@
-<script setup>
-import GuestLayout from '@/layouts/GuestLayout.vue';
-import { Head, Link } from '@inertiajs/vue3';
-import WebsiteLogoIcon from '@/components/WebsiteLogoIcon.vue';
+<script setup lang="ts">
+// Importieren der notwendigen Komponenten und Funktionen
+import { route } from 'ziggy-js'; // Ziggy für das Routing in Laravel
+import AppLayout from '@/layouts/AppLayout.vue'; // Das Haupt-Layout der Seite
+import { Head, Link } from '@inertiajs/vue3'; // Inertia-Komponenten für SEO und Navigation
+import WebsiteLogoIcon from '@/components/WebsiteLogoIcon.vue'; // Dein Logo als Komponente
+import { BreadcrumbItem } from '@/types'; // Typ-Definition für die Breadcrumbs
+import InfoCard from '@/components/InfoCard.vue'; // Pfad anpassen, falls nötig
 
+// ----------------------------Images Imports------------------------------------------------
+import projectImageUrl from '/public/images/Projects.png'; // Passe den relativen Pfad ggf. an
+import contactImageUrl from '/public/images/ContactUs.png';
+import certificatesImageUrl from '/public/images/Certificates.png';
+
+import Slider from '@/components/Slider.vue'; // <-- NEU: Slider importieren
+// --- NEU: Bilder für den Slider importieren und Liste erstellen ---
+import slideImage1 from '/public/images/slider/slider.png'; // Erstelle einen Ordner /resources/images/slider
+import slideImage2 from '/public/images/slider/slider1.png';
+import slideImage3 from '/public/images/slider/slider2.png';
+
+const sliderImages = [
+  { src: slideImage1, alt: 'Beschreibung für Bild 1, wichtig für Barrierefreiheit' },
+  { src: slideImage2, alt: 'Beschreibung für Bild 2' },
+  { src: slideImage3, alt: 'Beschreibung für Bild 3' },
+];
+
+
+// Definiert die Breadcrumb-Navigation für diese Seite
+const breadcrumbs: BreadcrumbItem[] = [
+    {
+        title: 'Startseite',
+        href: '/',
+    },
+];
 
 </script>
 
-
 <template>
+    <AppLayout :breadcrumbs="breadcrumbs">
+        <div class="flex-1 container mx-auto dark:border-r md:text-center">
+            <section class="my-10" aria-labelledby="slider-heading">
 
-  <GuestLayout :breadcrumbs="breadcrumbs">
-
-                <div class="w-full grid place-items-center mx-auto bg-muted p-10 dark:border-r">        
-                    <WebsiteLogoIcon/>
-                </div>
-
-
+                <Slider :images="sliderImages" />
+            </section>
+        </div>
+        
         <div class="flex-1 container mx-auto">
 
-                <div class="grid grid-cols-2 gap-3 grid-flow-dense lg:grid-cols-2 mt-8 bg-muted p-10 dark:border-r">
-                  <h1 class="col-span-2 p-4 pr-6 bg-stone-100 border-1-8 border-transparent rounded-md shadow-md space-y-2 text-4xl font-bold bg-muted p-3">Willkommens H1 </h1>
-                  <p class="col-span-3 p-4 pr-6 bg-stone-100 border-1-8 border-transparent rounded-md shadow-md space-y-2 text-3xl p-10">
-                  Willkommens Nachricht
-                  </p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mt-8 bg-muted p-2 md:pr-96 md:pl-96 dark:border-r md:text-center">
+                <h1 class="col-span-2 md:col-span-2 dark:text-white pl-1 pr-1 md:text-justify border-1-8 border-transparent rounded-md shadow-md space-y-1 text-2xl font-bold bg-muted">Willkommen auf meinem Portfolio</h1>
+                <p class="col-span-2 md:col-span-2 p-2 dark:text-white md:text-justify  border-1-8 border-transparent rounded-md shadow-md space-y-2 text-m">
+                    Sie suchen einen IT-Anwendungsentwickler, der Ihre Visionen in strukturierten Code verwandelt? <br><br>
+                    Hallo, ich bin Dennis Strauß. Als kreativer und lösungsorientierter Anwendungsentwickler helfe ich Unternehmen und Organisationen dabei, ihre digitalen Ziele zu erreichen.<br><br>
+                    Mein Schwerpunkt liegt auf der Webentwicklung in den Programmiersprachen PHP, JavaScript, HTML, CSS, Typescript und den Frameworks Laravel, Drupal, TypO3, WordPress.<br><br>
+                    Ich glaube an sauberen und gut strukturierten Code, durchdachte Architekturen und eine transparente Kommunikation und planung von Prozessen.<br><br> Lassen Sie uns gemeinsam herausfinden, wie ich Ihr nächstes Projekt zum Erfolg führen kann.
+                </p>
+            </div>
+
+
+<!----------------------------------------------------------------------------------------------------------------------------------------------->
+
+<div id="card_panel" class="flex-1 mt-8 p-10 bg-muted dark:border-r rounded ">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center" style="perspective: 2000px;">
+                
+                    <InfoCard
+                        :image-url="projectImageUrl"
+                        title="Meine Projekte"
+                        description="Entdecken Sie eine Auswahl meiner bisherigen Arbeiten, von Webanwendungen bis hin zu komplexen Systemintegrationen."
+                        button-text="Projekte ansehen"
+                        :button-href="'/projects'"
+                        :tags="['Laravel', 'Vue', 'PHP']"
+                    />
+                
+                    <InfoCard
+                        :image-url="contactImageUrl"
+                        title="Kontakt aufnehmen"
+                        description="Haben Sie eine Frage oder eine Projektidee? Zögern Sie nicht, mich zu kontaktieren. Ich freue mich auf Ihre Nachricht."
+                        button-text="Zum Kontaktformular"
+                        :button-href="'/contactform'"
+                        :tags="['Kommunikation', 'Beratung']"
+                    />
+                
+                    <InfoCard
+                        :image-url="certificatesImageUrl"
+                        title="Zertifikate & Skills"
+                        description="Ein Überblick über meine Qualifikationen, Zertifikate und die Technologien, mit denen ich täglich arbeite."
+                        button-text="Mehr erfahren"
+                        :button-href="'/projects'"
+                        :tags="['Qualifikation', 'Weiterbildung']"
+                    />
+                
                 </div>
-
-                <div class="grid grid-cols-2 gap-3 grid-flow-dense lg:grid-cols-2 mt-8 bg-muted p-10 dark:border-r">
-                  <h1 class="col-span-2 p-4 pr-6 bg-stone-100 border-1-8 border-transparent rounded-md shadow-md space-y-2 text-4xl font-bold bg-muted p-3">Subtext 1 H1 </h1>
-                  <p class="col-span-3 p-4 pr-6 bg-stone-100 border-1-8 border-transparent rounded-md shadow-md space-y-2 text-3xl p-10">
-                  Text Abschnitt
-                  </p>
-                </div>
-
-                <div class="grid grid-cols-2 gap-3 grid-flow-dense lg:grid-cols-2 mt-8 bg-muted p-10 dark:border-r">
-                  <h1 class="col-span-2 p-4 pr-6 bg-stone-100 border-1-8 border-transparent rounded-md shadow-md space-y-2 text-4xl font-bold bg-muted p-3">Subtext 2 H1 </h1>
-                  <p class="col-span-3 p-4 pr-6 bg-stone-100 border-1-8 border-transparent rounded-md shadow-md space-y-2 text-3xl p-10">
-                  Text Abschnitt
-                  </p>
-                </div>
-
-
-                <div id="card_panel" class="flex-1 p-10 bg-muted font-bold dark:border-r text-white text-3xl rounded">
-                    <div class="grid grid-cols-2 grid-rows-5 gap-4 grid-flow-dense lg:grid-cols-3">
-                      <div class="row-span-3 p-4 pr-6 bg-stone-500 border-1-8 border-transparent rounded-md shadow-md space-y-2">
-                        <h2 class="text-lg font-bold text-black"> CARD HEADER </h2>
-                        <div class="text-lg font-bold text-black break-normal text-wrap break-all mx-auto flex-1 mt-8 text-2xl font-bold bg-muted p-3 rounded-md shadow-md space-y-2 rounded">
-                          <ul class="list-none">
-                             <li> Python</li>
-                             <li> C#</li>
-                             <li> C+ +</li>
-                             </ul>
-                        </div>
-                      </div>
-                      <div class="row-span-3 p-4 pr-6 bg-stone-500 border-1-8 border-transparent rounded-md shadow-md space-y-2">
-                        <h2 class="text-lg font-bold text-black"> CARD HEADER </h2>
-                        <div class="text-lg font-bold text-black break-normal text-wrap break-all mx-auto flex-1 mt-8 text-2xl font-bold bg-red-300 p-3 rounded-md shadow-md space-y-2 rounded lg:flex ">
-                          <ul class="list-none">
-                             <li> Python</li>
-                             <li> C#</li>
-                             <li> C+ +</li>
-                             </ul>
-                        </div>                      
-                      </div>
-                      <div class="row-span-3 p-4 pr-6 bg-stone-500 border-1-8 border-transparent rounded-md shadow-md space-y-2">
-                        <h2 class="text-lg font-bold text-black"> CARD HEADER </h2>
-                        <div class="text-lg font-bold text-black break-normal text-wrap break-all mx-auto flex-1 mt-8 text-2xl font-bold bg-yellow-300 p-3 rounded-md shadow-md space-y-2 rounded lg:flex ">
-                          <ul class="list-none">
-                             <li> Python</li>
-                             <li> C#</li>
-                             <li> C+ +</li>
-                             </ul>
-                        </div> 
-                      </div>
-                      <div class="col-span-3 row-span-3 p-4 pr-6 bg-stone-500 border-1-8 border-transparent rounded-md shadow-md space-y-2">
-                        <h2 class="text-lg font-bold text-black"> CARD HEADER </h2>
-                        <p class=" text-lg font-bold text-blackbreak-normal text-wrap max-h-full font-bold bg-blue-300 p-3 rounded-md shadow-md space-y-2">
-                          Lorem Ipsum is simply dummy text of the printing and typesetting industry. 
-                          Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, 
-                          when an unknown printer took a galley of type and scrambled it to make a type specimen book. 
-                        </p>
-                      </div>
-                    </div>
-                  </div> 
-                </div>  
-
-      <!--  <template #footer>
-          <p class="text-sm">Kontaktiere uns bei Fragen: <a href="mailto:info@example.com" class="-500">info@example.com</a></p>
-        </template> -->
-
-  </GuestLayout>
-
-        <div id="site-footer" class="w-full mt-8 text-3xl font-bold bg-muted p-10 dark:border-r">
-          <p class="text-sm">Kontaktiere uns bei Fragen: <a href="mailto:dennis-strauss@web.de" class="-500">dennis-strauss@web.de</a></p>
+            </div>
         </div>
-</template>
 
+        
+
+    </AppLayout>
+</template>

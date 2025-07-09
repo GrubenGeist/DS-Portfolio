@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route as LaravelRoute;
 use Inertia\Middleware;
 use Tighten\Ziggy\Ziggy;
 
@@ -37,19 +38,32 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
-        [$message, $author] = str(Inspiring::quotes()->random())->explode('-');
+        [$message, $author] = str(\Illuminate\Foundation\Inspiring::quotes()->random())->explode('-'); // Illuminate\Foundation\Inspiring für Inspiring::quotes()
+
+        $loggedInUser = $request->user(); // Benutzer einmal holen
 
         return [
             ...parent::share($request),
             'name' => config('app.name'),
             'quote' => ['message' => trim($message), 'author' => trim($author)],
             'auth' => [
-                'user' => $request->user(),
+                'user' => $loggedInUser ? [
+                    'id' => $loggedInUser->id,
+                    'name' => $loggedInUser->name,
+                    'email' => $loggedInUser->email,
+                    'roles' => $loggedInUser->getRoleNames()->toArray(), // ->toArray() ist gut für Konsistenz
+                    // ---- HIER DIE NEUEN FELDER HINZUFÜGEN ----
+                    'avatar' => $loggedInUser->avatar ?? null, // Beispiel, falls du ein Avatar-Feld hast
+                    'email_verified_at' => $loggedInUser->email_verified_at ? $loggedInUser->email_verified_at->toIso8601String() : null,
+                    'created_at' => $loggedInUser->created_at ? $loggedInUser->created_at->toIso8601String() : null,
+                    'updated_at' => $loggedInUser->updated_at ? $loggedInUser->updated_at->toIso8601String() : null,
+                ] : null,
             ],
             'ziggy' => [
                 ...(new Ziggy)->toArray(),
                 'location' => $request->url(),
             ],
+            'canRegister' => LaravelRoute::has('register'),
         ];
     }
 }

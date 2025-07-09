@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Inertia\Response;
+use App\Providers\RouteServiceProvider;
 
 class AuthenticatedSessionController extends Controller
 {
@@ -32,8 +33,14 @@ class AuthenticatedSessionController extends Controller
         $request->authenticate();
 
         $request->session()->regenerate();
-
-        return redirect()->intended(route('dashboard', absolute: false));
+    
+        // --- HIER DIE NEUE LOGIK EINFÜGEN ---
+        $user = $request->user(); // Holt den gerade eingeloggten Benutzer
+        $user->last_login_at = now(); // Setzt den Zeitstempel auf "jetzt"
+        $user->save(); // Speichert die Änderung in der Datenbank
+        // --- ENDE DER NEUEN LOGIK ---
+    
+        return redirect()->intended(RouteServiceProvider::HOME);
     }
 
     /**

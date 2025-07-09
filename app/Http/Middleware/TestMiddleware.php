@@ -16,6 +16,7 @@ class TestMiddleware
     public function handle(Request $request, Closure $next): Response
     {
         dd('TestMiddleware hit! TES'); // Debugging: Stoppt die Ausführung und zeigt diese Meldung
+
         return $next($request);
     }
 }

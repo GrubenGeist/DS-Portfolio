@@ -121,8 +121,9 @@
     },
     "include": [
         "resources/js/**/*.ts",
-        "resources/js/**/*.d.ts",
-        "resources/js/**/*.tsx", 
-        "resources/js/**/*.vue"
-    ]
+        "resources/js/**/*.d.ts",  // Diese Zeile ist wichtig!
+        "resources/js/**/*.tsx",
+        "resources/js/**/*.vue",
+        "vite.config.ts" // Falls deine vite.config auch in TypeScript ist
+      ],
 }

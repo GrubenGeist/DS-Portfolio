@@ -1,5 +1,4 @@
 import type { PageProps } from '@inertiajs/core';
-import type { LucideIcon } from 'lucide-vue-next';
 import type { Config } from 'ziggy-js';
 
 export interface Auth {
@@ -8,14 +7,16 @@ export interface Auth {
 
 export interface BreadcrumbItem {
     title: string;
-    href: string;
+    href?: string;
 }
 
 export interface NavItem {
     title: string;
-    href: string;
-    icon?: LucideIcon;
-    isActive?: boolean;
+    href?: string; // Wird für Top-Level-Dropdown-Trigger optional
+    icon: Component;
+    showToGuests?: boolean;
+    roles?: string[];
+    children?: AppNavItem[]; // NEU: Für Untermenüpunkte
 }
 
 export interface SharedData extends PageProps {
@@ -31,8 +32,22 @@ export interface User {
     email: string;
     avatar?: string;
     email_verified_at: string | null;
-    created_at: string;
-    updated_at: string;
+    created_at: string | null;
+    updated_at: string | null;
+}
+export interface Project {
+  title: string;
+  description: string;
+  image: string;
+  technologies: string[];
+  liveUrl: string;
+  repoUrl: string;
+}
+
+export interface Skill {
+  name: string;
+  color: string;
+  logoUrl: string;
 }
 
 export type BreadcrumbItemType = BreadcrumbItem;

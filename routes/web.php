@@ -1,60 +1,73 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\PageController;   // Für Admin-Benutzerverwaltung
+// Für Benutzerprofile
+use Illuminate\Support\Facades\Route;        // Für allgemeine Seiten
 
-Route::get('/', function () {
-    return Inertia::render('Welcome');
-})->name('welcome');
+// --- Öffentliche Routen (für Gäste und eingeloggte User) ---
+// Werden jetzt vom PageController bedient
+Route::get('/', [PageController::class, 'welcome'])->name('welcome');
+Route::get('contactform', [PageController::class, 'contactForm'])->name('Kontaktformular');
 
-Route::get('dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+// --- Routen, die Login erfordern ---
+Route::middleware(['auth', 'verified'])->group(function () {
 
-Route::get('test', function () {
-    return Inertia::render('Test');
-})->middleware(['auth', 'verified'])->name('testseite');
+    // Dashboard (Nur für Admin) -> PageController
+    Route::get('dashboard', [PageController::class, 'dashboard'])
+        ->name('dashboard')
+        ->middleware('role:Admin');
 
-Route::get('aboutme', function () {
-    return Inertia::render('Aboutme');
-})->middleware([])->name('Über Mich');
+    // Testseite (Admin ODER Company) -> PageController
+    Route::get('test', [PageController::class, 'testPage'])
+        ->name('test') // Name 'test' wie in deiner alten web.php
+        ->middleware('role:Admin|Company');
 
-Route::get('projects', function () {
-    return Inertia::render('Projects');
-})->middleware(['auth', 'verified'])->name('Projekte');
+    // Projekte (Admin ODER Company) -> PageController
+    Route::get('projects', [PageController::class, 'projects'])
+        ->name('projects')
+        ->middleware('role:Admin|Company');
 
-Route::get('services', function () {
-    return Inertia::render('Services');
-})->middleware(['auth', 'verified'])->name('Dienstleistungen');
+    // Dienstleistungen (Admin ODER Company) -> PageController
+    Route::get('services', [PageController::class, 'services'])
+        ->name('services')
+        ->middleware('role:Admin|Company');
 
-Route::get('contactform', function () {
-    return Inertia::render('Contactform');
-})->middleware(['auth', 'verified'])->name('Kontaktformular');
+    // Über Mich (Admin ODER Company) -> PageController
+    Route::get('aboutme', [PageController::class, 'aboutMe'])
+        ->name('aboutme')
+        ->middleware('role:Admin|Company');
 
+}); // Ende der auth & verified Gruppe
 
-Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
-    Route::get('/users', [UserController::class, 'index'])->name('admin.users.index');
-    Route::get('/users/{user}/edit-role', [UserController::class, 'editRole'])->name('admin.users.editRole');
-    Route::put('/users/{user}/update-role', [UserController::class, 'updateRole'])->name('admin.users.updateRole');
-    Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('admin.users.destroy');
-});
+// --- Admin-Bereich (für Benutzerverwaltung durch UserController) ---
+// Dieser Teil bleibt strukturell wie in deiner "alten web.php"
+Route::middleware(['auth', 'verified', 'role:Admin'])
+    ->prefix('admin')
+    ->name('admin.')
+    ->group(function () {
+        Route::get('/users', [UserController::class, 'index'])->name('users.index');
+        Route::get('/users/{user}/edit-role', [UserController::class, 'editRole'])->name('users.editRole');
+        Route::put('/users/{user}/update-role', [UserController::class, 'updateRole'])->name('users.updateRole');
+        Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
+        // Weitere spezifische Admin-Routen, die den UserController nutzen...
+    });
 
+// --- Include weiterer Routen-Dateien ---
+// Diese Zeilen übernimmst du aus deiner "alten web.php"
+if (file_exists(__DIR__.'/settings.php')) { // Gute Praxis: Existenz prüfen
+    require __DIR__.'/settings.php';
+}
+require __DIR__.'/auth.php'; // Für Login, Passwort Reset, etc. von Laravel
 
-require __DIR__.'/settings.php';
-require __DIR__.'/auth.php';
-
-
-//Verfügbare Benutzer Rollen
-
-/**
- * ---------------------------------
- * |id:  | Bezeichnung:  | Slug:   |
- * |-------------------------------|
- * |id_1 | Administrator | admin   |
- * |id_2 | Betrieb       | betrieb |
- * |id_3 | Gast          | gast    |
- * ---------------------------------
- * bspw.: ->middleware(['auth', 'verified', 'role:betrieb'])
- * als Parameter
- */
+/*
+Verfügbare Benutzer Rollen (zur Information aus deiner alten web.php):
+---------------------------------------
+|id:  | Bezeichnung:   | Slug:         |
+|-------------------------------------|
+|id_1 | Administrator | Admin         |
+|id_2 | Company       | Company       |
+|     | Gast(user)    | Gast(User)    |
+---------------------------------------
+bspw.: ->middleware(['auth', 'verified', 'role:Company'])
+*/
