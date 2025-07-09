@@ -1,82 +1,116 @@
 <script setup lang="ts">
 import InputError from '@/components/InputError.vue';
-import TextLink from '@/components/TextLink.vue';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import AuthBase from '@/layouts/AuthLayout.vue';
+// NEU: Importiere die Select-Komponenten für das Dropdown
+import  Select  from '@/components/ui/select/Select.vue';
+import SelectContent from '@/components/ui/select/SelectContent.vue';
+import SelectItem from '@/components/ui/select/SelectItem.vue';
+import SelectTrigger from '@/components/ui/select/SelectTrigger.vue';
+import SelectValue from '@/components/ui/select/SelectValue.vue';
+import AuthBase from '@/layouts/AuthLayout.vue'; // Oder AuthSplitLayout, je nachdem was du nutzt
 import { Head, useForm } from '@inertiajs/vue3';
 import { LoaderCircle } from 'lucide-vue-next';
 
+// 1. KORREKTUR: Das Formular-Objekt wird an die neuen Datenbankfelder angepasst
 const form = useForm({
-    name: '',
+    first_name: '',
+    last_name: '',
+    company: '', // Optionales Feld
     email: '',
     password: '',
     password_confirmation: '',
+    role: 'Company', // Standard-Rolle für das Dropdown
 });
 
+// Der Submit-Aufruf mit dem korrekten Routen-Namen für "Fall B"
 const submit = () => {
-    form.post(route('register'), {
+    form.post(route('admin.register.store'), {
         onFinish: () => form.reset('password', 'password_confirmation'),
     });
 };
 </script>
 
 <template>
-    <AuthBase title="Erstelle dein Account" description="Trage deine Daten vollständig in das Formular ein">
-        <Head title="Register" />
+    <AuthBase title="Neuen Account erstellen" description="Fülle die Felder aus, um einen neuen Benutzer anzulegen.">
+        <Head title="Benutzer erstellen" />
 
         <form @submit.prevent="submit" class="flex flex-col gap-6">
             <div class="grid gap-6">
+
                 <div class="grid gap-2">
-                    <Label for="name">Name</Label>
-                    <Input id="name" type="text" required autofocus :tabindex="1" autocomplete="name" v-model="form.name" placeholder="Vor-/Nachname" />
-                    <InputError :message="form.errors.name" />
+                    <Label for="first_name">Vorname</Label>
+                    <Input
+                        id="first_name"
+                        type="text"
+                        required
+                        autofocus
+                        v-model="form.first_name"
+                        placeholder="Max"
+                    />
+                    <InputError :message="form.errors.first_name" />
+                </div>
+
+                <div class="grid gap-2">
+                    <Label for="last_name">Nachname</Label>
+                    <Input
+                        id="last_name"
+                        type="text"
+                        required
+                        v-model="form.last_name"
+                        placeholder="Mustermann"
+                    />
+                    <InputError :message="form.errors.last_name" />
+                </div>
+
+                <div class="grid gap-2">
+                    <Label for="company">Unternehmen (Optional)</Label>
+                    <Input
+                        id="company"
+                        type="text"
+                        v-model="form.company"
+                        placeholder="Firma GmbH"
+                    />
+                    <InputError :message="form.errors.company" />
                 </div>
 
                 <div class="grid gap-2">
                     <Label for="email">E-Mail</Label>
-                    <Input id="email" type="email" required :tabindex="2" autocomplete="email" v-model="form.email" placeholder="email@example.com" />
+                    <Input id="email" type="email" required v-model="form.email" placeholder="email@example.com" />
                     <InputError :message="form.errors.email" />
                 </div>
 
                 <div class="grid gap-2">
                     <Label for="password">Passwort</Label>
-                    <Input
-                        id="password"
-                        type="password"
-                        required
-                        :tabindex="3"
-                        autocomplete="new-password"
-                        v-model="form.password"
-                        placeholder="Passwort"
-                    />
+                    <Input id="password" type="password" required v-model="form.password" placeholder="••••••••" />
                     <InputError :message="form.errors.password" />
                 </div>
 
                 <div class="grid gap-2">
-                    <Label for="password_confirmation"></Label>
-                    <Input
-                        id="password_confirmation"
-                        type="password"
-                        required
-                        :tabindex="4"
-                        autocomplete="new-password"
-                        v-model="form.password_confirmation"
-                        placeholder="passwort bestätigen"
-                    />
+                    <Label for="password_confirmation">Passwort bestätigen</Label>
+                    <Input id="password_confirmation" type="password" required v-model="form.password_confirmation" placeholder="••••••••" />
                     <InputError :message="form.errors.password_confirmation" />
                 </div>
 
-                <Button type="submit" class="mt-2 w-full" tabindex="5" :disabled="form.processing">
+                <div class="grid gap-2">
+                    <Label for="role">Benutzerrolle</Label>
+                    <Select v-model="form.role">
+                        <SelectTrigger id="role">
+                            <SelectValue placeholder="Rolle auswählen" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="Company">Company</SelectItem>
+                            <SelectItem value="Admin">Admin</SelectItem>
+                        </SelectContent>
+                    </Select>
+                    <InputError :message="form.errors.role" />
+                </div>
+
+                <Button type="submit" class="mt-2 w-full" :disabled="form.processing">
                     <LoaderCircle v-if="form.processing" class="h-4 w-4 animate-spin" />
                     Account anlegen
                 </Button>
-            </div>
-
-            <div class="text-center text-sm text-muted-foreground">
-                Hast du bereits ein Account? 
-                <TextLink :href="route('login')" class="underline underline-offset-4" :tabindex="6">Log in</TextLink>
             </div>
         </form>
     </AuthBase>

@@ -1,40 +1,69 @@
 <script setup lang="ts">
-import AppLogoIcon from '@/components/AppLogoIcon.vue';
-import { Link, usePage } from '@inertiajs/vue3';
+// =============================================================================
+// IMPORTS
+// Hier laden wir alle Bausteine, die wir für dieses Layout benötigen.
+// =============================================================================
 
+// Eigene Komponenten
+import AppLogo from '@/components/AppLogo.vue';
+// Vue & Inertia-Helfer
+import { Link, usePage } from '@inertiajs/vue3';
+// UI-Komponenten (unser Button)
+import { Button } from '@/components/ui/button';
+// Icon-Komponente aus der lucide-Bibliothek
+import { ArrowLeft } from 'lucide-vue-next';
+
+// `usePage` gibt uns Zugriff auf Daten, die vom Backend kommen.
 const page = usePage();
 const name = page.props.name;
 const quote = page.props.quote;
 
+// `defineProps` legt fest, welche "Eingabewerte" dieses Layout von außen
+// annehmen kann, z.B. von der Register.vue-Seite.
 defineProps<{
-    title?: string;
-    description?: string;
+    title?: string;       // Der Haupttitel (z.B. "Erstelle dein Account")
+    description?: string; // Die Beschreibung unter dem Titel
 }>();
+
+// Diese Funktion wird aufgerufen, wenn der Zurück-Pfeil geklickt wird.
+const goBack = () => {
+    // Nutzt die Standard-Funktion des Browsers, um eine Seite zurückzugehen.
+    window.history.back();
+};
 </script>
 
 <template>
-    <div class="relative grid h-dvh flex-col items-center justify-center px-8 sm:px-0 lg:max-w-none lg:grid-cols-2 lg:px-0">
-        <div class="relative hidden h-full flex-col bg-muted p-10 text-white dark:border-r lg:flex">
-            <div class="absolute inset-0 bg-zinc-900" />
-            <Link :href="route('welcome')" class="relative z-20 flex items-center text-lg font-medium">
-                <AppLogoIcon class="mr-2 size-8 fill-current text-white" />
-                <!--  {{ name }} --> 
-            </Link>
-          <!-- <div v-if="quote" class="relative z-20 mt-auto">
-                <blockquote class="space-y-2">
-                    <p class="text-lg">&ldquo;{{ quote.message }}&rdquo;</p>
-                    <footer class="text-sm text-neutral-300">{{ quote.author }}</footer>
-                </blockquote>
-            </div> --> 
+    <div class="grid min-h-dvh grid-cols-1 lg:grid-cols-2">
+
+        <div class="relative flex h-48 flex-col items-center justify-center bg-zinc-900 p-10 text-white lg:h-full">
+            
+            <AppLogo class="h-24 w-24 text-white" />
+
         </div>
-        <div class="lg:p-8">
+
+
+        <div class="relative flex items-center justify-center p-8">
+
+            <Button
+                @click="goBack"
+                variant="ghost"
+                size="icon"
+                class="absolute top-4 left-4"
+            >
+                <ArrowLeft class="h-5 w-5" />
+                <span class="sr-only">Zurück</span>
+            </Button>
+
             <div class="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
-              <div class="flex flex-col space-y-2 text-center">
+                
+                <div class="flex flex-col space-y-2 text-center">
                     <h1 class="text-xl font-medium tracking-tight" v-if="title">{{ title }}</h1>
                     <p class="text-sm text-muted-foreground" v-if="description">{{ description }}</p>
-                </div> 
+                </div>
+                
                 <slot />
             </div>
+
         </div>
     </div>
 </template>

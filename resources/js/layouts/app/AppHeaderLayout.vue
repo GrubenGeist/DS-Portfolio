@@ -10,14 +10,13 @@ interface Props {
 
 withDefaults(defineProps<Props>(), {
     breadcrumbs: () => [],
-    
 });
 </script>
 
 <template>
     <AppShell class="flex-col">
         <AppHeader :breadcrumbs="breadcrumbs" />
-        <AppContent>
+        <AppContent >
             <slot />
         </AppContent>
     </AppShell>

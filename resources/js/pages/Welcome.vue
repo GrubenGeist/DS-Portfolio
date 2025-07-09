@@ -1,128 +1,99 @@
-<!--
 <script setup lang="ts">
-import AppLogoIcon from '@/components/AppLogoIcon.vue';
-import { Head, Link } from '@inertiajs/vue3';
+// Importieren der notwendigen Komponenten und Funktionen
+import { route } from 'ziggy-js'; // Ziggy für das Routing in Laravel
+import AppLayout from '@/layouts/AppLayout.vue'; // Das Haupt-Layout der Seite
+import { Head, Link } from '@inertiajs/vue3'; // Inertia-Komponenten für SEO und Navigation
+import WebsiteLogoIcon from '@/components/WebsiteLogoIcon.vue'; // Dein Logo als Komponente
+import { BreadcrumbItem } from '@/types'; // Typ-Definition für die Breadcrumbs
+import InfoCard from '@/components/InfoCard.vue'; // Pfad anpassen, falls nötig
+
+// ----------------------------Images Imports------------------------------------------------
+import projectImageUrl from '/public/images/Projects.png'; // Passe den relativen Pfad ggf. an
+import contactImageUrl from '/public/images/ContactUs.png';
+import certificatesImageUrl from '/public/images/Certificates.png';
+
+import Slider from '@/components/Slider.vue'; // <-- NEU: Slider importieren
+// --- NEU: Bilder für den Slider importieren und Liste erstellen ---
+import slideImage1 from '/public/images/slider/slider.png'; // Erstelle einen Ordner /resources/images/slider
+import slideImage2 from '/public/images/slider/slider1.png';
+import slideImage3 from '/public/images/slider/slider2.png';
+
+const sliderImages = [
+  { src: slideImage1, alt: 'Beschreibung für Bild 1, wichtig für Barrierefreiheit' },
+  { src: slideImage2, alt: 'Beschreibung für Bild 2' },
+  { src: slideImage3, alt: 'Beschreibung für Bild 3' },
+];
+
+
+// Definiert die Breadcrumb-Navigation für diese Seite
+const breadcrumbs: BreadcrumbItem[] = [
+    {
+        title: 'Startseite',
+        href: '/',
+    },
+];
+
 </script>
 
 <template>
-    <Head title="Welcome">
-        <link rel="preconnect" href="https://rsms.me/" />
-        <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
-    </Head>
+    <AppLayout :breadcrumbs="breadcrumbs">
+        <div class="flex-1 container mx-auto dark:border-r md:text-center">
+            <section class="my-10" aria-labelledby="slider-heading">
 
-    <div class="flex min-h-screen flex-col items-center bg-[#FDFDFC] p-6 text-[#1b1b18] dark:bg-[#0a0a0a] lg:justify-center lg:p-8">
-        <header class="not-has-[nav]:hidden mb-6 w-full max-w-[335px] text-sm lg:max-w-4xl">
-            <nav class="flex items-center justify-end gap-4">
-                <Link
-                    v-if="$page.props.auth.user"
-                    :href="route('dashboard')"
-                    class="inline-block rounded-sm border border-[#19140035] px-5 py-1.5 text-sm leading-normal text-[#1b1b18] hover:border-[#1915014a] dark:border-[#3E3E3A] dark:text-[#EDEDEC] dark:hover:border-[#62605b]"
-                >
-                    Dashboard
-                </Link>
-                <template v-else>
-                    <Link
-                        :href="route('login')"
-                        class="inline-block rounded-sm border border-transparent px-5 py-1.5 text-sm leading-normal text-[#1b1b18] hover:border-[#19140035] dark:text-[#EDEDEC] dark:hover:border-[#3E3E3A]"
-                    >
-                        Log in
-                    </Link>
-                    <Link
-                        :href="route('register')"
-                        class="inline-block rounded-sm border border-[#19140035] px-5 py-1.5 text-sm leading-normal text-[#1b1b18] hover:border-[#1915014a] dark:border-[#3E3E3A] dark:text-[#EDEDEC] dark:hover:border-[#62605b]"
-                    >
-                        Regestrieren
-                    </Link>
-                </template>
-            </nav>
-        </header>
-        <div class="duration-750 starting:opacity-0 flex w-full items-center justify-center opacity-100 transition-opacity lg:grow">
-            <main class="flex w-full max-w-[335px] flex-col-reverse overflow-hidden rounded-lg lg:max-w-4xl lg:flex-row flex-grow">
-                <div
-                    class="flex-1 rounded-bl-lg rounded-br-lg bg-white p-6 pb-12 text-[13px] leading-[20px] shadow-[inset_0px_0px_0px_1px_rgba(26,26,0,0.16)] dark:bg-[#161615] dark:text-[#EDEDEC] dark:shadow-[inset_0px_0px_0px_1px_#fffaed2d] lg:rounded-br-none lg:rounded-tl-lg lg:p-20">
-                    <div class="w-full overflow-hidden grid place-items-center">
-
-                        <AppLogoIcon/>
-
-                    </div>
-                </div>
-            </main>
+                <Slider :images="sliderImages" />
+            </section>
         </div>
-        <div class="h-14.5 hidden lg:block"></div>
-    </div>
-</template>
--->
-
-
-<script setup>
-import GuestLayout from '@/layouts/GuestLayout.vue';
-import { Head, Link } from '@inertiajs/vue3';
-import WebsiteLogoIcon from '@/components/WebsiteLogoIcon.vue';
-
-
-</script>
-
-
-<template>
-    <Head title="Startseite">
         
-        <link rel="preconnect" href="https://rsms.me/" />
-        <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
-        
-    </Head>
-
-
-    <div class="flex min-h-screen flex-col items-center bg-[#FDFDFC] p-6 text-[#1b1b18] dark:bg-[#0a0a0a] lg:justify-center lg:p-8">
-        <header class="not-has-[nav]:hidden mb-6 w-full max-w-[335px] text-sm lg:max-w-4xl">
-            <nav class="flex container mx-auto items-center justify-end gap-4">
-                <Link
-                    v-if="$page.props.auth.user"
-                    :href="route('dashboard')"
-                    class="inline-block rounded-sm border border-[#19140035] px-5 py-1.5 text-sm leading-normal text-[#1b1b18] hover:border-[#1915014a] dark:border-[#3E3E3A] dark:text-[#EDEDEC] dark:hover:border-[#62605b]">
-                    Dashboard
-                </Link>
-                <template v-else>
-                    <Link
-                        :href="route('login')"
-                        class="inline-block rounded-sm border border-[#19140035] px-5 py-1.5 text-sm leading-normal text-[#1b1b18] hover:border-[#1915014a] dark:border-[#3E3E3A] dark:text-[#EDEDEC] dark:hover:border-[#62605b]"
-                    >
-                        Log in
-                    </Link>
-                    <Link
-                        :href="route('register')"
-                        class="inline-block rounded-sm border border-[#19140035] px-5 py-1.5 text-sm leading-normal text-[#1b1b18] hover:border-[#1915014a] dark:border-[#3E3E3A] dark:text-[#EDEDEC] dark:hover:border-[#62605b]"
-                    >
-                        Regestrieren
-                    </Link>
-                </template>
-            </nav>
-        </header>
-
         <div class="flex-1 container mx-auto">
-            <div class="container 	max-width: 1536px; overflow-hidden grid place-items-center mx-auto bg-muted p-10 text-white dark:border-r lg:flex ">        
-                <WebsiteLogoIcon/>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mt-8 bg-muted p-2 md:pr-96 md:pl-96 dark:border-r md:text-center">
+                <h1 class="col-span-2 md:col-span-2 dark:text-white pl-1 pr-1 md:text-justify border-1-8 border-transparent rounded-md shadow-md space-y-1 text-2xl font-bold bg-muted">Willkommen auf meinem Portfolio</h1>
+                <p class="col-span-2 md:col-span-2 p-2 dark:text-white md:text-justify  border-1-8 border-transparent rounded-md shadow-md space-y-2 text-m">
+                    Sie suchen einen IT-Anwendungsentwickler, der Ihre Visionen in strukturierten Code verwandelt? <br><br>
+                    Hallo, ich bin Dennis Strauß. Als kreativer und lösungsorientierter Anwendungsentwickler helfe ich Unternehmen und Organisationen dabei, ihre digitalen Ziele zu erreichen.<br><br>
+                    Mein Schwerpunkt liegt auf der Webentwicklung in den Programmiersprachen PHP, JavaScript, HTML, CSS, Typescript und den Frameworks Laravel, Drupal, TypO3, WordPress.<br><br>
+                    Ich glaube an sauberen und gut strukturierten Code, durchdachte Architekturen und eine transparente Kommunikation und planung von Prozessen.<br><br> Lassen Sie uns gemeinsam herausfinden, wie ich Ihr nächstes Projekt zum Erfolg führen kann.
+                </p>
+            </div>
+
+
+<!----------------------------------------------------------------------------------------------------------------------------------------------->
+
+<div id="card_panel" class="flex-1 mt-8 p-10 bg-muted dark:border-r rounded ">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center" style="perspective: 2000px;">
+                
+                    <InfoCard
+                        :image-url="projectImageUrl"
+                        title="Meine Projekte"
+                        description="Entdecken Sie eine Auswahl meiner bisherigen Arbeiten, von Webanwendungen bis hin zu komplexen Systemintegrationen."
+                        button-text="Projekte ansehen"
+                        :button-href="'/projects'"
+                        :tags="['Laravel', 'Vue', 'PHP']"
+                    />
+                
+                    <InfoCard
+                        :image-url="contactImageUrl"
+                        title="Kontakt aufnehmen"
+                        description="Haben Sie eine Frage oder eine Projektidee? Zögern Sie nicht, mich zu kontaktieren. Ich freue mich auf Ihre Nachricht."
+                        button-text="Zum Kontaktformular"
+                        :button-href="'/contactform'"
+                        :tags="['Kommunikation', 'Beratung']"
+                    />
+                
+                    <InfoCard
+                        :image-url="certificatesImageUrl"
+                        title="Zertifikate & Skills"
+                        description="Ein Überblick über meine Qualifikationen, Zertifikate und die Technologien, mit denen ich täglich arbeite."
+                        button-text="Mehr erfahren"
+                        :button-href="'/projects'"
+                        :tags="['Qualifikation', 'Weiterbildung']"
+                    />
+                
+                </div>
             </div>
         </div>
 
-  <AppLayout :breadcrumbs="breadcrumbs">
-    <template>
-      <h1 class="text-3xl font-bold bg-muted p-10 text-white dark:border-r lg:flex">Hello World</h1>
-    </template>
+        
 
-    <p class="mt-4 text-lg">
-      Schön, dass du da bist! Entdecke unsere neuesten Angebote und Funktionen.
-    </p>
-
-    <div class="mt-8">
-      <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
-        Mehr erfahren
-      </button>
-    </div> 
-
-    <template #footer>
-      <p class="text-sm">Kontaktiere uns bei Fragen: <a href="mailto:info@example.com" class="text-blue-500">info@example.com</a></p>
-    </template>
-  </AppLayout>
-  </div>
+    </AppLayout>
 </template>
-

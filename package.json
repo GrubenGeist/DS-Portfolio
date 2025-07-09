@@ -1,6 +1,19 @@
 {
+    "name": "last_init_npm",
+    "version": "1.0.0",
     "private": true,
+    "description": "To make it easy for you to get started with GitLab, here's a list of recommended next steps.",
+    "repository": {
+        "type": "git",
+        "url": "ssh://git@gitlab.computer-manufaktur.de:22123/dstrauss/portfolio.git"
+    },
+    "license": "ISC",
+    "author": "",
     "type": "module",
+    "main": "eslint.config.js",
+    "directories": {
+        "test": "tests"
+    },
     "scripts": {
         "build": "vite build",
         "build:ssr": "vite build && vite build --ssr",
@@ -9,8 +22,32 @@
         "format:check": "prettier --check resources/",
         "lint": "eslint . --fix"
     },
+    "dependencies": {
+        "@inertiajs/vue3": "^2.0.0-beta.3",
+        "@vitejs/plugin-vue": "^5.2.1",
+        "@vueuse/core": "^12.8.2",
+        "autoprefixer": "^10.4.20",
+        "class-variance-authority": "^0.7.1",
+        "clsx": "^2.1.1",
+        "concurrently": "^9.0.1",
+        "laravel-vite-plugin": "^1.0",
+        "lodash": "^4.17.21",
+        "lucide": "^0.468.0",
+        "lucide-vue-next": "^0.468.0",
+        "radix-vue": "^1.9.11",
+        "reka-ui": "^2.3.1",
+        "tailwind-merge": "^2.5.5",
+        "tailwindcss": "^3.4.1",
+        "tailwindcss-animate": "^1.0.7",
+        "typescript": "^5.2.2",
+        "vite": "^6.2.0",
+        "vue": "^3.5.13",
+        "ziggy-js": "^2.5.2"
+    },
     "devDependencies": {
         "@eslint/js": "^9.19.0",
+        "@tailwindcss/forms": "^0.5.10",
+        "@types/lodash": "^4.17.18",
         "@types/node": "^22.13.5",
         "@vue/eslint-config-typescript": "^14.3.0",
         "eslint": "^9.17.0",
@@ -21,26 +58,6 @@
         "prettier-plugin-tailwindcss": "^0.6.9",
         "typescript-eslint": "^8.23.0",
         "vue-tsc": "^2.2.4"
-    },
-    "dependencies": {
-        "@inertiajs/vue3": "^2.0.0-beta.3",
-        "@vitejs/plugin-vue": "^5.2.1",
-        "@vueuse/core": "^12.0.0",
-        "autoprefixer": "^10.4.20",
-        "class-variance-authority": "^0.7.1",
-        "clsx": "^2.1.1",
-        "concurrently": "^9.0.1",
-        "laravel-vite-plugin": "^1.0",
-        "lucide": "^0.468.0",
-        "lucide-vue-next": "^0.468.0",
-        "radix-vue": "^1.9.11",
-        "tailwind-merge": "^2.5.5",
-        "tailwindcss": "^3.4.1",
-        "tailwindcss-animate": "^1.0.7",
-        "typescript": "^5.2.2",
-        "vite": "^6.2.0",
-        "vue": "^3.5.13",
-        "ziggy-js": "^2.4.2"
     },
     "optionalDependencies": {
         "@rollup/rollup-linux-x64-gnu": "4.9.5",

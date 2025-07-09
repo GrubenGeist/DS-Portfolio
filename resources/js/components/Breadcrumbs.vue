@@ -13,9 +13,9 @@ defineProps<{
 </script>
 
 <template>
-    <Breadcrumb>
+    <Breadcrumb class="w-full flex-1 flex-col rounded-xl px-22 md:px-2">
         <BreadcrumbList>
-            <template v-for="(item, index) in breadcrumbs" :key="index">
+            <template v-for="(item, index) in breadcrumbs" :key="index" >
                 <BreadcrumbItem>
                     <template v-if="index === breadcrumbs.length - 1">
                         <BreadcrumbPage>{{ item.title }}</BreadcrumbPage>
