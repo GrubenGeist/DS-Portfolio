@@ -7,9 +7,9 @@ import AppLogoIcon from '../components/AppLogoIcon.vue';
 import InfoCard from '@/components/InfoCard.vue'; // Pfad anpassen, falls nötig
 
 // ----------------------------Images Imports------------------------------------------------
-import projectImageUrl from '/public/images/Projects.png'; // Passe den relativen Pfad ggf. an
-import contactImageUrl from '/public/images/ContactUs.png';
-import certificatesImageUrl from '/public/images/Certificates.png';
+const projectImageUrl = '/images/Projects.png';
+const contactImageUrl = '/images/ContactUs.png';
+const certificatesImageUrl = '/images/Certificates.png';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {

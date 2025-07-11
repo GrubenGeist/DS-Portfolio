@@ -7,16 +7,18 @@ import Hero3D from '@/components/Hero3D.vue';
 import InfoCard from '@/components/InfoCard.vue'; // Pfad anpassen, falls nötig
 
 // ----------------------------Images Imports------------------------------------------------
-import projectImageUrl from '/public/images/Projects.png'; // Passe den relativen Pfad ggf. an
-import contactImageUrl from '/public/images/ContactUs.png';
-import certificatesImageUrl from '/public/images/Certificates.png';
+const projectImageUrl = '/images/Projects.png';
+const contactImageUrl = '/images/ContactUs.png';
+const certificatesImageUrl = '/images/Certificates.png';
 
 // NEU: Ein Array mit den Wörtern, die im 3D-Raum fliegen sollen
 const techWords = [
-    'Laravel', 'PHP', 'Vue.js', 'JavaScript', 'TypeScript',
+    'Laravel', 'PHP', 'Vue.js', 'JavaScript (JS)', 'TypeScript',
     'HTML5', 'CSS3', 'MySQL', 'Inertia.js', 'TailwindCSS',
-    'API', 'Clean Code', 'Git', 'Docker',
-    'Security', 'Testing', 'Agile','Bug Fixing', 'Web App', 'Structure','<div>','class=" "','42',
+    'API', 'Clean Code', 'Git', 'Variable',
+    'Security', 'Testing', 'Agile','Bug Fixing', 'Web Applications', 'Structure',
+    'Backend','Backup','Authentifizierung','Debugging','Docker',
+    'Framework','Frontend','HTTPS','Webserver','VPN (Virtual Private Network)',
 ];
 </script>
 
@@ -38,7 +40,7 @@ const techWords = [
                         Dennis Strauß
                     </h1>
                     <p class="text-yellow-300 dark:text-white mt-4 text-lg md:text-xl max-w-2xl mx-auto " style="text-shadow: 0 0 10px rgba(0,0,0,0.7);">
-                        Anwendungsentwickler für moderne und performante Web-Lösungen.
+                        Anwendungsentwickler für moderne und performante <br/> Web-Anwendungen.
                     </p>
                     <div class="mt-8">
                         <Link :href="route('projects')">
@@ -50,12 +52,27 @@ const techWords = [
                 </div>
             </section>
             
-            <section class="py-20 bg-transparent border-2 rounded-xl">
-                <div class="text-center text-black dark:text-white">
-                  <h2 class="text-3xl font-bold">Weitere Inhalte hier...</h2>
+            <section class="py-20 bg-transparent md:border-2 rounded-xl md:p-16 ">
+                <div class="text-center text-black dark:text-white md:p-16 md:pl-8 md:pr-8 ">
+                    <div class=" dark:text-white text-black md:pr-16 md:pl-16 md:pt-16 md:pb-8 md:text-center col-span-1 md:col-span-1 pl-1 border-1-8 border-transparent rounded-md shadow-md space-y-1 text-2xl font-bold bg-muted">
+                     <!-- <h2 class="md:text-3xl text-2xl bg-gray-600 font-bold md:p-8 p-4 border-2 rounded-md ">Weitere Inhalte gibt es hier</h2> -->
+                    </div>    
+                        <div class="col-span-1 md:col-span-1 pt-4 dark:text-white md:pr-16 md:pl-16 md:pt-8 md:pb-8 pl-1 md:place-items-center  md:text-justify border-1-8 border-transparent rounded-md shadow-md space-y-1 text-2xl font-bold bg-muted">
+                              <section class=" " id="welcometext">
+                                  <h2 class="md:text-3xl text-xl bg-cyan-900 text-white font-bold p-8 border-2 rounded-md ">Willkommen auf meinem Portfolio</h2>
+                                  <p class="md:text-1xl text-xl bg-gray-100 text-black  font-bold p-8 border-2 rounded-md  ">
+                                    Ich bin Dennis Strauß,<br/><br/> Anwendungsentwickler mit Fokus auf maßgeschneiderte Softwarelösungen.<br/><br/>
+                                    Mit fundierten Kenntnissen in modernen Technologien und einem klaren Blick für sauberen, wartbaren Code entwickle ich leistungsstarke Anwendungen, die Prozesse optimieren und Nutzer begeistern.<br/><br/>
+                                    
+                                    Hier finden Sie eine Auswahl meiner bisherigen Projekte, technische Schwerpunkte und Informationen zu meinem beruflichen Werdegang.<br/>
+                                    Ich freue mich, wenn Sie einen Einblick in meine Arbeit gewinnen – und vielleicht schon bald den passenden Partner für Ihr nächstes Softwareprojekt gefunden haben.
+                                  </p>
+                              </section>
+                          
+                        
 
-                  <div id="card_panel" class="flex-1 mt-8 p-10 bg-muted dark:border-r rounded-xl">
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center" style="perspective: 2000px;">
+                  <div id="card_panel" class="flex-1 mt-0 p-0 bg-gray-100 dark:border-r rounded-md">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 md:gap-44 gap-4 md:p-8 pt-4 pb-4 justify-items-center" style="perspective: 2000px;">
                     
                         <InfoCard
                             :image-url="projectImageUrl"
@@ -87,6 +104,7 @@ const techWords = [
                         </div>
                     </div>
                 </div>    
+            </div>
             </section>
         </div>
     
