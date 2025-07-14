@@ -18,7 +18,8 @@ const techWords = [
     'API', 'Clean Code', 'Git', 'Variable',
     'Security', 'Testing', 'Agile','Bug Fixing', 'Web Applications', 'Structure',
     'Backend','Backup','Authentifizierung','Debugging','Docker',
-    'Framework','Frontend','HTTPS','Webserver','VPN (Virtual Private Network)',
+    'Framework','Frontend','HTTPS','Webserver','VPN (Virtual Private Network)','Development',
+    'Domain', 'Mobile First',
 ];
 </script>
 

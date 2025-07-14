@@ -45,7 +45,36 @@ createInertiaApp({
     progress: {
         color: '#4B5563',
     },
+
+
 });
 
 // This will set light / dark mode on page load...
 initializeTheme();
+
+
+    // --- EASTER EGG ---
+    const styles = [
+        'font-size: 16px',
+        'font-family: monospace',
+        'background: #000000ff',
+        'color: #48ff00ff',
+        'padding: 3px 20px',
+        'border-radius: 5px',
+        'line-height: 1.0', // Fügt etwas Zeilenabstand hinzu
+    ].join(';');
+
+    // Wir benutzen Backticks (` `), um einen mehrzeiligen Text zu erstellen.
+    // Jeder Zeilenumbruch hier wird auch in der Konsole als Umbruch angezeigt.
+    const message = `Neugierig? 😉 
+    -------------------------------------------------------------------
+    | Du schaust dir den Code eines leidenschaftlichen Entwicklers an.|
+    | Wenn du auf der Suche nach jemandem mit Liebe zum Detail bist,  |
+    | melde dich über das Kontak Formular!                            |
+    |                                                                 |
+    | Möge die Macht mit dir sein                                     |
+    -------------------------------------------------------------------`;                                                                   
+
+    // Gib die gestylte, mehrzeilige Nachricht aus
+    console.log(`%c${message}`, styles);
+    console.log('Mein GitHub-Profil: https://github.com/grubengeist');

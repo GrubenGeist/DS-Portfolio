@@ -54,14 +54,14 @@ const initScene = () => {
                 font: font, size: 0.3, depth: 0.02,
             });
             dummy.position.set(
-                (Math.random() - 0.5) * 50, 
                 (Math.random() - 0.5) * 40, 
-                (Math.random() - 0.5) * 40
+                (Math.random() - 0.5) * 30, 
+                (Math.random() - 0.5) * 30
             );
             dummy.rotation.set(
-                (Math.random() - 0.5) * (Math.PI / 2), // Begrenzt die Drehung auf +/- 45 Grad auf der X-Achse
-                (Math.random() - 0.5) * (Math.PI / 2), // Begrenzt die Drehung auf +/- 45 Grad auf der Y-Achse
-                (Math.random() - 0.5) * (Math.PI / 4)  // Fügt eine leichte Drehung um die Z-Achse für mehr Dynamik hinzu
+                (Math.random() - 0.5) * (Math.PI / 10.5), // Begrenzt die Drehung auf +/- 45 Grad auf der X-Achse
+                (Math.random() - 0.5) * (Math.PI / 0.001), // Begrenzt die Drehung auf +/- 45 Grad auf der Y-Achse
+                (Math.random() - 0.5) * (Math.PI / 10)  // Fügt eine leichte Drehung um die Z-Achse für mehr Dynamik hinzu
             );
 
             dummy.updateMatrix();
@@ -81,6 +81,7 @@ const initScene = () => {
             mouseX = event.clientX;
             mouseY = event.clientY;
             
+            
         };
         window.addEventListener('mousemove', mouseMoveListener);
 
@@ -91,12 +92,12 @@ const initScene = () => {
             if (textMaterial.color.getHex() !== targetColor.getHex()) {
                 textMaterial.color.set(targetColor);
             }
-            textCloud.rotation.y += 0.0015;
-            textCloud.rotation.x += 0.0001;
+            textCloud.rotation.y += 0.0025;
+            textCloud.rotation.x += 0.00001;
             //textCloud.rotation.z += 0.0005;
-            camera.position.x += ((mouseX - window.innerWidth / 2) / 400 - camera.position.x) * 0.15;
+            camera.position.x += ((mouseX - window.innerWidth / 2) / 400 - camera.position.x) * 0.25;
             camera.position.y += (-(mouseY - window.innerHeight / 2) / 400 - camera.position.y) * 0.45;
-            //camera.position.z += (-(mouseY - window.innerHeight / 3) / 400 - camera.position.y) * 0.01;
+            //camera.position.z += (-(mouseY - window.innerHeight / 2) / 400 - camera.position.y) * 0.0015;
             camera.lookAt(scene.position);
             renderer.render(scene, camera);
         };
