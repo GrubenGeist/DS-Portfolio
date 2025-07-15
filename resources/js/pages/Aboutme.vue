@@ -7,9 +7,9 @@ import AppLogoIcon from '../components/AppLogoIcon.vue';
 import InfoCard from '@/components/InfoCard.vue'; // Pfad anpassen, falls nötig
 
 // ----------------------------Images Imports------------------------------------------------
-import projectImageUrl from '/public/images/Projects.png'; // Passe den relativen Pfad ggf. an
-import contactImageUrl from '/public/images/ContactUs.png';
-import certificatesImageUrl from '/public/images/Certificates.png';
+const projectImageUrl = '/images/Projects.png';
+const contactImageUrl = '/images/ContactUs.png';
+const certificatesImageUrl = '/images/Certificates.png';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -20,7 +20,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 </script>
 
 <template>
-    <Head title="About Me" />
+    <Head title="Über mich" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex-1 container mx-auto dark:border-r md:text-center">
@@ -80,36 +80,37 @@ const breadcrumbs: BreadcrumbItem[] = [
 
                 
                 </div>
+
                 <div id="card_panel" class="flex-1 mt-8 p-10 bg-muted dark:border-r rounded-xl">
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center" style="perspective: 2000px;">
-                
-                    <InfoCard
-                        :image-url="projectImageUrl"
-                        title="Python"
-                        description="Entdecken Sie eine Auswahl meiner bisherigen Arbeiten, von Webanwendungen bis hin zu komplexen Systemintegrationen."
-                        button-text="Projekte ansehen"
-                        :button-href="'/projects'"
-                        :tags="['Laravel', 'Vue', 'PHP']"
-                    />
-                
-                    <InfoCard
-                        :image-url="contactImageUrl"
-                        title="Web-Development"
-                        description="Haben Sie eine Frage oder eine Projektidee? Zögern Sie nicht, mich zu kontaktieren. Ich freue mich auf Ihre Nachricht."
-                        button-text="Zum Kontaktformular"
-                        :button-href="'/contactform'"
-                        :tags="['Kommunikation', 'Beratung']"
-                    />
-                
-                    <InfoCard
-                        :image-url="certificatesImageUrl"
-                        title="C++"
-                        description="Ein Überblick über meine Qualifikationen, Zertifikate und die Technologien, mit denen ich täglich arbeite."
-                        button-text="Mehr erfahren"
-                        :button-href="'/projects'"
-                        :tags="['Qualifikation', 'Weiterbildung']"
-                    />
-                
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center" style="perspective: 2000px;">
+                    
+                        <InfoCard
+                            :image-url="projectImageUrl"
+                            title="Python"
+                            description="Entdecken Sie eine Auswahl meiner bisherigen Arbeiten, von Webanwendungen bis hin zu komplexen Systemintegrationen."
+                            button-text="Projekte ansehen"
+                            :button-href="'/projects'"
+                            :tags="['Laravel', 'Vue', 'PHP']"
+                        />
+                    
+                        <InfoCard
+                            :image-url="contactImageUrl"
+                            title="Web-Development"
+                            description="Haben Sie eine Frage oder eine Projektidee? Zögern Sie nicht, mich zu kontaktieren. Ich freue mich auf Ihre Nachricht."
+                            button-text="Zum Kontaktformular"
+                            :button-href="'/contactform'"
+                            :tags="['Kommunikation', 'Beratung']"
+                        />
+                    
+                        <InfoCard
+                            :image-url="certificatesImageUrl"
+                            title="C++"
+                            description="Ein Überblick über meine Qualifikationen, Zertifikate und die Technologien, mit denen ich täglich arbeite."
+                            button-text="Mehr erfahren"
+                            :button-href="'/projects'"
+                            :tags="['Qualifikation', 'Weiterbildung']"
+                        />
+                    
                         </div>
                     </div>
             </section>

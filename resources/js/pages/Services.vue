@@ -24,7 +24,8 @@ const breadcrumbs: BreadcrumbItem[] = [
                             <section class="services panel">
                                 <h2>Meine Dienstleistungen</h2>
                                 <p>
-                                    Ich bin auch Selbstständig und biete Vereinzelt Dienstleistungen an, in den Bereichen 3D-Druck, Websitegestaltung, Website Programmierung und Außerdem Handle ich mit verschiedenster Technik Hardware. 
+                                    Irgendwann bin Ich auch Selbstständig und biete Vereinzelt Dienstleistungen an, 
+                                    in den Bereichen 3D-Druck, Websitegestaltung, Website Programmierung und Außerdem Handle ich mit verschiedenster Technik Hardware vielleicht wer weis :P. 
                                 </p>
                                 <p>
                                 </p>

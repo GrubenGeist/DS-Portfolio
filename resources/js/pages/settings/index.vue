@@ -49,7 +49,7 @@ const settingLinks = computed<SettingLink[]>(() => [
         show: true, // Du kannst hier auch eine Feature-Flag oder ähnliches prüfen
     },
     {
-        href: route('settings.users.index'),
+        href: route('admin.users.index'),
         title: 'Benutzerverwaltung',
         description: 'Benutzerkonten und deren Rollen verwalten.',
         icon: Users,

@@ -42,6 +42,6 @@
     </head>
     <body class="font-sans antialiased">
         @inertia
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+        
     </body>
 </html>
