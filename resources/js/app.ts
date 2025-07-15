@@ -66,11 +66,11 @@ initializeTheme();
 
     // Wir benutzen Backticks (` `), um einen mehrzeiligen Text zu erstellen.
     // Jeder Zeilenumbruch hier wird auch in der Konsole als Umbruch angezeigt.
-    const message = `Neugierig? 😉 
+    const message = `Neugierig? 😉                                                         
     -------------------------------------------------------------------
     | Du schaust dir den Code eines leidenschaftlichen Entwicklers an.|
     | Wenn du auf der Suche nach jemandem mit Liebe zum Detail bist,  |
-    | melde dich über das Kontak Formular!                            |
+    | melde dich über das Kontaktformular!                            |
     |                                                                 |
     | Möge die Macht mit dir sein                                     |
     -------------------------------------------------------------------`;                                                                   

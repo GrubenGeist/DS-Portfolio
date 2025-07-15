@@ -106,7 +106,7 @@ const skills = ref<Skill[]>([
                  </div>
             </section>
 
-            <div class="p-24" id="Game Card">
+            <div class="p-0" id="Game Card">
                 <section id="game-cards">
                     <div class="text-center mb-12">
                          <h2 class="text-3xl font-bold text-white">Interaktive Karten</h2>
