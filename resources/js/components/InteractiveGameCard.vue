@@ -159,9 +159,9 @@ const cardStyle = computed(() => {
 
 
 
-<!-- WICHTIG für Später
+<!-- WICHTIG für Später auf der Seite Einfügen auf der du sie Verwenden Möchtest
 
-ZIEL.vue anpassen
+ZIEL.vue anpassen:
 
 Jetzt musst du nur noch in deiner Projects.vue den Aufruf anpassen, damit sie die neue Komponente verwendet.
 

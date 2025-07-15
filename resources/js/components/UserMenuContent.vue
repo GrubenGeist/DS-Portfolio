@@ -63,7 +63,7 @@ const isAdmin = computed(() => currentUserRoles.value.includes('Admin'));
 
             <!---{/* Bestehende Admin-Links */}-->
             <DropdownMenuItem :as-child="true">
-                <Link class="block w-full" :href="route('settings.users.index')" as="button">
+                <Link class="block w-full" :href="route('admin.users.index')" as="button">
                     <UsersIcon class="mr-2 h-4 w-4" />
                     Benutzerverwaltung
                 </Link>

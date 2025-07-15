@@ -51,7 +51,7 @@ withDefaults(defineProps<Props>(), {
           <div class="space-y-3">
             <h3 class="font-bold text-lg text-gray-900 dark:text-white">Kontakt</h3>
              <p class="text-sm">
-              <ul><li><Link :href="route('Kontaktformular')" class="hover:text-blue-500">Kontakt</Link></li></ul><br>
+              <ul><li><Link :href="route('contactform')" class="hover:text-blue-500">Kontakt</Link></li></ul><br>
                 Fragen oder Projektideen? <br>
                 <a href="mailto:dennis-strauss@web.de" class="text-blue-600 dark:text-blue-400 hover:underline">
                   dennis-strauss@web.de
