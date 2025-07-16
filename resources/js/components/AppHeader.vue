@@ -9,6 +9,8 @@ import AppLogoIcon from '@/components/AppLogoIcon.vue';
 import Breadcrumbs from '@/components/Breadcrumbs.vue';
 import UserMenuContent from '@/components/UserMenuContent.vue';
 import { ref, computed, onMounted, onUnmounted } from 'vue';
+import { Sun, Moon } from 'lucide-vue-next'; 
+import { useAppearance } from '@/composables/useAppearance'; // Deinen bestehenden Composable importieren
 
 // UI-Komponenten aus der shadcn-vue Bibliothek
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -35,6 +37,16 @@ import type { NavItem, BreadcrumbItem as BreadcrumbItemType } from '@/types';
 import { Link, usePage } from '@inertiajs/vue3'; // Für nahtloses Routing in einer Laravel/Inertia-Anwendung
 import { LogIn, Menu, Search, UserPlus } from 'lucide-vue-next'; // Icon-Bibliothek
 import { route } from 'ziggy-js'; // Erzeugt Laravel-Routen im Frontend
+
+// --- THEME-LOGIK ---
+// Wir rufen deinen Composable auf, um den aktuellen Zustand und die Update-Funktion zu erhalten.
+const { appearance, updateAppearance } = useAppearance();
+
+// Neue Funktion, die zwischen Light und Dark umschaltet.
+const toggleTheme = () => {
+    const newAppearance = appearance.value === 'dark' ? 'light' : 'dark';
+    updateAppearance(newAppearance);
+};
 
 // =============================================================================
 // LOGIK (SCRIPT-TEIL)
@@ -168,13 +180,13 @@ onMounted(() => {
 
 <template>
     <div>
-        <div class="border-b border-sidebar-border/80">
+        <div class="border-b border-sidebar-border/80 dark:bg-stone-900">
             <div class="flex h-16 w-full items-center px-2 md:px-2">
 
                 <div class="lg:hidden">
                     <Sheet>
                         <SheetTrigger :as-child="true">
-                            <Button variant="ghost" size="icon" class="mr-2 h-9 w-9">
+                            <Button variant="secondary" size="lg" class="mr-2 h-9 w-9">
                                 <Menu class="h-5 w-5" />
                             </Button>
                         </SheetTrigger>
@@ -212,6 +224,9 @@ onMounted(() => {
                                             <component :is="item.icon" class="h-4 w-4" />
                                             {{ item.title }}
                                         </Link>
+                                        
+
+
                                     </template>
                                     <Transition name="ghost">
                                         <button
@@ -290,9 +305,32 @@ onMounted(() => {
                     </NavigationMenu>
                 </div>
 
-                <div class="ml-auto flex items-center space-x-2">
+                <div class="ml-auto flex items-center space-x-4">
+                    <button
+                        @click="toggleTheme"
+                        type="button"
+                        class="relative inline-flex h-7 w-14 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent bg-slate-200 dark:bg-slate-700 transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2"
+                        role="switch"
+                        :aria-checked="appearance === 'dark'"
+                    >
+                        <span class="sr-only">Theme umschalten</span>
+
+                        <span
+                            aria-hidden="true"
+                            :class="appearance === 'dark' ? 'translate-x-7' : 'translate-x-0'"
+                            class="pointer-events-none relative inline-block h-6 w-6 transform rounded-full bg-white shadow-lg ring-0 transition duration-200 ease-in-out"
+                        >
+                            <span class="absolute inset-0 flex h-full w-full items-center justify-center transition-opacity" :class="appearance === 'dark' ? 'opacity-0 ease-out duration-100' : 'opacity-100 ease-in duration-200'"></span>
+                            <span class="absolute inset-0 flex h-full w-full items-center justify-center transition-opacity" :class="appearance === 'dark' ? 'opacity-100 ease-in duration-200' : 'opacity-0 ease-out duration-100'"></span>
+
+                            <Sun v-if="appearance !== 'dark'" class="absolute inset-0 h-full w-full p-1 text-yellow-500" />
+                            <Moon v-else class="absolute inset-0 h-full w-full p-1 text-slate-800" />
+                        </span>
+                    </button>   
+
+                    
                     <template v-if="isGuest">
-                        <div class="flex items-center space-x-1">
+                        <div class="flex items-center space-x-4">
                             <Link :href="route('login')">
                                 <Button variant="ghost" class="h-9 px-3 text-sm"> <LogIn class="mr-2 h-4 w-4" /> Login </Button>
                             </Link>
@@ -300,26 +338,31 @@ onMounted(() => {
                                 <Button variant="default" class="h-9 px-3 text-sm"> <UserPlus class="mr-2 h-4 w-4" /> Registrieren </Button>
                             </Link>
                         </div>
-                    </template>
-                    <template v-else-if="user">
-                        <DropdownMenu>
-                            <DropdownMenuTrigger :as-child="true">
-                                <Button variant="ghost" class="relative h-9 w-9 rounded-full ...">
-                                    <Avatar class="size-8">
-                                        <AvatarImage :src="user.avatar || defaultAvatar" :alt="user.name ?? 'User Avatar'" />
-                                        <AvatarFallback class="bg-muted ...">
-                                            {{ getInitials(user.name ?? '') }}
-                                        </AvatarFallback>
-                                    </Avatar>
-                                </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent class="w-56" align="end" :side-offset="5">
-                                <UserMenuContent :user="user" />
-                            </DropdownMenuContent>
-                        </DropdownMenu>
-                    </template>
-                </div>
 
+
+
+                    </template>
+                        <template v-else-if="user">
+                            <div class="flex items-center pr-4">
+                                <DropdownMenu>
+                                    <DropdownMenuTrigger :as-child="true">
+                                        <Button variant="ghost" class="relative h-10 w-10 rounded-full ">
+                                            <Avatar class="size-11">
+                                                <AvatarImage :src="user.avatar || defaultAvatar" :alt="user.name ?? 'User Avatar'" />
+                                                <AvatarFallback class="bg-muted ...">
+                                                    {{ getInitials(user.name ?? '') }}
+                                                </AvatarFallback>
+                                            </Avatar>
+                                        </Button>
+                                    </DropdownMenuTrigger>
+                                    <DropdownMenuContent class="w-59" align="end" :side-offset="5">
+                                        <UserMenuContent :user="user" />
+                                    </DropdownMenuContent>
+                                </DropdownMenu>
+                            </div>
+                        </template>
+                    
+                </div>
             </div>
         </div>
 

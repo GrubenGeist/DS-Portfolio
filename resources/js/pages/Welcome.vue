@@ -11,7 +11,7 @@ const projectImageUrl = '/images/Projects.png';
 const contactImageUrl = '/images/ContactUs.png';
 const certificatesImageUrl = '/images/Certificates.png';
 
-// NEU: Ein Array mit den Wörtern, die im 3D-Raum fliegen sollen
+//Ein Array mit den Wörtern, die im 3D-Raum fliegen sollen
 const techWords = [
     'Laravel', 'PHP', 'Vue.js', 'JavaScript (JS)', 'TypeScript',
     'HTML5', 'CSS3', 'MySQL', 'Inertia.js', 'TailwindCSS',
@@ -19,8 +19,9 @@ const techWords = [
     'Security', 'Testing', 'Agile','Bug Fixing', 'Web Applications', 'Structure',
     'Backend','Backup','Authentifizierung','Debugging','Docker',
     'Framework','Frontend','HTTPS','Webserver','VPN (Virtual Private Network)','Development',
-    'Domain', 'Mobile First',
+    'Domain', 'Mobile First','Cookie Consent',
 ];
+
 </script>
 
 <template>
@@ -43,8 +44,10 @@ const techWords = [
                     <p class="text-yellow-300 dark:text-white mt-4 text-lg md:text-xl max-w-2xl mx-auto " style="text-shadow: 0 0 10px rgba(0,0,0,0.7);">
                         Anwendungsentwickler für moderne und performante <br/> Web-Anwendungen.
                     </p>
-                    <div class="mt-8">
-                        <Link :href="route('projects')">
+                    <div class="mt-8"> <!--@click="handleProjectsClick" ist für die Google Analytics -->
+                        <Link 
+                            :href="route('projects')" 
+                            v-track-click="{ category: 'Hero Button', label: 'Projekte entdecken' }">
                             <Button size="lg" class="bg-cyan-500 hover:bg-cyan-600 text-white shadow-lg">
                                 Projekte entdecken
                             </Button>
@@ -75,32 +78,44 @@ const techWords = [
                   <div id="card_panel" class="flex-1 mt-0 p-0 bg-gray-100 dark:border-r rounded-md">
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 md:gap-44 gap-4 md:p-8 pt-4 pb-4 justify-items-center" style="perspective: 2000px;">
                     
-                        <InfoCard
-                            :image-url="projectImageUrl"
-                            title="Python"
-                            description="Entdecken Sie eine Auswahl meiner bisherigen Arbeiten, von Webanwendungen bis hin zu komplexen Systemintegrationen."
-                            button-text="Projekte ansehen"
-                            :button-href="'/projects'"
-                            :tags="['Laravel', 'Vue', 'PHP']"
-                        />
-                    
-                        <InfoCard
-                            :image-url="contactImageUrl"
-                            title="Web-Development"
-                            description="Haben Sie eine Frage oder eine Projektidee? Zögern Sie nicht, mich zu kontaktieren. Ich freue mich auf Ihre Nachricht."
-                            button-text="Zum Kontaktformular"
-                            :button-href="'/contactform'"
-                            :tags="['Kommunikation', 'Beratung']"
-                        />
-                    
-                        <InfoCard
-                            :image-url="certificatesImageUrl"
-                            title="C++"
-                            description="Ein Überblick über meine Qualifikationen, Zertifikate und die Technologien, mit denen ich täglich arbeite."
-                            button-text="Mehr erfahren"
-                            :button-href="'/projects'"
-                            :tags="['Qualifikation', 'Weiterbildung']"
-                        />
+                         <!-- Wir tracken den Klick auf die "Projekte"-Karte -->
+                            <InfoCard
+                                :image-url="projectImageUrl"
+                                title="Meine Projekte"
+                                description="Entdecken Sie eine Auswahl meiner bisherigen Arbeiten..."
+                                button-text="Projekte ansehen"
+                                :button-href="route('projects')"
+                                :tags="['Laravel', 'Vue', 'PHP']"
+                                v-track-click="{ category: 'Info Cards', label: 'InfoCard Projekte' }" 
+                            /> 
+                            <!--
+                                Dient zum Tracken von Elementen wenn du ein neues Element Tracken möchtest ändere das Label
+                                ein Import ist nicht nötig da die trackClick.ts Direktive das übernimmt
+
+                                v-track-click="{ category: 'Info Cards', label: 'Projekte' }" 
+                            --> 
+
+                            <!-- Wir tracken den Klick auf die "Kontakt"-Karte -->
+                            <InfoCard
+                                :image-url="contactImageUrl"
+                                title="Web-Development"
+                                description="Haben Sie eine Frage oder eine Projektidee?..."
+                                button-text="Zum Kontaktformular"
+                                :button-href="route('contactform')"
+                                :tags="['Kommunikation', 'Beratung']"
+                                v-track-click="{ category: 'Info Cards', label: 'InfoCard Kontakt' }"
+                            />
+
+                            <!-- Wir tracken den Klick auf die "Zertifikate"-Karte -->
+                            <InfoCard
+                                :image-url="certificatesImageUrl"
+                                title="C++"
+                                description="Ein Überblick über meine Qualifikationen..."
+                                button-text="Mehr erfahren"
+                                :button-href="route('projects')"
+                                :tags="['Qualifikation', 'Weiterbildung']"
+                                v-track-click="{ category: 'Info Cards', label: 'InfoCard Zertifikate' }"
+                            />
                     
                         </div>
                     </div>

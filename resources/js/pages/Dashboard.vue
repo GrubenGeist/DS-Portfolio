@@ -7,9 +7,10 @@ import PlaceholderPattern from '@/components/PlaceholderPattern.vue';
 import AppLogoIcon from '@/components/AppLogoIcon.vue';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
-import UserActivityTable from '@/components/UserActivityTable.vue'; // <-- 1. NEU: Unsere Tabellen-Komponente importieren
+import UserActivityTable from '@/components/UserActivityTable.vue';
+import AnalyticsChart from '@/components/AnalyticsChart.vue';
 
-// Der User-Typ wird immer noch hier gebraucht, um die Props zu definieren
+// Typ-Definitionen
 interface User {
     id: number;
     name: string;
@@ -19,11 +20,29 @@ interface User {
     is_online: boolean;
 }
 
+// === KORREKTUR HIER ===
+// Wir definieren den Typ für ein einzelnes Event-Objekt
+interface TopEvent {
+    category: string;
+    action: string;
+    label: string | null;
+    total: number;
+}
+
+// Prop-Definitionen
 const props = defineProps<{
     initialUsers: User[];
-    filters: {
-        show_all: boolean;
-    }
+    filters: { show_all: boolean; };
+    stats: {
+        totalConsents: number;
+        analyticsAcceptanceRate: number;
+    };
+    // Wir definieren topEvents als Array von TopEvent-Objekten
+    analyticsData: {
+        today: { label: string | null; total: number }[];
+        month: { label: string | null; total: number }[];
+        year: { label: string | null; total: number }[];
+    };
 }>();
 
 defineOptions({
@@ -31,17 +50,15 @@ defineOptions({
     inheritAttrs: false,
 });
 
-// Die Logik für die Filterung bleibt hier, da sie den Zustand des Dashboards steuert.
+// Filter-Logik bleibt unverändert
 const showAll = ref(props.filters.show_all || false);
 
 watch(showAll, (newValue) => {
     router.get(route('dashboard'), { show_all: newValue }, {
-        preserveState: false, // Wir nutzen den "harten" Reload, der bei dir funktioniert hat
+        preserveState: false,
         preserveScroll: true,
     });
 });
-
-// 2. Die formatLastLogin-Funktion wird hier nicht mehr gebraucht, da sie in der Tabellen-Komponente lebt.
 </script>
 
 <template>
@@ -50,10 +67,7 @@ watch(showAll, (newValue) => {
     <div class="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
         <div class="grid auto-rows-min gap-4 md:grid-cols-3">
              <div class="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
-                 <PlaceholderPattern />
-                 <p class="absolute inset-0 flex items-center justify-center">
-                     <Link :href="route('settings.profile.edit')" class="z-10 text-white">Mein Profil</Link>
-                 </p>
+                        <AnalyticsChart :data="analyticsData" />                    
              </div>
              <div class="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
                  <PlaceholderPattern />

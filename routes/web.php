@@ -3,6 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Api\AnalyticsEventController;
+use App\Http\Controllers\ContactFormController;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,6 +15,7 @@ use App\Http\Controllers\Admin\UserController;
 // --- ÖFFENTLICHE ROUTEN ---
 Route::get('/', [PageController::class, 'welcome'])->name('welcome');
 Route::get('/contactform', [PageController::class, 'contactform'])->name('contactform');
+Route::post('/track-event', [AnalyticsEventController::class, 'store'])->name('api.track-event');
 
 // --- GESCHÜTZTE ROUTEN ---
 Route::middleware(['auth', 'verified'])->group(function () {

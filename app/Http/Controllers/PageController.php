@@ -8,7 +8,9 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Inertia\Response as InertiaResponse; // Für route() in Breadcrumbs
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+
 
 class PageController extends Controller
 {
@@ -29,52 +31,62 @@ class PageController extends Controller
         ]);
     }
 
-    public function dashboard(Request $request): InertiaResponse
-    {
-        $usersForDashboard = [];
-        $errorLoadingUsers = null;
-    
-        try {
-            // 1. Wir starten mit dem Query Builder.
-            $query = User::query();
-    
-            // 2. Wende den Datumsfilter an, wenn die Checkbox NICHT gesetzt ist.
-            if (!$request->boolean('show_all')) {
-                $tenDaysAgo = Carbon::now()->subDays(10);
-                $query->where('last_login_at', '>=', $tenDaysAgo);
-            }
-    
-            // 3. Führe die (möglicherweise gefilterte) Abfrage aus UND lade die Rollen.
-            //    WICHTIG: Wir arbeiten jetzt mit der $query-Variable weiter!
-            $users = $query->with('roles')->get();
-    
-            // 4. Transformiere das Ergebnis der gefilterten Abfrage.
-            $usersForDashboard = $users->map(function ($user) {
-                $isOnline = $user->last_login_at && $user->last_login_at->gt(now()->subMinutes(5));
-    
-                return [
-                    'id' => $user->id,
-                    'name' => $user->name,
-                    'email' => $user->email,
-                    'last_login_at' => $user->last_login_at,
-                    'roles' => $user->roles->map(fn ($role) => ['name' => $role->name])->all(),
-                    'is_online' => $isOnline,
-                ];
-            })->all();
-    
-        } catch (\Exception $e) {
-            Log::error('Fehler beim Laden der Benutzer für das Dashboard: '.$e->getMessage());
-            $errorLoadingUsers = 'Benutzerdaten konnten nicht geladen werden.';
+    // In app/Http/Controllers/PageController.php
+
+public function dashboard(Request $request): InertiaResponse
+{
+    // --- BENUTZERDATEN LADEN ---
+    $usersForDashboard = [];
+    $errorLoadingUsers = null;
+    try {
+        $query = User::query();
+        if (!$request->boolean('show_all')) {
+            $tenDaysAgo = Carbon::now()->subDays(10);
+            $query->where('last_login_at', '>=', $tenDaysAgo);
         }
-    
-        return Inertia::render('Dashboard', [
-            'initialUsers' => $usersForDashboard,
-            'userFetchError' => $errorLoadingUsers,
-            'filters' => [
-                'show_all' => $request->boolean('show_all'),
-            ]
-        ]);
+        $users = $query->with('roles')->get();
+        $usersForDashboard = $users->map(function ($user) {
+            $isOnline = $user->last_login_at && $user->last_login_at->gt(now()->subMinutes(5));
+            return [
+                'id' => $user->id, 'name' => $user->name, 'email' => $user->email,
+                'last_login_at' => $user->last_login_at,
+                'roles' => $user->roles->map(fn ($role) => ['name' => $role->name])->all(),
+                'is_online' => $isOnline,
+            ];
+        })->all();
+    } catch (\Exception $e) {
+        $errorLoadingUsers = 'Benutzerdaten konnten nicht geladen werden.';
     }
+
+    // --- CONSENT-STATISTIKEN BERECHNEN ---
+    $totalConsents = DB::table('consent_events')->count();
+    $analyticsAcceptance = $totalConsents > 0
+        ? round((DB::table('consent_events')->where('analytics_given', true)->count() / $totalConsents) * 100)
+        : 0;
+    
+    $consentStats = [
+        'totalConsents' => $totalConsents,
+        'analyticsAcceptanceRate' => $analyticsAcceptance,
+    ];
+
+    // --- ANALYSE-DATEN BERECHNEN ---
+    $clicksToday = DB::table('analytics_events')->whereDate('created_at', Carbon::today())->select('label', DB::raw('count(*) as total'))->groupBy('label')->orderByDesc('total')->get();
+    $clicksThisMonth = DB::table('analytics_events')->whereMonth('created_at', Carbon::now()->month)->whereYear('created_at', Carbon::now()->year)->select('label', DB::raw('count(*) as total'))->groupBy('label')->orderByDesc('total')->get();
+    $clicksThisYear = DB::table('analytics_events')->whereYear('created_at', Carbon::now()->year)->select('label', DB::raw('count(*) as total'))->groupBy('label')->orderByDesc('total')->get();
+
+    // --- DATEN AN DAS FRONTEND ÜBERGEBEN ---
+    return Inertia::render('Dashboard', [
+        'initialUsers' => $usersForDashboard,
+        'userFetchError' => $errorLoadingUsers,
+        'filters' => $request->only(['show_all']),
+        'stats' => $consentStats,
+        'analyticsData' => [
+            'today' => $clicksToday,
+            'month' => $clicksThisMonth,
+            'year' => $clicksThisYear,
+        ]
+    ]);
+}
 
     public function showAdminRegistrationForm(): InertiaResponse
     {

@@ -2,6 +2,7 @@
 import AppHeaderLayout from '@/layouts/app/AppHeaderLayout.vue';
 import type { BreadcrumbItemType } from '@/types';
 import Footer from '@/components/Footer.vue';
+import CookieBanner from '@/components/CookieBanner.vue';
 
 // --- KORREKTUR 1: Fehlende Imports hinzufügen ---
 import { Link } from '@inertiajs/vue3';
@@ -65,5 +66,5 @@ withDefaults(defineProps<Props>(), {
           <p>&copy; {{ new Date().getFullYear() }} Dennis Strauß. Alle Rechte vorbehalten.</p>
         </div>
       </Footer>
-
+      <CookieBanner />
 </template>
