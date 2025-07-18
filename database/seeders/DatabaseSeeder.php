@@ -11,11 +11,8 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Rufe unsere neuen Seeder in der richtigen Reihenfolge auf:
-        // Zuerst die Rollen erstellen, dann den Benutzer, der die Rolle braucht.
         $this->call([
-            RoleSeeder::class,
-            UserSeeder::class,
+            SeedAnalyticsEvents::class,
         ]);
     }
 }

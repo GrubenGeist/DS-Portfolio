@@ -47,7 +47,7 @@ const techWords = [
                     <div class="mt-8"> <!--@click="handleProjectsClick" ist für die Google Analytics -->
                         <Link 
                             :href="route('projects')" 
-                            v-track-click="{ category: 'Hero Button', label: 'Projekte entdecken' }">
+                            v-track-click="{ category: 'Projekte Button', label: 'Projekte entdecken Startseite' }">
                             <Button size="lg" class="bg-cyan-500 hover:bg-cyan-600 text-white shadow-lg">
                                 Projekte entdecken
                             </Button>
