@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Api\AnalyticsEventController;
+use App\Http\Controllers\Admin\CategoryController; 
 use App\Http\Controllers\ContactFormController;
 
 /*
@@ -32,6 +33,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/users/{user}/edit-role', [UserController::class, 'editRole'])->name('users.editRole');
         Route::put('/users/{user}/update-role', [UserController::class, 'updateRole'])->name('users.updateRole');
         Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
+        Route::resource('categories', CategoryController::class);
     });
 
     // --- API-ROUTEN FÜR DAS DASHBOARD ---

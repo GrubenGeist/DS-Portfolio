@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User; // **WICHTIG: User-Model importieren**
+use App\Models\Category;
 use Illuminate\Support\Facades\Log; // **WICHTIG: Log-Fassade importieren**
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -63,44 +64,59 @@ public function dashboard(Request $request): InertiaResponse
         // Übergibt alle Daten an das Frontend
         return Inertia::render('Dashboard', [
             'initialUsers' => $usersForDashboard,
-            'filters' => $request->only(['show_all', 'analytics_year', 'analytics_month', 'visitor_year', 'visitor_month']),
+            'filters' => $request->only(['show_all', 'analytics_year', 'analytics_month', 'analytics_category', 'visitor_year', 'visitor_month']),
             'stats' => $stats['stats'],
             'analyticsData' => $stats['analyticsData'],
             'visitorData' => $stats['visitorData'],
         ]);
     }
 
-    // Diese neue, schlanke Methode liefert NUR die dynamischen Daten als JSON für die Updates.
     public function dashboardData(Request $request): JsonResponse
     {
         $data = $this->getDashboardData($request);
         return response()->json($data);
     }
 
-
-    // Eine private Helfer-Methode, um doppelten Code zu vermeiden.
+    // Die private Helfer-Methode wird komplett überarbeitet
     private function getDashboardData(Request $request): array
     {
-
         // --- CONSENT-STATISTIKEN ---
         $totalConsents = DB::table('consent_events')->count();
         $analyticsAcceptance = $totalConsents > 0 ? round((DB::table('consent_events')->where('analytics_given', true)->count() / $totalConsents) * 100) : 0;
         
         // --- ANALYTICS-DATEN mit Filtern ---
         $analyticsYear = $request->input('analytics_year', now()->year);
-        $analyticsMonth = $request->input('analytics_month', now()->month);
-        $clicksQuery = DB::table('analytics_events')->whereYear('created_at', $analyticsYear);
-        if ($analyticsMonth) {
-            $clicksQuery->whereMonth('created_at', $analyticsMonth);
+        // NEU: Der Standard ist jetzt 'all'
+        $analyticsMonth = $request->input('analytics_month', 'all'); 
+        $analyticsCategoryId = $request->input('analytics_category_id', 'all');
+
+        $clicksQuery = DB::table('analytics_events')
+            ->whereYear('analytics_events.created_at', $analyticsYear);
+
+        // NEU: Die Bedingung prüft jetzt auf 'all'
+        if ($analyticsMonth && $analyticsMonth !== 'all') {
+            $clicksQuery->whereMonth('analytics_events.created_at', $analyticsMonth);
         }
-        $clicksHistory = $clicksQuery->select('label', DB::raw('count(*) as total'))->groupBy('label')->orderByDesc('total')->get();
+        
+        if ($analyticsCategoryId && $analyticsCategoryId !== 'all') {
+            $clicksQuery->where('analytics_events.category_id', $analyticsCategoryId);
+        }
+
+        $clicksHistory = $clicksQuery->select('label', DB::raw('count(*) as total'))
+            ->groupBy('label')
+            ->orderByDesc('total')
+            ->orderBy('label', 'asc')
+            ->get();
+            
         $availableAnalyticsYears = DB::table('analytics_events')->select(DB::raw('YEAR(created_at) as year'))->distinct()->orderByDesc('year')->pluck('year');
+        $availableAnalyticsCategories = Category::orderBy('name')->get(['id', 'name']);
         $totalClicksToday = DB::table('analytics_events')->whereDate('created_at', Carbon::today())->count();
 
-        // --- BESUCHER-STATISTIKEN mit Filtern ---
+        // --- BESUCHER-STATISTIKEN (unverändert) ---
         $activeVisitors = DB::table('visits')->where('visited_at', '>=', now()->subMinutes(5))->distinct('visitor_id')->count('visitor_id');
         $visitorYear = $request->input('visitor_year', now()->year);
         $visitorMonth = $request->input('visitor_month', now()->month);
+        
         $visitsQuery = DB::table('visits')->whereYear('visited_at', $visitorYear);
         if ($visitorMonth) {
             $visitsQuery->whereMonth('visited_at', $visitorMonth);
@@ -111,12 +127,20 @@ public function dashboard(Request $request): InertiaResponse
         return [
             'stats' => ['totalConsents' => $totalConsents, 'analyticsAcceptanceRate' => $analyticsAcceptance],
             'analyticsData' => [
-                'history' => $clicksHistory, 'availableYears' => $availableAnalyticsYears,
+                'history' => $clicksHistory, 
+                'availableYears' => $availableAnalyticsYears,
+                'availableCategories' => $availableAnalyticsCategories,
                 'totalToday' => $totalClicksToday,
-                'filters' => ['year' => (int)$analyticsYear, 'month' => (int)$analyticsMonth]
+                'filters' => [
+                    'year' => (int)$analyticsYear, 
+                    // NEU: Gibt den korrekten Wert zurück (kann 'all' sein oder eine Zahl)
+                    'month' => $analyticsMonth === 'all' ? 'all' : (int)$analyticsMonth, 
+                    'category_id' => $analyticsCategoryId === 'all' ? 'all' : (int)$analyticsCategoryId
+                ]
             ],
             'visitorData' => [
-                'activeNow' => $activeVisitors, 'history' => $visitsHistory,
+                'activeNow' => $activeVisitors, 
+                'history' => $visitsHistory,
                 'availableYears' => $availableVisitorYears,
                 'filters' => ['year' => (int)$visitorYear, 'month' => (int)$visitorMonth]
             ]
