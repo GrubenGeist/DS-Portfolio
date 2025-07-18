@@ -9,8 +9,8 @@ use Inertia\Inertia;
 use Inertia\Response as InertiaResponse; // Für route() in Breadcrumbs
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Http\JsonResponse;
 use Carbon\Carbon;
-
 
 class PageController extends Controller
 {
@@ -57,36 +57,73 @@ public function dashboard(Request $request): InertiaResponse
     } catch (\Exception $e) {
         $errorLoadingUsers = 'Benutzerdaten konnten nicht geladen werden.';
     }
+    // Ruft die Helfer-Methode auf, um alle initialen Statistik-Daten zu laden
+        $stats = $this->getDashboardData($request);
 
-    // --- CONSENT-STATISTIKEN BERECHNEN ---
-    $totalConsents = DB::table('consent_events')->count();
-    $analyticsAcceptance = $totalConsents > 0
-        ? round((DB::table('consent_events')->where('analytics_given', true)->count() / $totalConsents) * 100)
-        : 0;
-    
-    $consentStats = [
-        'totalConsents' => $totalConsents,
-        'analyticsAcceptanceRate' => $analyticsAcceptance,
-    ];
+        // Übergibt alle Daten an das Frontend
+        return Inertia::render('Dashboard', [
+            'initialUsers' => $usersForDashboard,
+            'filters' => $request->only(['show_all', 'analytics_year', 'analytics_month', 'visitor_year', 'visitor_month']),
+            'stats' => $stats['stats'],
+            'analyticsData' => $stats['analyticsData'],
+            'visitorData' => $stats['visitorData'],
+        ]);
+    }
 
-    // --- ANALYSE-DATEN BERECHNEN ---
-    $clicksToday = DB::table('analytics_events')->whereDate('created_at', Carbon::today())->select('label', DB::raw('count(*) as total'))->groupBy('label')->orderByDesc('total')->get();
-    $clicksThisMonth = DB::table('analytics_events')->whereMonth('created_at', Carbon::now()->month)->whereYear('created_at', Carbon::now()->year)->select('label', DB::raw('count(*) as total'))->groupBy('label')->orderByDesc('total')->get();
-    $clicksThisYear = DB::table('analytics_events')->whereYear('created_at', Carbon::now()->year)->select('label', DB::raw('count(*) as total'))->groupBy('label')->orderByDesc('total')->get();
+    // Diese neue, schlanke Methode liefert NUR die dynamischen Daten als JSON für die Updates.
+    public function dashboardData(Request $request): JsonResponse
+    {
+        $data = $this->getDashboardData($request);
+        return response()->json($data);
+    }
 
-    // --- DATEN AN DAS FRONTEND ÜBERGEBEN ---
-    return Inertia::render('Dashboard', [
-        'initialUsers' => $usersForDashboard,
-        'userFetchError' => $errorLoadingUsers,
-        'filters' => $request->only(['show_all']),
-        'stats' => $consentStats,
-        'analyticsData' => [
-            'today' => $clicksToday,
-            'month' => $clicksThisMonth,
-            'year' => $clicksThisYear,
-        ]
-    ]);
-}
+
+    // Eine private Helfer-Methode, um doppelten Code zu vermeiden.
+    private function getDashboardData(Request $request): array
+    {
+
+        // --- CONSENT-STATISTIKEN ---
+        $totalConsents = DB::table('consent_events')->count();
+        $analyticsAcceptance = $totalConsents > 0 ? round((DB::table('consent_events')->where('analytics_given', true)->count() / $totalConsents) * 100) : 0;
+        
+        // --- ANALYTICS-DATEN mit Filtern ---
+        $analyticsYear = $request->input('analytics_year', now()->year);
+        $analyticsMonth = $request->input('analytics_month', now()->month);
+        $clicksQuery = DB::table('analytics_events')->whereYear('created_at', $analyticsYear);
+        if ($analyticsMonth) {
+            $clicksQuery->whereMonth('created_at', $analyticsMonth);
+        }
+        $clicksHistory = $clicksQuery->select('label', DB::raw('count(*) as total'))->groupBy('label')->orderByDesc('total')->get();
+        $availableAnalyticsYears = DB::table('analytics_events')->select(DB::raw('YEAR(created_at) as year'))->distinct()->orderByDesc('year')->pluck('year');
+        $totalClicksToday = DB::table('analytics_events')->whereDate('created_at', Carbon::today())->count();
+
+        // --- BESUCHER-STATISTIKEN mit Filtern ---
+        $activeVisitors = DB::table('visits')->where('visited_at', '>=', now()->subMinutes(5))->distinct('visitor_id')->count('visitor_id');
+        $visitorYear = $request->input('visitor_year', now()->year);
+        $visitorMonth = $request->input('visitor_month', now()->month);
+        $visitsQuery = DB::table('visits')->whereYear('visited_at', $visitorYear);
+        if ($visitorMonth) {
+            $visitsQuery->whereMonth('visited_at', $visitorMonth);
+        }
+        $visitsHistory = $visitsQuery->select(DB::raw('DATE(visited_at) as date'), DB::raw('count(distinct visitor_id) as unique_visitors'))->groupBy('date')->orderBy('date')->get();
+        $availableVisitorYears = DB::table('visits')->select(DB::raw('YEAR(visited_at) as year'))->distinct()->orderByDesc('year')->pluck('year');
+
+        return [
+            'stats' => ['totalConsents' => $totalConsents, 'analyticsAcceptanceRate' => $analyticsAcceptance],
+            'analyticsData' => [
+                'history' => $clicksHistory, 'availableYears' => $availableAnalyticsYears,
+                'totalToday' => $totalClicksToday,
+                'filters' => ['year' => (int)$analyticsYear, 'month' => (int)$analyticsMonth]
+            ],
+            'visitorData' => [
+                'activeNow' => $activeVisitors, 'history' => $visitsHistory,
+                'availableYears' => $availableVisitorYears,
+                'filters' => ['year' => (int)$visitorYear, 'month' => (int)$visitorMonth]
+            ]
+        ];
+    }
+
+
 
     public function showAdminRegistrationForm(): InertiaResponse
     {
@@ -135,3 +172,4 @@ public function dashboard(Request $request): InertiaResponse
         ]);
     }
 }
+

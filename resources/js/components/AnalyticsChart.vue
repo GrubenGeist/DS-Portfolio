@@ -1,71 +1,53 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted } from 'vue';
+import { computed, reactive, watch } from 'vue';
 import { Bar } from 'vue-chartjs';
-import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale } from 'chart.js';
+import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale, ChartOptions } from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
-// Registriere alle notwendigen Chart.js-Komponenten und das neue Plugin
 ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale, ChartDataLabels);
 
-// Definiert die Struktur der ankommenden Daten
-interface AnalyticsData {
-  today: { label: string | null; total: number }[];
-  month: { label: string | null; total: number }[];
-  year: { label: string | null; total: number }[];
-}
+const props = defineProps<{ data: any }>();
+const emit = defineEmits(['filters-changed']);
 
-const props = defineProps<{
-  data?: AnalyticsData;
-}>();
+const localFilters = reactive({
+  year: props.data.filters.year.toString(),
+  month: props.data.filters.month.toString(),
+});
 
-type Timeframe = 'today' | 'month' | 'year';
-const activeTimeframe = ref<Timeframe>('month');
-
-const isDarkMode = ref(false);
-onMounted(() => {
-    isDarkMode.value = document.documentElement.classList.contains('dark');
-    const observer = new MutationObserver(() => {
-        isDarkMode.value = document.documentElement.classList.contains('dark');
-    });
-    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
-    onUnmounted(() => observer.disconnect());
+watch(localFilters, (newValues) => {
+  emit('filters-changed', newValues);
 });
 
 const chartData = computed(() => {
-  if (!props.data || !props.data[activeTimeframe.value]) {
-    return { labels: [], datasets: [] };
-  }
-  const selectedData = props.data[activeTimeframe.value];
   return {
-    labels: selectedData.map(item => item.label || 'Unbekannt'),
-    datasets: [
-      {
-        backgroundColor: '#06b6d4',
-        borderRadius: 4,
-        data: selectedData.map(item => item.total),
-      },
-    ],
+    labels: props.data.history.map((item: any) => item.label || 'Unbekannt'),
+    datasets: [{
+      backgroundColor: '#06b6d4',
+      borderRadius: 4,
+      data: props.data.history.map((item: any) => item.total),
+    }],
   };
 });
 
-// KORRIGIERTE CHART-OPTIONEN
 const chartOptions = computed(() => {
-  const textColor = isDarkMode.value ? 'rgba(255, 255, 255, 0.8)' : 'rgba(0, 0, 0, 0.8)';
+  const isDarkMode = document.documentElement.classList.contains('dark');
+  const textColor = isDarkMode ? 'rgba(255, 255, 255, 0.8)' : 'rgba(0, 0, 0, 0.8)';
+  
   return {
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
       legend: { display: false },
-      tooltip: { enabled: true }, // Tooltip beim Hovern beibehalten
+      tooltip: { enabled: true },
       // Konfiguration für das Datalabels-Plugin (Zahlen auf den Balken)
       datalabels: {
-        anchor: 'end' as const,
-        align: 'top' as const,
+        anchor: 'end',
+        align: 'bottom',
         color: textColor,
         font: {
-          weight: 'bold' as const,
+          weight: 'bold',
         },
         formatter: (value: number) => value > 0 ? value : null, // Zeigt die Zahl an, außer sie ist 0
       },
@@ -79,29 +61,50 @@ const chartOptions = computed(() => {
         },
       },
       y: {
-        display: false, // Y-Achse und Skala komplett ausblenden
+        display: false, // Y-Achse und Skala ausblenden
         beginAtZero: true,
       },
     },
-  };
+  } as ChartOptions<'bar'>; // Wichtiger Typ-Hinweis für TypeScript
 });
+
+const months = [
+    { value: '1', label: 'Januar' }, { value: '2', label: 'Februar' }, { value: '3', label: 'März' },
+    { value: '4', label: 'April' }, { value: '5', label: 'Mai' }, { value: '6', label: 'Juni' },
+    { value: '7', label: 'Juli' }, { value: '8', label: 'August' }, { value: '9', label: 'September' },
+    { value: '10', label: 'Oktober' }, { value: '11', label: 'November' }, { value: '12', label: 'Dezember' },
+];
 </script>
 
 <template>
   <Card>
     <CardHeader>
-      <CardTitle>Klick-Analyse</CardTitle>
-      <CardDescription>Anzahl der Klicks pro Event im ausgewählten Zeitraum.</CardDescription>
+      <div class="flex justify-between items-start">
+        <div>
+          <CardTitle>Klick-Analyse</CardTitle>
+          <CardDescription>Anzahl der Klicks pro Element.</CardDescription>
+          <p class="mt-2 text-2xl font-bold">{{ data.totalToday }} <span class="text-sm font-normal text-muted-foreground">Klicks heute</span></p>
+        </div>
+        <div class="flex gap-2">
+          <Select v-model="localFilters.month">
+            <SelectTrigger class="w-[140px]"><SelectValue placeholder="Monat" /></SelectTrigger>
+            <SelectContent>
+              <SelectItem v-for="m in months" :key="m.value" :value="m.value">{{ m.label }}</SelectItem>
+            </SelectContent>
+          </Select>
+          <Select v-model="localFilters.year">
+            <SelectTrigger class="w-[100px]"><SelectValue placeholder="Jahr" /></SelectTrigger>
+            <SelectContent>
+              <SelectItem v-for="y in data.availableYears" :key="y" :value="y.toString()">{{ y }}</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
     </CardHeader>
     <CardContent>
-      <div class="flex gap-2 mb-4">
-        <Button :variant="activeTimeframe === 'today' ? 'default' : 'outline'" @click="activeTimeframe = 'today'">Heute</Button>
-        <Button :variant="activeTimeframe === 'month' ? 'default' : 'outline'" @click="activeTimeframe = 'month'">Dieser Monat</Button>
-        <Button :variant="activeTimeframe === 'year' ? 'default' : 'outline'" @click="activeTimeframe = 'year'">Dieses Jahr</Button>
-      </div>
       <div class="h-[250px]">
-          <Bar v-if="data && chartData.labels.length > 0" :data="chartData" :options="chartOptions" />
-          <p v-else class="flex items-center justify-center h-full text-sm text-muted-foreground">Keine Daten für diesen Zeitraum vorhanden.</p>
+        <Bar v-if="data.history.length > 0" :data="chartData" :options="chartOptions" />
+        <p v-else class="flex items-center justify-center h-full text-sm text-muted-foreground">Keine Klicks für diesen Zeitraum.</p>
       </div>
     </CardContent>
   </Card>

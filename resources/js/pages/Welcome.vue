@@ -117,10 +117,10 @@ const techWords = [
                                 v-track-click="{ category: 'Info Cards', label: 'InfoCard Zertifikate' }"
                             />
                     
+                            </div>
                         </div>
-                    </div>
-                </div>    
-            </div>
+                    </div>    
+                </div>
             </section>
         </div>
     

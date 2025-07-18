@@ -25,6 +25,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/services', [PageController::class, 'services'])->name('services')->middleware('role:Admin|Company');
     Route::get('/aboutme', [PageController::class, 'aboutMe'])->name('aboutme')->middleware('role:Admin|Company');
 
+
     // --- ADMIN-BEREICH (Benutzerverwaltung) ---
     Route::middleware(['role:Admin'])->prefix('admin')->name('admin.')->group(function () {
         Route::get('/users', [UserController::class, 'index'])->name('users.index');
@@ -32,6 +33,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::put('/users/{user}/update-role', [UserController::class, 'updateRole'])->name('users.updateRole');
         Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
     });
+
+    // --- API-ROUTEN FÜR DAS DASHBOARD ---
+    // Diese Route ist jetzt auch geschützt und nur für eingeloggte Benutzer erreichbar.
+    Route::get('/dashboard/data', [PageController::class, 'dashboardData'])->name('dashboard.data');
+
 });
 
 // --- WEITERE ROUTEN-DATEIEN LADEN ---
