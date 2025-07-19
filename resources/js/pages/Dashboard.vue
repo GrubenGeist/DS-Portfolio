@@ -1,88 +1,135 @@
 <script setup lang="ts">
 import AppLayout from '@/layouts/AppLayout.vue';
-import { Head, Link, router } from '@inertiajs/vue3';
-import { ref, watch } from 'vue';
+import { Head, router } from '@inertiajs/vue3';
+import { reactive, watch, onMounted, onUnmounted } from 'vue';
 import { route } from 'ziggy-js';
-import PlaceholderPattern from '@/components/PlaceholderPattern.vue';
-import AppLogoIcon from '@/components/AppLogoIcon.vue';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
-import UserActivityTable from '@/components/UserActivityTable.vue'; // <-- 1. NEU: Unsere Tabellen-Komponente importieren
-
-// Der User-Typ wird immer noch hier gebraucht, um die Props zu definieren
-interface User {
-    id: number;
-    name: string;
-    email: string;
-    roles: { name: string }[];
-    last_login_at: string | null;
-    is_online: boolean;
-}
+import UserActivityTable from '@/components/UserActivityTable.vue';
+import AnalyticsChart from '@/components/AnalyticsChart.vue';
+import VisitorChart from '@/components/VisitorChart.vue';
 
 const props = defineProps<{
-    initialUsers: User[];
-    filters: {
-        show_all: boolean;
-    }
+    initialUsers: any[];
+    filters: any;
+    stats: any;
+    analyticsData: any;
+    visitorData: any;
 }>();
 
-defineOptions({
-    layout: AppLayout,
-    inheritAttrs: false,
+defineOptions({ layout: AppLayout, inheritAttrs: false });
+
+const dashboardData = reactive({
+    stats: props.stats,
+    analyticsData: props.analyticsData,
+    visitorData: props.visitorData,
 });
 
-// Die Logik für die Filterung bleibt hier, da sie den Zustand des Dashboards steuert.
-const showAll = ref(props.filters.show_all || false);
+const filters = reactive({
+    show_all: props.filters.show_all || false,
+    analytics_year: props.analyticsData.filters.year,
+    analytics_month: props.analyticsData.filters.month,
+    analytics_category_id: props.analyticsData.filters.category_id || 'all',
+    visitor_year: props.visitorData.filters.year,
+    visitor_month: props.visitorData.filters.month,
+});
 
-watch(showAll, (newValue) => {
+async function fetchData() {
+    try {
+        const url = new URL(route('dashboard.data'), window.location.origin);
+        Object.entries(filters).forEach(([key, value]) => {
+            if (value !== null && value !== undefined) {
+                url.searchParams.set('analytics_year', filters.analytics_year);
+                url.searchParams.set('analytics_month', filters.analytics_month);
+                url.searchParams.set('analytics_category_id', filters.analytics_category_id);
+            }
+        });
+
+        const response = await fetch(url.toString(), {
+            headers: { 'Accept': 'application/json' }
+        });
+        if (!response.ok) throw new Error('Netzwerk-Antwort war nicht ok.');
+        
+        const data = await response.json();
+        
+        // Sicherstellen, dass die Datenobjekte existieren, bevor sie zugewiesen werden
+        if (data && data.stats) dashboardData.stats = data.stats;
+        if (data && data.analyticsData) dashboardData.analyticsData = data.analyticsData;
+        if (data && data.visitorData) dashboardData.visitorData = data.visitorData;
+
+    } catch (error) {
+        console.error('Fehler beim Abrufen der Dashboard-Daten:', error);
+    }
+}
+
+// KORREKTUR: Diese Funktion verarbeitet den 'all'-Wert für Monate jetzt korrekt.
+function updateAnalyticsFilters(newFilters: { year: string, month: string, category_id: string | number }) {
+  filters.analytics_year = newFilters.year;
+  filters.analytics_month = newFilters.month;
+  filters.analytics_category_id = newFilters.category_id; // ← bleibt _id
+  fetchData();
+}
+
+function updateVisitorFilters(newFilters: { year: string, month: string }) {
+    filters.visitor_year = parseInt(newFilters.year, 10);
+    filters.visitor_month = parseInt(newFilters.month, 10);
+    fetchData();
+}
+
+watch(() => filters.show_all, (newValue) => {
     router.get(route('dashboard'), { show_all: newValue }, {
-        preserveState: false, // Wir nutzen den "harten" Reload, der bei dir funktioniert hat
+        preserveState: true,
         preserveScroll: true,
+        replace: true,
     });
 });
 
-// 2. Die formatLastLogin-Funktion wird hier nicht mehr gebraucht, da sie in der Tabellen-Komponente lebt.
+let pollingIntervalId: number | null = null;
+onMounted(() => {
+    pollingIntervalId = window.setInterval(fetchData, 5000);
+});
+onUnmounted(() => {
+    if (pollingIntervalId) clearInterval(pollingIntervalId);
+});
 </script>
 
 <template>
     <Head title="Dashboard" />
-
     <div class="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
-        <div class="grid auto-rows-min gap-4 md:grid-cols-3">
-             <div class="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
-                 <PlaceholderPattern />
-                 <p class="absolute inset-0 flex items-center justify-center">
-                     <Link :href="route('settings.profile.edit')" class="z-10 text-white">Mein Profil</Link>
-                 </p>
-             </div>
-             <div class="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
-                 <PlaceholderPattern />
-                 <p class="absolute inset-0 flex items-center justify-center">
-                     <AppLogoIcon class="z-10 h-16 w-16" />
-                 </p>
-             </div>
-             <div class="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
-                 <PlaceholderPattern />
-                 <p class="absolute inset-0 z-10 flex items-center justify-center text-white">
-                     Angezeigte Benutzer: {{ initialUsers.length }}
-                 </p>
-             </div>
+        <!-- Stat-Karten -->
+        <div class="grid auto-rows-min gap-4 md:grid-cols-4">
+            <div class="p-6 bg-white dark:bg-slate-800 rounded-xl border border-border">
+                <h3 class="text-sm font-medium text-muted-foreground">Gesamte Zustimmungen</h3>
+                <p class="text-3xl font-bold">{{ dashboardData.stats.totalConsents }}</p>
+            </div>
+            <div class="p-6 bg-white dark:bg-slate-800 rounded-xl border border-border">
+                <h3 class="text-sm font-medium text-muted-foreground">Analyse-Zustimmungsrate</h3>
+                <p class="text-3xl font-bold">{{ dashboardData.stats.analyticsAcceptanceRate }}%</p>
+            </div>
+            <div class="p-6 bg-white dark:bg-slate-800 rounded-xl border border-border">
+                <h3 class="text-sm font-medium text-muted-foreground">Aktive Besucher (5 Min.)</h3>
+                <p class="text-3xl font-bold">{{ dashboardData.visitorData.activeNow }}</p>
+            </div>
+             <div class="p-6 bg-white dark:bg-slate-800 rounded-xl border border-border">
+                 <h3 class="text-sm font-medium text-muted-foreground">Klicks heute</h3>
+                 <p class="text-3xl font-bold">{{ dashboardData.analyticsData.totalToday }}</p>
+            </div>
         </div>
-
+        
+        <!-- Chart-Komponenten -->
+        <AnalyticsChart :data="dashboardData.analyticsData" @update:filters="updateAnalyticsFilters" />
+        <VisitorChart :data="dashboardData.visitorData" :active-now="dashboardData.visitorData.activeNow" @update:filters="updateVisitorFilters" />
+        
+        <!-- Benutzer-Aktivitätstabelle -->
         <div class="relative flex-1 rounded-xl border border-sidebar-border/70 p-4 dark:border-sidebar-border">
-            
             <div class="mb-4 flex items-center justify-between">
                 <h2 class="text-xl font-semibold dark:text-white">Benutzer-Aktivität</h2>
                 <div class="flex items-center space-x-2">
-                    <Checkbox id="show-all" v-model:checked="showAll" />
-                    <Label for="show-all" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                        Alle Benutzer anzeigen
-                    </Label>
+                    <Checkbox id="show-all" v-model:checked="filters.show_all" />
+                    <Label for="show-all" class="text-sm font-medium">Alle Benutzer anzeigen</Label>
                 </div>
             </div>
-            
             <UserActivityTable :users="initialUsers" />
-
         </div>
     </div>
 </template>

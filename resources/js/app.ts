@@ -5,13 +5,21 @@ import '../css/app.css';
 import { createInertiaApp } from '@inertiajs/vue3';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import type { DefineComponent } from 'vue';
-import { createApp, h } from 'vue'; // createApp und h sind schon da
+import { createApp, h, watchEffect } from 'vue'; // watchEffect hinzugefügt
 import { ZiggyVue } from 'ziggy-js';
 import './bootstrap';
 import { initializeTheme } from './composables/useAppearance';
+import { router } from '@inertiajs/vue3';
+import { trackClick } from '@/directives/trackClick'; // die Direktive
 
-// NEU: Importiere deine Kontaktformular-Komponente
-import ContactForm from './components/ContactForm.vue'; // Stelle sicher, dass der Pfad korrekt ist
+
+// Für den Cookie Banner
+// KORREKTUR 1: Wir importieren nur den Haupt-Hook 'useConsent'.
+import { useConsent } from '@/composables/useConsent';
+import { loadScript } from '@/lib/loadScript';
+
+// Deine globale Komponente
+import ContactForm from './components/ContactForm.vue';
 
 // Extend ImportMeta interface for Vite...
 declare module 'vite/client' {
@@ -32,49 +40,85 @@ createInertiaApp({
     title: (title) => `${title} - ${appName}`,
     resolve: (name) => resolvePageComponent(`./pages/${name}.vue`, import.meta.glob<DefineComponent>('./pages/**/*.vue')),
     setup({ el, App, props, plugin }) {
-        const vueApp = createApp({ render: () => h(App, props) }); // Erstelle die App-Instanz
+        
+        // NEUE LOGIK FÜR COOKIE-CONSENT
+        
+        // KORREKTUR 2: Wir rufen den Hook auf und holen uns beide Teile, die er zurückgibt.
+        const { consentState, loadConsent } = useConsent();
+        // Wir rufen die Funktion auf, um den gespeicherten Zustand zu laden.
+        loadConsent();
+
+        // Ein "Wächter", der auf Änderungen im Consent-Status reagiert
+        watchEffect(() => {
+            // Lade Google Analytics, WENN die Zustimmung für 'analytics' true ist.
+            if (consentState.analytics) {
+                console.log('Zustimmung für Analytics gegeben. Lade Google Analytics...');
+                loadScript('https://www.googletagmanager.com/gtag/js?id=DEINE_GTAG_ID', 'google-analytics')
+                    .then(() => {
+                        // Initialisiere GTag, nachdem das Skript geladen ist
+                        (window as any).dataLayer = (window as any).dataLayer || [];
+                        function gtag(...args: any[]) { (window as any).dataLayer.push(args); }
+                        gtag('js', new Date());
+                        gtag('config', 'DEINE_GTAG_ID');
+                        console.log('Google Analytics geladen.');
+                    })
+                    .catch(error => console.error(error));
+            }
+            // Hier könntest du weitere 'if'-Bedingungen für andere Skripte hinzufügen
+            // if (consentState.marketing) { ... }
+        });
+
+
+        const vueApp = createApp({ render: () => h(App, props) });
 
         vueApp.use(plugin);
         vueApp.use(ZiggyVue, props.initialPage.props.ziggy);
 
-        // NEU: Registriere hier deine globale Komponente
+        vueApp.directive('track-click', trackClick); //Registriere die Direktive unter dem Namen 'track-click'
+        
         vueApp.component('contact-form', ContactForm);
 
-        vueApp.mount(el); // Mounte die App erst nach der Registrierung
+        vueApp.mount(el);
     },
     progress: {
         color: '#4B5563',
     },
-
-
 });
 
-// This will set light / dark mode on page load...
+// Seitenaufrufe für SPA manuell tracken
+router.on('navigate', (event) => {
+  // Prüfe, ob die gtag-Funktion existiert
+  if (typeof window.gtag !== 'undefined') {
+    // Sende ein 'page_view' Event mit der neuen URL
+    //Wichtig: Ersetze auch hier DEINE_GTAG_ID durch deine echte Google Analytics ID
+    window.gtag('config', 'DEINE_GTAG_ID', {
+      page_path: event.detail.page.url,
+    });
+  }
+});
+
+// Theme wird initialisiert
 initializeTheme();
 
+// EASTER EGG
+const styles = [
+    'font-size: 16px',
+    'font-family: monospace',
+    'background: #000000ff',
+    'color: #48ff00ff',
+    'padding: 3px 20px',
+    'border-radius: 5px',
+    'line-height: 1.0',
+].join(';');
 
-    // --- EASTER EGG ---
-    const styles = [
-        'font-size: 16px',
-        'font-family: monospace',
-        'background: #000000ff',
-        'color: #48ff00ff',
-        'padding: 3px 20px',
-        'border-radius: 5px',
-        'line-height: 1.0', // Fügt etwas Zeilenabstand hinzu
-    ].join(';');
-
-    // Wir benutzen Backticks (` `), um einen mehrzeiligen Text zu erstellen.
-    // Jeder Zeilenumbruch hier wird auch in der Konsole als Umbruch angezeigt.
-    const message = `Neugierig? 😉 
-    -------------------------------------------------------------------
-    | Du schaust dir den Code eines leidenschaftlichen Entwicklers an.|
-    | Wenn du auf der Suche nach jemandem mit Liebe zum Detail bist,  |
-    | melde dich über das Kontak Formular!                            |
-    |                                                                 |
-    | Möge die Macht mit dir sein                                     |
-    -------------------------------------------------------------------`;                                                                   
-
-    // Gib die gestylte, mehrzeilige Nachricht aus
-    console.log(`%c${message}`, styles);
-    console.log('Mein GitHub-Profil: https://github.com/grubengeist');
+// const message = `Neugierig? 😉                                                     
+//-
+// | Du schaust dir den Code eines leidenschaftlichen Entwicklers an.|
+// | Wenn du auf der Suche nach jemandem mit Liebe zum Detail bist,  |
+// | melde dich über das Kontaktformular!                            |
+// |                                                                 |
+// | Möge die Macht mit dir sein                                     |
+//-`;
+// 
+// console.log(`%c${message}`, styles); 
+// console.log('Mein GitHub-Profil: https://github.com/grubengeist');

@@ -3,6 +3,9 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Api\AnalyticsEventController;
+use App\Http\Controllers\Admin\CategoryController; 
+use App\Http\Controllers\ContactFormController;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,6 +16,7 @@ use App\Http\Controllers\Admin\UserController;
 // --- ÖFFENTLICHE ROUTEN ---
 Route::get('/', [PageController::class, 'welcome'])->name('welcome');
 Route::get('/contactform', [PageController::class, 'contactform'])->name('contactform');
+Route::post('/track-event', [AnalyticsEventController::class, 'store'])->name('api.track-event');
 
 // --- GESCHÜTZTE ROUTEN ---
 Route::middleware(['auth', 'verified'])->group(function () {
@@ -22,13 +26,20 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/services', [PageController::class, 'services'])->name('services')->middleware('role:Admin|Company');
     Route::get('/aboutme', [PageController::class, 'aboutMe'])->name('aboutme')->middleware('role:Admin|Company');
 
+
     // --- ADMIN-BEREICH (Benutzerverwaltung) ---
     Route::middleware(['role:Admin'])->prefix('admin')->name('admin.')->group(function () {
         Route::get('/users', [UserController::class, 'index'])->name('users.index');
         Route::get('/users/{user}/edit-role', [UserController::class, 'editRole'])->name('users.editRole');
         Route::put('/users/{user}/update-role', [UserController::class, 'updateRole'])->name('users.updateRole');
         Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
+        Route::resource('categories', CategoryController::class);
     });
+
+    // --- API-ROUTEN FÜR DAS DASHBOARD ---
+    // Diese Route ist jetzt auch geschützt und nur für eingeloggte Benutzer erreichbar.
+    Route::get('/dashboard/data', [PageController::class, 'dashboardData'])->name('dashboard.data');
+
 });
 
 // --- WEITERE ROUTEN-DATEIEN LADEN ---

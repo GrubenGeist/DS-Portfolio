@@ -8,6 +8,10 @@
 import AppLogoIcon from '@/components/AppLogoIcon.vue';
 import Breadcrumbs from '@/components/Breadcrumbs.vue';
 import UserMenuContent from '@/components/UserMenuContent.vue';
+import { ref, computed, onMounted, onUnmounted } from 'vue';
+import { Sun, Moon } from 'lucide-vue-next'; 
+import { useAppearance } from '@/composables/useAppearance'; // Deinen bestehenden Composable importieren
+import GhostButton from '@/components/GhostButton.vue';
 
 // UI-Komponenten aus der shadcn-vue Bibliothek
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -33,8 +37,17 @@ import type { NavItem, BreadcrumbItem as BreadcrumbItemType } from '@/types';
 // Framework-spezifische Helfer
 import { Link, usePage } from '@inertiajs/vue3'; // Für nahtloses Routing in einer Laravel/Inertia-Anwendung
 import { LogIn, Menu, Search, UserPlus } from 'lucide-vue-next'; // Icon-Bibliothek
-import { computed } from 'vue'; // Vue-Funktion zur Erstellung von berechneten, reaktiven Werten
 import { route } from 'ziggy-js'; // Erzeugt Laravel-Routen im Frontend
+
+// --- THEME-LOGIK ---
+// Wir rufen deinen Composable auf, um den aktuellen Zustand und die Update-Funktion zu erhalten.
+const { appearance, updateAppearance } = useAppearance();
+
+// Neue Funktion, die zwischen Light und Dark umschaltet.
+const toggleTheme = () => {
+    const newAppearance = appearance.value === 'dark' ? 'light' : 'dark';
+    updateAppearance(newAppearance);
+};
 
 // =============================================================================
 // LOGIK (SCRIPT-TEIL)
@@ -58,6 +71,7 @@ const defaultAvatar = '';
 interface Props {
     breadcrumbs?: BreadcrumbItemType[]; // Eine optionale Liste von Breadcrumb-Links
 }
+
 // Setzt Standardwerte für die Props (in diesem Fall ein leeres Array für die Breadcrumbs).
 const props = withDefaults(defineProps<Props>(), {
     breadcrumbs: () => [],
@@ -90,17 +104,18 @@ const activeItemStyles = computed(
             item: NavItem, // KORREKTUR: Typ `NavItem` wird hier verwendet.
         ) => (isNavItemActive.value(item) ? 'text-neutral-900 dark:text-neutral-50 bg-muted dark:bg-neutral-800' : ''),
 );
+
 </script>
 
 <template>
     <div>
-        <div class="border-b border-sidebar-border/80">
+        <div class="border-b border-sidebar-border/80 dark:bg-stone-900">
             <div class="flex h-16 w-full items-center px-2 md:px-2">
 
                 <div class="lg:hidden">
                     <Sheet>
                         <SheetTrigger :as-child="true">
-                            <Button variant="ghost" size="icon" class="mr-2 h-9 w-9">
+                            <Button variant="secondary" size="lg" class="mr-2 h-9 w-9">
                                 <Menu class="h-5 w-5" />
                             </Button>
                         </SheetTrigger>
@@ -112,8 +127,41 @@ const activeItemStyles = computed(
                                 </Link>
                             </SheetHeader>
                             <div class="flex h-full flex-1 flex-col justify-between space-y-4">
-                                <nav class="-mx-3 space-y-1">
-                                    </nav>
+                                <nav class="grid items-start gap-2 px-2 text-sm font-medium">
+                                    <template v-for="item in filteredMainNavItems" :key="item.title">
+
+                                        <div v-if="item.children && item.children.length > 0" class="space-y-1">
+                                            <h4 class="px-3 py-2 font-semibold text-muted-foreground">{{ item.title }}</h4>
+                                            <Link
+                                                v-for="child in item.children"
+                                                :key="child.title"
+                                                :href="child.href!"
+                                                class="flex items-center gap-3 rounded-lg border border-border px-3 py-2 text-foreground transition-colors hover:bg-accent"
+                                                :class="{ 'bg-primary text-primary-foreground hover:bg-primary/90': isNavItemActive(child) }"
+                                            >
+                                                <component :is="child.icon" class="h-4 w-4" />
+                                                {{ child.title }}
+                                            </Link>
+                                        </div>
+                                    
+                                        <Link
+                                            v-else
+                                            :href="item.href!"
+                                            class="flex items-center gap-3 rounded-lg border border-border px-3 py-2 text-foreground transition-colors hover:bg-accent"
+                                            :class="{ 'bg-primary text-primary-foreground hover:bg-primary/90': isNavItemActive(item) }"
+                                        >
+                                            <component :is="item.icon" class="h-4 w-4" />
+                                            {{ item.title }}
+                                        </Link>
+                                        
+
+
+                                    </template>
+
+                                            <GhostButton v-track-click="{ category: 'Easteregg', label: 'Ghost Button' }"/>
+
+
+                                </nav>
                             </div>
                         </SheetContent>
                     </Sheet>
@@ -178,9 +226,32 @@ const activeItemStyles = computed(
                     </NavigationMenu>
                 </div>
 
-                <div class="ml-auto flex items-center space-x-2">
+                <div class="ml-auto flex items-center space-x-4">
+                    <button
+                        @click="toggleTheme"
+                        type="button"
+                        class="relative inline-flex h-7 w-14 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent bg-slate-200 dark:bg-slate-700 transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2"
+                        role="switch"
+                        :aria-checked="appearance === 'dark'"
+                    >
+                        <span class="sr-only">Theme umschalten</span>
+
+                        <span
+                            aria-hidden="true"
+                            :class="appearance === 'dark' ? 'translate-x-7' : 'translate-x-0'"
+                            class="pointer-events-none relative inline-block h-6 w-6 transform rounded-full bg-white shadow-lg ring-0 transition duration-200 ease-in-out"
+                        >
+                            <span class="absolute inset-0 flex h-full w-full items-center justify-center transition-opacity" :class="appearance === 'dark' ? 'opacity-0 ease-out duration-100' : 'opacity-100 ease-in duration-200'"></span>
+                            <span class="absolute inset-0 flex h-full w-full items-center justify-center transition-opacity" :class="appearance === 'dark' ? 'opacity-100 ease-in duration-200' : 'opacity-0 ease-out duration-100'"></span>
+
+                            <Sun v-if="appearance !== 'dark'" class="absolute inset-0 h-full w-full p-1 text-yellow-500" />
+                            <Moon v-else class="absolute inset-0 h-full w-full p-1 text-slate-800" />
+                        </span>
+                    </button>   
+
+                    
                     <template v-if="isGuest">
-                        <div class="flex items-center space-x-1">
+                        <div class="flex items-center space-x-4">
                             <Link :href="route('login')">
                                 <Button variant="ghost" class="h-9 px-3 text-sm"> <LogIn class="mr-2 h-4 w-4" /> Login </Button>
                             </Link>
@@ -188,26 +259,31 @@ const activeItemStyles = computed(
                                 <Button variant="default" class="h-9 px-3 text-sm"> <UserPlus class="mr-2 h-4 w-4" /> Registrieren </Button>
                             </Link>
                         </div>
-                    </template>
-                    <template v-else-if="user">
-                        <DropdownMenu>
-                            <DropdownMenuTrigger :as-child="true">
-                                <Button variant="ghost" class="relative h-9 w-9 rounded-full ...">
-                                    <Avatar class="size-8">
-                                        <AvatarImage :src="user.avatar || defaultAvatar" :alt="user.name ?? 'User Avatar'" />
-                                        <AvatarFallback class="bg-muted ...">
-                                            {{ getInitials(user.name ?? '') }}
-                                        </AvatarFallback>
-                                    </Avatar>
-                                </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent class="w-56" align="end" :side-offset="5">
-                                <UserMenuContent :user="user" />
-                            </DropdownMenuContent>
-                        </DropdownMenu>
-                    </template>
-                </div>
 
+
+
+                    </template>
+                        <template v-else-if="user">
+                            <div class="flex items-center pr-4">
+                                <DropdownMenu>
+                                    <DropdownMenuTrigger :as-child="true">
+                                        <Button variant="ghost" class="relative h-10 w-10 rounded-full ">
+                                            <Avatar class="size-11">
+                                                <AvatarImage :src="user.avatar || defaultAvatar" :alt="user.name ?? 'User Avatar'" />
+                                                <AvatarFallback class="bg-muted ...">
+                                                    {{ getInitials(user.name ?? '') }}
+                                                </AvatarFallback>
+                                            </Avatar>
+                                        </Button>
+                                    </DropdownMenuTrigger>
+                                    <DropdownMenuContent class="w-59" align="end" :side-offset="5">
+                                        <UserMenuContent :user="user" />
+                                    </DropdownMenuContent>
+                                </DropdownMenu>
+                            </div>
+                        </template>
+                    
+                </div>
             </div>
         </div>
 
@@ -218,3 +294,4 @@ const activeItemStyles = computed(
         </div>
     </div>
 </template>
+
