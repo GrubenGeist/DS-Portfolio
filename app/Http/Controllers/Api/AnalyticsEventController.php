@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\Category; // WICHTIG: Das neue Category-Model importieren
+use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -21,21 +21,19 @@ class AnalyticsEventController extends Controller
 
         $categoryId = null;
 
-        // Prüfen, ob eine Kategorie übergeben wurde.
         if (!empty($validated['category'])) {
-            // Finde die Kategorie anhand ihres Namens. Wenn sie nicht existiert,
-            // wird sie automatisch neu in der 'categories'-Tabelle angelegt.
             $category = Category::firstOrCreate(
                 ['name' => $validated['category']]
             );
-            // Wir holen uns die ID der gefundenen oder neu erstellten Kategorie.
             $categoryId = $category->id;
         }
 
-        // Speichere das Event in der Datenbank mit der neuen 'category_id'.
+        // Speichere das Event in der Datenbank.
         DB::table('analytics_events')->insert([
+            // KORREKTUR: Der fehlende Wert für die 'action'-Spalte wird jetzt mitgegeben.
+            'action' => 'click',
             'label' => $validated['label'],
-            'category_id' => $categoryId, // Die neue Spalte wird hier verwendet
+            'category_id' => $categoryId,
             'created_at' => now(),
             'updated_at' => now(),
         ]);

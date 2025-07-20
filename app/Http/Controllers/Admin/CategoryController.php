@@ -11,12 +11,8 @@ use Inertia\Inertia;
 
 class CategoryController extends Controller
 {
-    /**
-     * Zeigt eine Liste aller Kategorien an.
-     */
     public function index()
     {
-        // KORREKTUR: Der Pfad zur Vue-Komponente wurde an deine Ordnerstruktur angepasst.
         return Inertia::render('Admin/Users/Categories/Index', [
             'categories' => Category::orderBy('name')->get()->map(fn ($category) => [
                 'id' => $category->id,
@@ -26,9 +22,6 @@ class CategoryController extends Controller
         ]);
     }
 
-    /**
-     * Speichert eine neu erstellte Kategorie.
-     */
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -37,12 +30,10 @@ class CategoryController extends Controller
 
         Category::create($validated);
 
-        return redirect()->route('admin.categories.index');
+        // NEU: Flash-Nachricht für Erfolg hinzufügen
+        return redirect()->route('admin.categories.index')->with('success', 'Kategorie erfolgreich erstellt.');
     }
 
-    /**
-     * Aktualisiert eine bestehende Kategorie.
-     */
     public function update(Request $request, Category $category)
     {
         $validated = $request->validate([
@@ -51,16 +42,15 @@ class CategoryController extends Controller
 
         $category->update($validated);
 
-        return redirect()->route('admin.categories.index');
+        // NEU: Flash-Nachricht für Erfolg hinzufügen
+        return redirect()->route('admin.categories.index')->with('success', 'Kategorie erfolgreich aktualisiert.');
     }
 
-    /**
-     * Löscht eine Kategorie.
-     */
     public function destroy(Category $category)
     {
         $category->delete();
 
-        return redirect()->route('admin.categories.index');
+        // NEU: Flash-Nachricht für Erfolg hinzufügen
+        return redirect()->route('admin.categories.index')->with('success', 'Kategorie erfolgreich gelöscht.');
     }
 }

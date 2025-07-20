@@ -5,8 +5,8 @@ namespace Database\Seeders;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
-use Spatie\Permission\Models\Permission; // Nötig, wenn du einen Standard-Admin erstellst
-use Spatie\Permission\Models\Role; // Nötig, wenn du einen Standard-Admin erstellst
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 
 class RolesAndPermissionsSeeder extends Seeder
 {
@@ -15,51 +15,51 @@ class RolesAndPermissionsSeeder extends Seeder
         // Cache leeren
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
 
-        // Permissions erstellen
-        $createUserPermission = Permission::create(['name' => 'create user']);
+        // Permissions erstellen (nur wenn sie nicht existieren)
+        $createUserPermission = Permission::firstOrCreate(['name' => 'create user']);
+        $viewCompanyContentPermission = Permission::firstOrCreate(['name' => 'view company content']);
+        $viewCustomerContentPermission = Permission::firstOrCreate(['name' => 'view customer content']);
 
-        // Optionale, spezifischere Permission für Company-Inhalte
-        $viewCompanyContentPermission = Permission::create(['name' => 'view company content']);
-        // Füge hier ggf. weitere Permissions hinzu, z.B. für Posts, wenn benötigt
-        // $createPostPermission = Permission::create(['name' => 'create post']);
-        // $editPostPermission = Permission::create(['name' => 'edit post']);
-        // $deletePostPermission = Permission::create(['name' => 'delete post']);
+        // Rollen erstellen (nur wenn sie nicht existieren)
+        $companyRole = Role::firstOrCreate(['name' => 'Company']);
+        $adminRole = Role::firstOrCreate(['name' => 'Admin']);
+        $customerRole = Role::firstOrCreate(['name' => 'Customer']);
 
-        // Rollen erstellen
-        $companyRole = Role::create(['name' => 'Company']); // Rolle für Unternehmen/Kunden
-        $adminRole = Role::create(['name' => 'Admin']);     // Admin-Rolle
-
-        // Permissions an Rollen zuweisen (optional für Admin wegen Gate::before)
-
-        // Company darf spezifische Inhalte sehen (optional, wenn auch über Route-Middleware gesteuert)
+        // Permissions an Rollen zuweisen
         $companyRole->givePermissionTo($viewCompanyContentPermission);
-        // $companyRole->givePermissionTo($createPostPermission); // Beispiel: Wenn Company Posts erstellen darf
-
-        // Admin: Dank Gate::before muss hier nichts zugewiesen werden.
-        // Zur Klarheit KANN man es trotzdem tun, wenn man möchte:
+        $customerRole->givePermissionTo($viewCustomerContentPermission);
         $adminRole->givePermissionTo($createUserPermission);
         $adminRole->givePermissionTo($viewCompanyContentPermission);
-        // $adminRole->givePermissionTo($createPostPermission);
-        // $adminRole->givePermissionTo($editPostPermission);
-        // $adminRole->givePermissionTo($deletePostPermission);
-        // ...alle anderen Permissions...
 
-        // Optional: Einen Standard-Admin-Benutzer erstellen
-        // Nützlich, damit du dich direkt als Admin einloggen kannst
-        $adminUser = User::factory()->create([
-            'name' => 'Admin',
-            'email' => 'ds-it-admin@example.com',
-            'password' => Hash::make('ds-it-admin-pw1'),
-        ]);
+        // Standard-Benutzer erstellen mit den korrekten Spalten
+        $adminUser = User::firstOrCreate(
+            ['email' => 'ds-it-admin@example.com'],
+            [
+                'first_name' => 'Admin', // Geändert von 'name'
+                'last_name' => 'User',   // Hinzugefügt
+                'password' => Hash::make('ds-it-admin-pw1'),
+            ]
+        );
         $adminUser->assignRole($adminRole);
 
-        // Optional: Einen Standard-Company-Benutzer erstellen
-        $companyUser = User::factory()->create([
-            'name' => 'Test Company',
-            'email' => 'company@example.com',
-            'password' => Hash::make('CompanyPW'),
-        ]);
+        $companyUser = User::firstOrCreate(
+            ['email' => 'company@example.com'],
+            [
+                'first_name' => 'Test',      // Geändert von 'name'
+                'last_name' => 'Company',    // Hinzugefügt
+                'password' => Hash::make('CompanyPW'),
+            ]
+        );
         $companyUser->assignRole($companyRole);
 
+        $customerUser = User::firstOrCreate(
+            ['email' => 'customer@example.com'],
+            [
+                'first_name' => 'Test',      // Geändert von 'name'
+                'last_name' => 'Kunde',      // Hinzugefügt
+                'password' => Hash::make('CustomerPW'),
+            ]
+        );
+        $customerUser->assignRole($customerRole);
     }
 }

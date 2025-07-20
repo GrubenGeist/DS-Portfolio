@@ -38,9 +38,9 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
-        [$message, $author] = str(\Illuminate\Foundation\Inspiring::quotes()->random())->explode('-'); // Illuminate\Foundation\Inspiring für Inspiring::quotes()
+        [$message, $author] = str(\Illuminate\Foundation\Inspiring::quotes()->random())->explode('-');
 
-        $loggedInUser = $request->user(); // Benutzer einmal holen
+        $loggedInUser = $request->user();
 
         return [
             ...parent::share($request),
@@ -51,9 +51,8 @@ class HandleInertiaRequests extends Middleware
                     'id' => $loggedInUser->id,
                     'name' => $loggedInUser->name,
                     'email' => $loggedInUser->email,
-                    'roles' => $loggedInUser->getRoleNames()->toArray(), // ->toArray() ist gut für Konsistenz
-                    // ---- HIER DIE NEUEN FELDER HINZUFÜGEN ----
-                    'avatar' => $loggedInUser->avatar ?? null, // Beispiel, falls du ein Avatar-Feld hast
+                    'roles' => $loggedInUser->getRoleNames()->toArray(),
+                    'avatar' => $loggedInUser->avatar ?? null,
                     'email_verified_at' => $loggedInUser->email_verified_at ? $loggedInUser->email_verified_at->toIso8601String() : null,
                     'created_at' => $loggedInUser->created_at ? $loggedInUser->created_at->toIso8601String() : null,
                     'updated_at' => $loggedInUser->updated_at ? $loggedInUser->updated_at->toIso8601String() : null,
@@ -64,6 +63,14 @@ class HandleInertiaRequests extends Middleware
                 'location' => $request->url(),
             ],
             'canRegister' => LaravelRoute::has('register'),
+            
+            // KORREKTUR: Dieser Block wurde zu deinen bestehenden geteilten Daten hinzugefügt.
+            'flash' => function () use ($request) {
+                return [
+                    'success' => $request->session()->get('success'),
+                    'error' => $request->session()->get('error'),
+                ];
+            },
         ];
     }
 }

@@ -5,6 +5,7 @@ use App\Http\Controllers\PageController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Api\AnalyticsEventController;
 use App\Http\Controllers\Admin\CategoryController; 
+use App\Http\Controllers\Api\ConsentEventController; 
 use App\Http\Controllers\ContactFormController;
 
 /*
@@ -18,6 +19,7 @@ Route::get('/', [PageController::class, 'welcome'])->name('welcome');
 Route::get('/contactform', [PageController::class, 'contactform'])->name('contactform');
 Route::post('/track-event', [AnalyticsEventController::class, 'store'])->name('api.track-event');
 
+Route::post('/consent-event', [ConsentEventController::class, 'store'])->name('api.consent.store');
 // --- GESCHÜTZTE ROUTEN ---
 Route::middleware(['auth', 'verified'])->group(function () {
     // Allgemeine Seiten
