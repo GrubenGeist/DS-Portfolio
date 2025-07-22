@@ -158,7 +158,7 @@ const activeItemStyles = computed(
 
                                     </template>
 
-                                            <GhostButton v-track-click="{ category: 'Easteregg', label: 'Ghost Button' }"/>
+                                            <GhostButton v-track-click="{ category: 'Easter Egg', label: 'Navbar Ghostbutton' }"/>
 
 
                                 </nav>

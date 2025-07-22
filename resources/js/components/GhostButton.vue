@@ -48,7 +48,7 @@ onMounted(() => {
     const wasHidden = localStorage.getItem('ghostButtonHidden') === 'true';
 
     if (!wasHidden) {
-        if (Math.random() > 0.9) { // 0.01 = Wahrscheinlichkeit von 99% - 0.99 = Wahrscheinlichkeit von 1% 
+        if (Math.random() > 0.7) { // 0.01 = Wahrscheinlichkeit von 99% - 0.99 = Wahrscheinlichkeit von 1% 
             setRandomGhostText();
             showGhostButton.value = true;
         }
