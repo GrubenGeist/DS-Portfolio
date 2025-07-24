@@ -10,7 +10,7 @@ class SeedAnalyticsEvents extends Seeder
 {
     public function run(): void
     {
-        $now = Carbon::now();
+        /*$now = Carbon::now();
 
         // Kategorien erstellen und IDs merken
         $category1 = DB::table('categories')->insertGetId([
@@ -48,6 +48,6 @@ class SeedAnalyticsEvents extends Seeder
                 'created_at' => $now->copy()->subDays(3),
                 'updated_at' => $now->copy()->subDays(3),
             ],
-        ]);
+        ]);*/
     }
 }
