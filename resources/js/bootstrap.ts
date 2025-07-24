@@ -1,33 +1,24 @@
-import axios from 'axios';
-
 /**
  * We'll load the axios HTTP library which allows us to easily issue requests
  * to our Laravel back-end. This library automatically handles sending the
  * CSRF token as a header based on the value of the "XSRF" token cookie.
  */
 
-//axios.defaults.withCredentials = true; // Wichtig für Cookie-basierte Authentifizierung (Sanctum SPA)
-//axios.defaults.withXSRFToken = true;   // Axios sendet X-XSRF-TOKEN Header basierend auf dem XSRF-TOKEN Cookie
-(window as any).axios = axios;
+import axios from 'axios';
+window.axios = axios;
 
-axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
-axios.defaults.withCredentials = true;
-axios.defaults.withXSRFToken = true;
-
-/**
- * Next we will register the CSRF Token as a common header with Axios so that
- * all outgoing HTTP requests automatically have it attached. This is just
- * a simple convenience so we don't have to attach every token manually.
- */
-/*
-const token = document.head.querySelector('meta[name="csrf-token"]'); 
-
-if (token) {
-    axios.defaults.headers.common['X-CSRF-TOKEN'] = (token as HTMLMetaElement).content; 
+// This line is the most important part.
+// It sets a default header 'X-CSRF-TOKEN' for all axios requests.
+// The value is read from a meta tag in your HTML head, which Laravel provides.
+const csrfToken = document.querySelector('meta[name="csrf-token"]');
+if (csrfToken) {
+    window.axios.defaults.headers.common['X-CSRF-TOKEN'] = csrfToken.getAttribute('content');
 } else {
     console.error('CSRF token not found: https://laravel.com/docs/csrf#csrf-x-csrf-token');
 }
-*/
+
+window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+
 /**
  * Echo exposes an expressive API for subscribing to channels and listening
  * for events that are broadcast by Laravel. Echo and event broadcasting
@@ -35,11 +26,11 @@ if (token) {
  */
 
 // import Echo from 'laravel-echo';
+
 // import Pusher from 'pusher-js';
+// window.Pusher = Pusher;
 
-// (window as any).Pusher = Pusher;
-
-// (window as any).Echo = new Echo({
+// window.Echo = new Echo({
 //     broadcaster: 'pusher',
 //     key: import.meta.env.VITE_PUSHER_APP_KEY,
 //     cluster: import.meta.env.VITE_PUSHER_APP_CLUSTER ?? 'mt1',

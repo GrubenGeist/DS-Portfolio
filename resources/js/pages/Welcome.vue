@@ -47,7 +47,7 @@ const techWords = [
                     <div class="mt-8"> <!--@click="handleProjectsClick" ist für die Google Analytics -->
                         <Link 
                             :href="route('projects')" 
-                            v-track-click="{ category: 'Projekte Button', label: 'Projekte entdecken Startseite' }">
+                            v-track-click="{ category: 'Startseite', label: 'Projekte entdecken' }">
                             <Button size="lg" class="bg-cyan-500 hover:bg-cyan-600 text-white shadow-lg">
                                 Projekte entdecken
                             </Button>
@@ -86,7 +86,7 @@ const techWords = [
                                 button-text="Projekte ansehen"
                                 :button-href="route('projects')"
                                 :tags="['Laravel', 'Vue', 'PHP']"
-                                v-track-click="{ category: 'Info Cards', label: 'InfoCard Projekte' }" 
+                                v-track-click="{ category: 'Startseite', label: 'InfoCard Projekte' }" 
                             /> 
                             <!--
                                 Dient zum Tracken von Elementen wenn du ein neues Element Tracken möchtest ändere das Label
@@ -103,7 +103,7 @@ const techWords = [
                                 button-text="Zum Kontaktformular"
                                 :button-href="route('contactform')"
                                 :tags="['Kommunikation', 'Beratung']"
-                                v-track-click="{ category: 'Info Cards', label: 'InfoCard Kontakt' }"
+                                v-track-click="{ category: 'Startseite', label: 'InfoCard Kontakt' }"
                             />
 
                             <!-- Wir tracken den Klick auf die "Zertifikate"-Karte -->
@@ -114,7 +114,7 @@ const techWords = [
                                 button-text="Mehr erfahren"
                                 :button-href="route('projects')"
                                 :tags="['Qualifikation', 'Weiterbildung']"
-                                v-track-click="{ category: 'Info Cards', label: 'InfoCard Zertifikate' }"
+                                v-track-click="{ category: 'Startseite', label: 'InfoCard Zertifikate' }"
                             />
                     
                             </div>

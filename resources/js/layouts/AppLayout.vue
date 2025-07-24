@@ -3,6 +3,7 @@ import AppHeaderLayout from '@/layouts/app/AppHeaderLayout.vue';
 import type { BreadcrumbItemType } from '@/types';
 import Footer from '@/components/Footer.vue';
 import CookieBanner from '@/components/CookieBanner.vue';
+import FlashMessage from '@/components/FlashMessage.vue';
 
 // --- KORREKTUR 1: Fehlende Imports hinzufügen ---
 import { Link } from '@inertiajs/vue3';
@@ -22,6 +23,8 @@ withDefaults(defineProps<Props>(), {
         <slot />
         <br>
     </AppHeaderLayout>
+
+    <div><FlashMessage /></div>
 
     <Footer>
         <div class="grid grid-cols-1 px-2 md:place-items-center md:grid-cols-3 lg:grid-cols-4  gap-10">

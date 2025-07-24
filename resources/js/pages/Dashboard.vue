@@ -32,6 +32,8 @@ const filters = reactive({
     analytics_category_id: props.analyticsData.filters.category_id || 'all',
     visitor_year: props.visitorData.filters.year,
     visitor_month: props.visitorData.filters.month,
+    // NEU: Geräte-Filter im zentralen State
+    visitor_device_type: props.visitorData.filters.device_type || 'all',
 });
 
 async function fetchData() {
@@ -39,9 +41,7 @@ async function fetchData() {
         const url = new URL(route('dashboard.data'), window.location.origin);
         Object.entries(filters).forEach(([key, value]) => {
             if (value !== null && value !== undefined) {
-                url.searchParams.set('analytics_year', filters.analytics_year);
-                url.searchParams.set('analytics_month', filters.analytics_month);
-                url.searchParams.set('analytics_category_id', filters.analytics_category_id);
+                url.searchParams.set(key, String(value));
             }
         });
 
@@ -52,7 +52,6 @@ async function fetchData() {
         
         const data = await response.json();
         
-        // Sicherstellen, dass die Datenobjekte existieren, bevor sie zugewiesen werden
         if (data && data.stats) dashboardData.stats = data.stats;
         if (data && data.analyticsData) dashboardData.analyticsData = data.analyticsData;
         if (data && data.visitorData) dashboardData.visitorData = data.visitorData;
@@ -62,17 +61,18 @@ async function fetchData() {
     }
 }
 
-// KORREKTUR: Diese Funktion verarbeitet den 'all'-Wert für Monate jetzt korrekt.
 function updateAnalyticsFilters(newFilters: { year: string, month: string, category_id: string | number }) {
-  filters.analytics_year = newFilters.year;
-  filters.analytics_month = newFilters.month;
-  filters.analytics_category_id = newFilters.category_id; // ← bleibt _id
-  fetchData();
+    filters.analytics_year = parseInt(newFilters.year, 10);
+    filters.analytics_month = newFilters.month === 'all' ? 'all' : parseInt(newFilters.month, 10);
+    filters.analytics_category_id = newFilters.category_id;
+    fetchData();
 }
 
-function updateVisitorFilters(newFilters: { year: string, month: string }) {
+// NEU: Handler für Besucher-Filter wurde erweitert
+function updateVisitorFilters(newFilters: { year: string, month: string, device_type: string }) {
     filters.visitor_year = parseInt(newFilters.year, 10);
-    filters.visitor_month = parseInt(newFilters.month, 10);
+    filters.visitor_month = newFilters.month === 'all' ? 'all' : parseInt(newFilters.month, 10);
+    filters.visitor_device_type = newFilters.device_type;
     fetchData();
 }
 
@@ -118,7 +118,7 @@ onUnmounted(() => {
         
         <!-- Chart-Komponenten -->
         <AnalyticsChart :data="dashboardData.analyticsData" @update:filters="updateAnalyticsFilters" />
-        <VisitorChart :data="dashboardData.visitorData" :active-now="dashboardData.visitorData.activeNow" @update:filters="updateVisitorFilters" />
+        <VisitorChart :data="dashboardData.visitorData" @update:filters="updateVisitorFilters" />
         
         <!-- Benutzer-Aktivitätstabelle -->
         <div class="relative flex-1 rounded-xl border border-sidebar-border/70 p-4 dark:border-sidebar-border">

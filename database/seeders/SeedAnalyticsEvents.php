@@ -4,50 +4,42 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use Carbon\Carbon;
+use App\Models\Category; // WICHTIG: Das Category-Model importieren
 
 class SeedAnalyticsEvents extends Seeder
 {
+    /**
+     * Run the database seeds.
+     */
     public function run(): void
     {
-        $now = Carbon::now();
+        // Dieser Seeder wurde verwendet, um die Datenbank während der Entwicklung mit
+        // Testdaten für die Klick-Analyse zu füllen. Für den Live-Betrieb ist er
+        // nicht notwendig, kann aber für Testzwecke beibehalten werden.
+        // Wenn Sie keine automatischen Testdaten benötigen, kann diese Methode leer bleiben.
 
-        // Kategorien erstellen und IDs merken
-        $category1 = DB::table('categories')->insertGetId([
-            'name' => 'Test-Kategorie A',
-            'created_at' => $now,
-            'updated_at' => $now,
-        ]);
+        /*
+        $eventsData = [
+            'Test-Kategorie A' => ['Test-Ereignis A', 'Test-Ereignis B'],
+            'Test-Kategorie B' => ['Test-Ereignis C', 'Test-Ereignis A'],
+            'Footer Links' => ['Impressum Klick', 'Datenschutz Klick'],
+        ];
 
-        $category2 = DB::table('categories')->insertGetId([
-            'name' => 'Test-Kategorie B',
-            'created_at' => $now,
-            'updated_at' => $now,
-        ]);
+        foreach ($eventsData as $categoryName => $labels) {
+            $category = Category::firstOrCreate(['name' => $categoryName]);
 
-        // Events einfügen mit gültigen category_id
-        DB::table('analytics_events')->insert([
-            [
-                'label' => 'Test-Ereignis A',
-                'category_id' => $category1,
-                'action' => 'click',
-                'created_at' => $now,
-                'updated_at' => $now,
-            ],
-            [
-                'label' => 'Test-Ereignis B',
-                'category_id' => $category2,
-                'action' => 'click',
-                'created_at' => $now->copy()->subDays(1),
-                'updated_at' => $now->copy()->subDays(1),
-            ],
-            [
-                'label' => 'Test-Ereignis C',
-                'category_id' => $category1,
-                'action' => 'click',
-                'created_at' => $now->copy()->subDays(3),
-                'updated_at' => $now->copy()->subDays(3),
-            ],
-        ]);
+            foreach ($labels as $label) {
+                for ($i = 0; $i < rand(1, 5); $i++) {
+                    DB::table('analytics_events')->insert([
+                        'action' => 'click',
+                        'label' => $label,
+                        'category_id' => $category->id,
+                        'created_at' => now()->subDays(rand(0, 365)),
+                        'updated_at' => now(),
+                    ]);
+                }
+            }
+        }
+        */
     }
 }

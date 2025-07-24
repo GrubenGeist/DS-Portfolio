@@ -1,10 +1,20 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue';
+import axios from 'axios'; // WICHTIG: axios importieren
+import { route } from 'ziggy-js'; // WICHTIG: Ziggy importieren
 
 //LOGIK FÜR EASTER EGG 
 const showGhostButton = ref(false); // Startet standardmäßig unsichtbar
 const isDarkMode = ref(false);
 let ghostTimeoutId: number | null = null;
+
+// Die Komponente akzeptiert optional Tracking-Daten
+const props = defineProps<{
+  trackingData?: {
+    category: string;
+    label: string;
+  }
+}>();
 
 // Eine Liste möglicher Texte für den Button
 const GHOST_TEXTS = [
@@ -37,7 +47,20 @@ function scheduleGhostlyReappearance() {
     }, randomDelay);
 }
 
+// Die Klick-Funktion sendet jetzt die Tracking-Daten
 function handleGhostClick() {
+    // Prüft, ob Tracking-Daten übergeben wurden und sendet das Event
+    if (props.trackingData) {
+        axios.post(route('api.track-event'), props.trackingData)
+        // KORREKTUR: Die ungenutzte 'response'-Variable wurde entfernt, um die TS-Warnung zu beheben.
+        .then(() => {
+            console.log('GhostButton Klick getrackt:', props.trackingData);
+        })
+        .catch(error => {
+            console.error('Fehler beim Tracken des GhostButton Klicks:', error);
+        });
+    }
+
     showGhostButton.value = false;
     localStorage.setItem('ghostButtonHidden', 'true');
     scheduleGhostlyReappearance(); 
@@ -48,7 +71,7 @@ onMounted(() => {
     const wasHidden = localStorage.getItem('ghostButtonHidden') === 'true';
 
     if (!wasHidden) {
-        if (Math.random() > 0.9) { // 0.01 = Wahrscheinlichkeit von 99% - 0.99 = Wahrscheinlichkeit von 1% 
+        if (Math.random() > 0.01) { // 0.01 = Wahrscheinlichkeit von 99% - 0.99 = Wahrscheinlichkeit von 1% 
             setRandomGhostText();
             showGhostButton.value = true;
         }
