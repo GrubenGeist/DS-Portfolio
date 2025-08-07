@@ -82,11 +82,10 @@ const techWords = [
                             <InfoCard
                                 :image-url="projectImageUrl"
                                 title="Meine Projekte"
-                                description="Entdecken Sie eine Auswahl meiner bisherigen Arbeiten..."
+                                description= "Entdescken Sie eine Auswahl meiner bisherigen Projekte"
                                 button-text="Projekte ansehen"
                                 :button-href="route('projects')"
-                                :tags="['Laravel', 'Vue', 'PHP']"
-                                v-track-click="{ category: 'Startseite', label: 'InfoCard Projekte' }" 
+                                :tags="['Laravel', 'Vue', 'PHP']" 
                             /> 
                             <!--
                                 Dient zum Tracken von Elementen wenn du ein neues Element Tracken möchtest ändere das Label
@@ -99,22 +98,22 @@ const techWords = [
                             <InfoCard
                                 :image-url="contactImageUrl"
                                 title="Web-Development"
-                                description="Haben Sie eine Frage oder eine Projektidee?..."
+                                description="Haben Sie eine Frage oder eine Projektidee?"
                                 button-text="Zum Kontaktformular"
                                 :button-href="route('contactform')"
                                 :tags="['Kommunikation', 'Beratung']"
-                                v-track-click="{ category: 'Startseite', label: 'InfoCard Kontakt' }"
+                                
                             />
 
                             <!-- Wir tracken den Klick auf die "Zertifikate"-Karte -->
                             <InfoCard
                                 :image-url="certificatesImageUrl"
-                                title="C++"
-                                description="Ein Überblick über meine Qualifikationen..."
-                                button-text="Mehr erfahren"
+                                title="Zertifikate"
+                                description="Ein Überblick über meine Qualifikationen"
+                                button-text="Zertifikate ansehen"
                                 :button-href="route('projects')"
                                 :tags="['Qualifikation', 'Weiterbildung']"
-                                v-track-click="{ category: 'Startseite', label: 'InfoCard Zertifikate' }"
+                                
                             />
                     
                             </div>

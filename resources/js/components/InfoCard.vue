@@ -28,13 +28,13 @@ useTilt(cardElement);
         <div class="px-6 py-4">
             <div class="font-bold text-blue-600 dark:text-blue-400 text-xl mb-4">{{ title }}</div>
 
-            <p class="text-gray-700 dark:text-gray-300 text-base">
+            <p class="text-gray-700 dark:text-gray-300 md:text-base mb:text-sm">
                 {{ description }}
             </p>
         </div>
 
         <div class="px-6 pb-5">
-            <Link :href="buttonHref" class="block w-full text-center bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-full transition duration-300">
+            <Link v-track-click="{ category: 'InfoCard Button', label: buttonText  }" :href="buttonHref" class="block w-full text-center bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-full transition duration-300">
                 {{ buttonText }}
             </Link>
         </div>
