@@ -160,7 +160,6 @@ const activeItemStyles = computed(
 
                                     <GhostButton :tracking-data="{ category: 'Easter Egg', label: 'MobileNavbar Ghostbutton' }"/>
 
-
                                 </nav>
                             </div>
                         </SheetContent>
@@ -251,11 +250,9 @@ const activeItemStyles = computed(
 
                     
                     <template v-if="isGuest">
-                        <div class="flex items-center space-x-4">
-                            <GhostButton v-track-click="{ category: 'Ghostbutton', label: 'Ghostbutton Nav' }" />
-                        </div>
-
-
+                            <Link :href="route('login')">
+                                <Button variant="ghost" class="h-9 px-3 text-sm"> <LogIn class="mr-2 h-4 w-4" /> Login </Button>
+                            </Link>
 
                     </template>
                         <template v-else-if="user">
