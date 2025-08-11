@@ -45,7 +45,7 @@ const initScene = () => {
         });
 
         const geometries: TextGeometry[] = [];
-        const wordCount = 150;
+        const wordCount = 70;
         const dummy = new THREE.Object3D();
 
         for (let i = 0; i < wordCount; i++) {
@@ -54,9 +54,9 @@ const initScene = () => {
                 font: font, size: 0.3, depth: 0.02,
             });
             dummy.position.set(
-                (Math.random() - 0.5) * 40, 
-                (Math.random() - 0.5) * 30, 
-                (Math.random() - 0.5) * 30
+                (Math.random() - 0.5) * 50,// Breite 50 
+                (Math.random() - 0.5) * 35, // Höhe  35
+                (Math.random() - 0.5) * 50, // Tiefe 50
             );
             dummy.rotation.set(
                 (Math.random() - 0.5) * (Math.PI / 10.5), // Begrenzt die Drehung auf +/- 45 Grad auf der X-Achse
