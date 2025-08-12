@@ -18,11 +18,11 @@ const props = defineProps<{
 
 // Eine Liste möglicher Texte für den Button
 const GHOST_TEXTS = [
-    '? ? ?', 
-    'Error 404', 
-    '0000', 
-    '..undefined..', 
-    'NaN', 
+    'Here is Jhonny!', 
+    'It was real enough for Georgie!', 
+    'Hell is other people.', 
+    "They're here!", 
+    'I see dead people.', 
     'It’s getting worse.', 
     'there is something strage', 
     'Something’s here.',

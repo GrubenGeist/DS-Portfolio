@@ -6,6 +6,8 @@ import { Button } from '@/components/ui/button';
 import Hero3D from '@/components/Hero3D.vue';
 import InfoCard from '@/components/InfoCard.vue'; // Pfad anpassen, falls nötig
 
+import Teaser from '@/components/Teaser.vue';
+
 // ----------------------------Images Imports------------------------------------------------
 const projectImageUrl = '/images/Projects.png';
 const contactImageUrl = '/images/ContactUs.png';
@@ -58,42 +60,33 @@ const techWords = [
                     </div>
                 </div>
             </section>
-            
-            <div class="py-0 flex-1">
-                <section class="bg-slate-100 dark:bg-slate-900 bg-transparent md:border-2 rounded-xl p-6 md:p-16">
-                    <div class="container mx-auto grid grid-cols-1 md:grid-cols-3 gap-12 items-center">
-                        <!-- Bild-Spalte -->
-                        <div class="md:col-span-1 flex justify-center">
-                            <div class="relative w-48 h-48 md:w-64 md:h-64">
-                                <div class="absolute inset-0 bg-cyan-500 rounded-full transform rotate-6"></div>
-                                <img :src="profileImageUrl" alt="Dennis Strauß" class="relative w-full h-full rounded-full object-cover border-4 border-white dark:border-slate-800 shadow-lg">
-                            </div>
-                        </div>
 
-                        <!-- Text-Spalte -->
-                        <div class="md:col-span-2 text-center md:text-left">
-                            <h2 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
-                                Willkommen auf meinem Portfolio
-                            </h2>
-                            <p class="text-lg text-gray-600 dark:text-gray-300 leading-relaxed">
-                                Hallo, Ich bin Dennis Strauß, Anwendungsentwickler mit Fokus auf maßgeschneiderte Softwarelösungen.<br/><br/>
-                                Mit fundierten Kenntnissen in modernen Technologien und einem klaren Blick für sauberen, wartbaren Code entwickle ich leistungsstarke Anwendungen, die Prozesse optimieren und Nutzer begeistern.<br/><br/>
-
-                                Hier finden Sie eine Auswahl meiner bisherigen Projekte, technische Schwerpunkte und Informationen zu meinem beruflichen Werdegang.<br/>
-                                Ich freue mich, wenn Sie einen Einblick in meine Arbeit gewinnen – und vielleicht schon bald den passenden Partner für Ihr nächstes Softwareprojekt gefunden haben.
-                            </p>
-                        </div>
-                    </div>
-                </section>
-            </div>
-        
+            <Teaser 
+                headline="Willkommen auf meinem Portfolio"
+                :paragraphs="[
+                    'Hallo, ich bin Dennis Strauß, ein Anwendungsentwickler mit Fokus auf maßgeschneiderte Softwarelösungen.',
+                    'Mit fundierten Kenntnissen in modernen Technologien wie Laravel und einem klaren Blick für sauberen, wartbaren Code entwickle ich leistungsstarke Anwendungen, um Prozesse zu optimieren und Nutzer zu begeistern.',
+                    'Hier finden Sie eine Auswahl meiner bisherigen Projekte,technische Schwerpunkte und Informationen zu meinem beruflichen Werdegang.Ich freue mich, wenn Sie einen Einblick in meine Arbeit gewinnen und vielleicht schon bald den passenden Partner für Ihr nächstes Softwareprojekt gefunden haben.',
+                    
+                ]"
+                portraitImageUrl="/images/elements/TemplateDude.png"
+                backgroundImageUrl="/images/elements/BgStartseitePortrait.png"
+                :backgroundHeight="'170%'"
+                :backgroundPositionX="'76%'"
+                :portraitPositionX="'65%'"
+                :enableAnimation="true"
+            />
+       
             <div class="py-6 flex-1">
                 <div class="flex-1">
-                    <section class="bg-transparent  rounded-xl md:p-6 ">
-                        <div id="card_panel" class="flex-1 mt-0 p-0 dar:bg-transparent dark:border-r rounded-md">
-                                <h2 class="text-2xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4 text-center">
-                                    Weitere Inhalte finden Sie hier:
-                                </h2>
+                    <section class="bg-transparent  rounded-xl ">
+                        <div id="card_panel-headline" class="flex-1 mt-0 p-0 dark:bg-transparent border-r rounded-md">
+                            <h2 class="text-2xl bg-gray-100 p-4 md:text-4xl font-bold border-2 dark:bg-slate-900 text-gray-900 dark:text-white mb-6 text-center border-r rounded-md">
+                                Weitere Inhalte finden Sie hier:
+                            </h2>
+                        </div>
+                        <div id="card_panel" class="flex-1 dark:border-2 mt-0 p-0 dar:bg-transparent border-r rounded-md">
+
                           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 md:gap-4 gap-4 md:ml-36 md:mr-36 md:p-4 pt-4 pb-4 justify-items-center" style="perspective: 2000px;">
                                <!-- Wir tracken den Klick auf die "Projekte"-Karte -->
                                   <InfoCard
