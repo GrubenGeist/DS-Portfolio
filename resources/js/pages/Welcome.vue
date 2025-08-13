@@ -70,11 +70,12 @@ const techWords = [
                     'Hier finden Sie eine Auswahl meiner bisherigen Projekte, technischer Schwerpunkte und Informationen zu meinem beruflichen Werdegang. Ich freue mich, wenn Sie einen Einblick in meine Arbeit gewinnen und vielleicht schon bald den passenden Partner für Ihr nächstes Softwareprojekt gefunden haben.',
                     
                 ]"
-                portraitImageUrl="/images/elements/TemplateDude.png"
+                portraitImageUrl="/images/elements/TeaserBildDennis.png"
                 backgroundImageUrl="/images/elements/BgStartseitePortrait.png"
                 :backgroundHeight="'170%'"
                 :backgroundPositionX="'76%'"
-                :portraitPositionX="'65%'"
+                :portraitPositionX="'60%'"
+                :portraitPositionY="'-0.5%'"
                 :enableAnimation="true"
             />
                   
