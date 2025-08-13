@@ -164,6 +164,15 @@ class PageController extends Controller
     ]);
   }
 
+  public function imprint(): InertiaResponse
+   {
+       return Inertia::render('Imprint');
+   }
+   public function privacy(): InertiaResponse
+   {
+       return Inertia::render('Privacy');
+   }
+
   public function projects(): InertiaResponse
   {
     return Inertia::render('Projects', [

@@ -39,8 +39,8 @@ withDefaults(defineProps<Props>(), {
           <div class="space-y-3">
             <h3 class="font-bold text-lg text-gray-900 dark:text-white">Rechtliches</h3>
             <ul class="space-y-2 text-sm">
-              <li><Link :href="route('welcome')" v-track-click="{ category: 'Footer', label: 'Impressum' }" class="hover:text-blue-500">Impressum</Link></li>
-              <li><Link :href="route('welcome')" v-track-click="{ category: 'Footer', label: 'Datenschutzerklärung' }" class="hover:text-blue-500">Datenschutzerklärung</Link></li>
+              <li><Link :href="route('imprint')" v-track-click="{ category: 'Footer', label: 'Impressum' }" class="hover:text-blue-500">Impressum</Link></li>
+              <li><Link :href="route('privacy')" v-track-click="{ category: 'Footer', label: 'Datenschutzerklärung' }" class="hover:text-blue-500">Datenschutzerklärung</Link></li>
             </ul>
           </div>
 
