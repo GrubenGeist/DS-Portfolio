@@ -4,7 +4,8 @@ import { Head, Link } from '@inertiajs/vue3';
 import { route } from 'ziggy-js';
 import { Button } from '@/components/ui/button';
 import Hero3D from '@/components/Hero3D.vue';
-import InfoCard from '@/components/InfoCard.vue'; // Pfad anpassen, falls nötig
+import InfoCard from '@/components/InfoCard.vue'; 
+import DividingLine from '@/components/DividingLine.vue';
 
 import Teaser from '@/components/Teaser.vue';
 
@@ -47,7 +48,7 @@ const techWords = [
                         Dennis Strauß
                     </h1>
                     <p class="text-yellow-300 dark:text-white mt-4 text-lg md:text-xl max-w-2xl mx-auto " style="text-shadow: 0 0 10px rgba(0,0,0,0.7);">
-                        Anwendungsentwickler für moderne und performante <br/> Web-Anwendungen.
+                        Digitale Erlebnisse, die begeistern.
                     </p>
                     <div class="mt-8"> <!--@click="handleProjectsClick" ist für die Google Analytics -->
                         <Link 
@@ -62,11 +63,11 @@ const techWords = [
             </section>
 
             <Teaser 
-                headline="Willkommen auf meinem Portfolio"
+                headline="Kreativer Anwendungsentwickler mit Fokus auf sauberen Code"
                 :paragraphs="[
                     'Hallo, ich bin Dennis Strauß, ein Anwendungsentwickler mit Fokus auf maßgeschneiderte Softwarelösungen.',
-                    'Mit fundierten Kenntnissen in modernen Technologien wie Laravel und einem klaren Blick für sauberen, wartbaren Code entwickle ich leistungsstarke Anwendungen, um Prozesse zu optimieren und Nutzer zu begeistern.',
-                    'Hier finden Sie eine Auswahl meiner bisherigen Projekte,technische Schwerpunkte und Informationen zu meinem beruflichen Werdegang.Ich freue mich, wenn Sie einen Einblick in meine Arbeit gewinnen und vielleicht schon bald den passenden Partner für Ihr nächstes Softwareprojekt gefunden haben.',
+                    'Mit fundierten Kenntnissen in modernen Technologien wie Laravel, Drupal, Python, JavaScript und mehr sowie einem klaren Blick für sauberen, wartbaren Code entwickle ich leistungsstarke Anwendungen, die Prozesse optimieren und Nutzer begeistern.',
+                    'Hier finden Sie eine Auswahl meiner bisherigen Projekte, technischer Schwerpunkte und Informationen zu meinem beruflichen Werdegang. Ich freue mich, wenn Sie einen Einblick in meine Arbeit gewinnen und vielleicht schon bald den passenden Partner für Ihr nächstes Softwareprojekt gefunden haben.',
                     
                 ]"
                 portraitImageUrl="/images/elements/TemplateDude.png"
@@ -76,18 +77,26 @@ const techWords = [
                 :portraitPositionX="'65%'"
                 :enableAnimation="true"
             />
-       
+                  
+            <DividingLine 
+                color="bg-blue-500"
+                thickness="h-0.5"
+                opacity="opacity-20"
+                width="w-3/6"
+                margin="my-12 mt-20"
+            />
+
             <div class="py-6 flex-1">
                 <div class="flex-1">
-                    <section class="bg-transparent  rounded-xl ">
-                        <div id="card_panel-headline" class="flex-1 mt-0 p-0 dark:bg-transparent border-r rounded-md">
-                            <h2 class="text-2xl bg-gray-100 p-4 md:text-4xl font-bold border-2 dark:bg-slate-900 text-gray-900 dark:text-white mb-6 text-center border-r rounded-md">
-                                Weitere Inhalte finden Sie hier:
+                    <section class="bg-transparent  rounded-xl md:pl-32 md:pr-32">
+                        <div id="card_panel-headline" class="flex-1 mt-0 mb-0 p-0 dark:bg-transparent">
+                            <h2 class="text-2xl bg-blue-900 dark:bg-blue-900  md:ml-32 md:mr-32 p-4 rounded-xl md:text-4xl font-bold border-2 dark:text-white text-white mb-4 text-center ">
+                                Ein Blick auf meine Arbeit & mehr
                             </h2>
                         </div>
-                        <div id="card_panel" class="flex-1 dark:border-2 mt-0 p-0 dar:bg-transparent border-r rounded-md">
+                        <div id="card_panel" class="flex-1 mt-0 dar:bg-transparent p-0">
 
-                          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 md:gap-4 gap-4 md:ml-36 md:mr-36 md:p-4 pt-4 pb-4 justify-items-center" style="perspective: 2000px;">
+                          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 md:gap-11 gap-6 md:ml-24 md:mr-24 justify-items-center" style="perspective: 2000px;">
                                <!-- Wir tracken den Klick auf die "Projekte"-Karte -->
                                   <InfoCard
                                       :image-url="projectImageUrl"
