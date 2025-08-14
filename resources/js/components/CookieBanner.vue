@@ -65,7 +65,7 @@ const saveSelection = () => {
             <div>
               <h3 class="font-semibold">Cookie-Einstellungen</h3>
               <p class="text-sm text-foreground/80 mt-1">
-                Wir verwenden Cookies, um die Benutzerfreundlichkeit zu verbessern. Du kannst deine Auswahl jederzeit anpassen.
+                Diese Seite verwendet Cookies, um die Benutzerfreundlichkeit zu verbessern. Du kannst deine Auswahl jederzeit anpassen.
               </p>
             </div>
           </div>

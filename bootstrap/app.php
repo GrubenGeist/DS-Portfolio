@@ -8,6 +8,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets;
+use App\Http\Middleware\StartSessionIfConsentGiven; // Wichtig: Neue Middleware importieren
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -18,6 +19,18 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
+        // KORREKTUR 1: Fügt die Ausnahme für die CSRF-Prüfung hinzu.
+        // Dies erlaubt der Consent-Anfrage, ohne Session-Cookie zu funktionieren.
+        $middleware->validateCsrfTokens(except: [
+            '/consent-event' 
+        ]);
+
+        // KORREKTUR 2: Ersetzt die Standard-Session-Logik durch unsere eigene.
+        $middleware->replace(
+            \Illuminate\Session\Middleware\StartSession::class,
+            \App\Http\Middleware\StartSessionIfConsentGiven::class
+        );
+
         $middleware->encryptCookies(except: ['appearance']);
         $middleware->statefulApi();
         $middleware->web(append: [
@@ -26,29 +39,16 @@ return Application::configure(basePath: dirname(__DIR__))
             AddLinkHeadersForPreloadedAssets::class,
             TrackVisits::class,
         ]);
-        // --- HIER DIE FEHLENDEN ALIASE HINZUFÜGEN ---
+        
         $middleware->alias([
             'role' => \Spatie\Permission\Middleware\RoleMiddleware::class,
             'permission' => \Spatie\Permission\Middleware\PermissionMiddleware::class,
             'role_or_permission' => \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
-            // Füge hier ggf. weitere Aliase hinzu, die du brauchst,
-            // z.B. wenn 'auth' oder 'verified' nicht automatisch funktionieren:
-            // 'auth' => \App\Http\Middleware\Authenticate::class, // Pfad ggf. anpassen
-            // 'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         ]);
-        // --- Ende der Alias-Definition ---
-        //    // app/Http/Kernel.php (Beispiel für L10)
-        // 'api' => [
-        //    \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
-        //    // ... andere api middleware
-        // ],
     })
-
     ->withProviders([
-        AuthServiceProvider::class, // Stellt sicher, dass dieser Provider geladen wird
+        AuthServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
-        // Hier ggf. andere Provider hinzufügen, die du explizit brauchst
     ])
     ->withExceptions(function (Exceptions $exceptions) {
-        //
     })->create();

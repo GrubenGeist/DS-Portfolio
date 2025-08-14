@@ -2,21 +2,17 @@
 
 import '../css/app.css';
 
-import { createInertiaApp } from '@inertiajs/vue3';
+import { createApp, h, type DefineComponent } from 'vue';
+import { createInertiaApp, router } from '@inertiajs/vue3';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
-import type { DefineComponent } from 'vue';
-import { createApp, h, watchEffect } from 'vue'; // watchEffect hinzugefügt
 import { ZiggyVue } from 'ziggy-js';
 import './bootstrap';
 import { initializeTheme } from './composables/useAppearance';
-import { router } from '@inertiajs/vue3';
-import { trackClick } from '@/directives/trackClick'; // die Direktive
+import { trackClick } from '@/directives/trackClick';
 
-
-// Für den Cookie Banner
-// KORREKTUR 1: Wir importieren nur den Haupt-Hook 'useConsent'.
-import { useConsent } from '@/composables/useConsent';
-import { loadScript } from '@/lib/loadScript';
+// KORREKTUR: Wir importieren jetzt alle notwendigen Consent- und Analytics-Funktionen
+import { useConsent, loadConsent } from '@/composables/useConsent';
+import { useGoogleAnalytics } from '@/composables/useGoogleAnalytics';
 
 // Deine globale Komponente
 import ContactForm from './components/ContactForm.vue';
@@ -41,40 +37,33 @@ createInertiaApp({
     resolve: (name) => resolvePageComponent(`./pages/${name}.vue`, import.meta.glob<DefineComponent>('./pages/**/*.vue')),
     setup({ el, App, props, plugin }) {
         
-        // NEUE LOGIK FÜR COOKIE-CONSENT
+        // NEUE LOGIK FÜR CONSENT MODE V2
         
-        // KORREKTUR 2: Wir rufen den Hook auf und holen uns beide Teile, die er zurückgibt.
-        const { consentState, loadConsent } = useConsent();
-        // Wir rufen die Funktion auf, um den gespeicherten Zustand zu laden.
+        // 1. Lade zuerst den Consent-Status aus dem localStorage
         loadConsent();
+        
+        // 2. Hole den reaktiven Zustand und die GA-Funktionen
+        const { consentState } = useConsent();
+        const { init, updateConsent } = useGoogleAnalytics();
 
-        // Ein "Wächter", der auf Änderungen im Consent-Status reagiert
-        watchEffect(() => {
-            // Lade Google Analytics, WENN die Zustimmung für 'analytics' true ist.
-            if (consentState.analytics) {
-                console.log('Zustimmung für Analytics gegeben. Lade Google Analytics...');
-                loadScript('https://www.googletagmanager.com/gtag/js?id=DEINE_GTAG_ID', 'google-analytics')
-                    .then(() => {
-                        // Initialisiere GTag, nachdem das Skript geladen ist
-                        (window as any).dataLayer = (window as any).dataLayer || [];
-                        function gtag(...args: any[]) { (window as any).dataLayer.push(args); }
-                        gtag('js', new Date());
-                        gtag('config', 'DEINE_GTAG_ID');
-                        console.log('Google Analytics geladen.');
-                    })
-                    .catch(error => console.error(error));
-            }
-            // Hier könntest du weitere 'if'-Bedingungen für andere Skripte hinzufügen
-            // if (consentState.marketing) { ... }
-        });
+        // 3. Initialisiere Google Analytics IMMER.
+        // Die `init`-Funktion setzt jetzt die 'denied'-Standards für den Consent Mode v2.
+        // HINWEIS: Sobald du deine Mess-ID in useGoogleAnalytics.ts eingetragen hast,
+        // entferne die Kommentarzeichen // vor der nächsten Zeile, um alles zu aktivieren.
+        // init();
 
+        // 4. Wenn die Zustimmung bereits bei einem früheren Besuch gegeben wurde,
+        // sende sofort ein Update an Google für diesen Seitenaufruf.
+        if (!consentState.bannerVisible) {
+            updateConsent(consentState);
+        }
 
         const vueApp = createApp({ render: () => h(App, props) });
 
         vueApp.use(plugin);
         vueApp.use(ZiggyVue, props.initialPage.props.ziggy);
 
-        vueApp.directive('track-click', trackClick); //Registriere die Direktive unter dem Namen 'track-click'
+        vueApp.directive('track-click', trackClick);
         
         vueApp.component('contact-form', ContactForm);
 
@@ -85,17 +74,9 @@ createInertiaApp({
     },
 });
 
-// Seitenaufrufe für SPA manuell tracken
-router.on('navigate', (event) => {
-  // Prüfe, ob die gtag-Funktion existiert
-  if (typeof window.gtag !== 'undefined') {
-    // Sende ein 'page_view' Event mit der neuen URL
-    //Wichtig: Ersetze auch hier DEINE_GTAG_ID durch deine echte Google Analytics ID
-    window.gtag('config', 'DEINE_GTAG_ID', {
-      page_path: event.detail.page.url,
-    });
-  }
-});
+// HINWEIS: Der separate 'router.on('navigate')'-Block ist nicht mehr nötig.
+// Das 'gtag('config', ...)' in der init-Funktion kümmert sich automatisch
+// um das Tracking von Seitenaufrufen in einer Single-Page-Application (SPA).
 
 // Theme wird initialisiert
 initializeTheme();
@@ -110,6 +91,7 @@ const styles = [
     'border-radius: 5px',
     'line-height: 1.0',
 ].join(';');
+
 
 // const message = `Neugierig? 😉                                                     
 //-

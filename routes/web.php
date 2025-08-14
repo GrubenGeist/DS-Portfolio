@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\AnalyticsEventController;
 use App\Http\Controllers\Admin\CategoryController; 
 use App\Http\Controllers\Api\ConsentEventController; 
 use App\Http\Controllers\ContactFormController;
+use App\Http\Controllers\AppearanceController;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,6 +21,7 @@ Route::get('/contactform', [PageController::class, 'contactform'])->name('contac
 Route::post('/track-event', [AnalyticsEventController::class, 'store'])->name('api.track-event');
 Route::get('/impressum', [PageController::class, 'imprint'])->name('imprint');
 Route::get('/datenschutz', [PageController::class, 'privacy'])->name('privacy');
+Route::post('/update-appearance', [AppearanceController::class, 'update'])->name('appearance.update');
 
 Route::post('/consent-event', [ConsentEventController::class, 'store'])->name('api.consent.store');
 // --- GESCHÜTZTE ROUTEN ---
@@ -29,6 +31,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/projects', [PageController::class, 'projects'])->name('projects')->middleware('role:Admin|Company');
     Route::get('/services', [PageController::class, 'services'])->name('services')->middleware('role:Admin|Company');
     Route::get('/aboutme', [PageController::class, 'aboutMe'])->name('aboutme')->middleware('role:Admin|Company');
+    
 
 
     // --- ADMIN-BEREICH (Benutzerverwaltung) ---

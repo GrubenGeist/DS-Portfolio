@@ -102,7 +102,7 @@ const techWords = [
                                   <InfoCard
                                       :image-url="projectImageUrl"
                                       title="Meine Projekte"
-                                      description= "Entdescken Sie eine Auswahl meiner bisherigen Projekte"
+                                      description= "Entdecken Sie eine Auswahl meiner bisherigen Projekte"
                                       button-text="Projekte ansehen"
                                       :button-href="route('projects')"
                                       :tags="['Laravel', 'Vue', 'PHP']" 
