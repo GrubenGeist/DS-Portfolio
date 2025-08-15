@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'; // watch importieren
 import { Head, useForm, Link } from '@inertiajs/vue3';
-import { route } from 'ziggy-js';
 import AppLayout from '@/layouts/AppLayout.vue';
 
 const props = defineProps<{

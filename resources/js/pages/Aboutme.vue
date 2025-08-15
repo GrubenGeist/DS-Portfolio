@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import AppLayout from '@/layouts/AppLayout.vue';
 import { Head, Link } from '@inertiajs/vue3';
-import { route } from 'ziggy-js';
 import { ref, onMounted, onUnmounted, defineAsyncComponent } from 'vue';
 
 // Der TechRadar wird asynchron geladen, um die Ladezeit (LCP) zu verbessern.

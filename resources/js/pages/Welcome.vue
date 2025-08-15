@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import AppLayout from '@/layouts/AppLayout.vue';
 import { Head, Link } from '@inertiajs/vue3';
-import { route } from 'ziggy-js';
 import { Button } from '@/components/ui/button';
 import Hero3D from '@/components/Hero3D.vue';
 import InfoCard from '@/components/InfoCard.vue'; 
@@ -35,7 +34,7 @@ const techWords = [
     <AppLayout>
         <div class="flex-1">
             <section
-                class=" relative h-screen w-full flex items-center justify-center text-center overflow-hidden text-black dark:text-white"
+                class=" relative h-[90vh] w-full flex items-center justify-center text-center overflow-hidden text-black dark:text-white"
                 :style=" 'bg-transparent' "
                 style="background-size: cover; background-position: center;"
                 >
@@ -43,18 +42,18 @@ const techWords = [
                 
                 <Hero3D :words="techWords" />
 
-                <div class="relative z-10 flex flex-col bg-gray-900/40 dark:bg-gray-600/100 p-8 rounded-md items-center text-black dark:text-white">
-                    <h1 class="text-yellow-300 dark:text-white text-5xl md:text-7xl font-extrabold tracking-tight" style=" text-shadow: 0 0 20px rgba(0,0,0,0.7);">
+                <div tabindex="0" class="relative z-10 flex flex-col bg-blue-900/100 dark:bg-gray-600/100 p-8 rounded-md items-center text-black dark:text-white focus:outline-none focus-visible:ring-1 focus-visible:ring-black focus-visible:ring-offset-1 dark:focus-visible:ring-white">
+                    <h1 class="text-white dark:text-white text-5xl md:text-7xl font-extrabold tracking-tight" style=" text-shadow: 0 0 20px rgba(0,0,0,0.7);">
                         Dennis Strauß
                     </h1>
-                    <p class="text-yellow-300 dark:text-white mt-4 text-lg md:text-xl max-w-2xl mx-auto " style="text-shadow: 0 0 10px rgba(0,0,0,0.7);">
+                    <p class="text-white dark:text-white mt-4 text-lg md:text-xl max-w-2xl mx-auto " style="text-shadow: 0 0 10px rgba(0,0,0,0.7);">
                         Digitale Erlebnisse, die begeistern.
                     </p>
                     <div class="mt-8"> <!--@click="handleProjectsClick" ist für die Google Analytics -->
                         <Link 
                             :href="route('projects')" 
-                            v-track-click="{ category: 'Startseite', label: 'Projekte entdecken' }">
-                            <Button size="lg" class="bg-cyan-500 hover:bg-cyan-600 text-white shadow-lg">
+                            v-track-click="{ category: 'Startseite', label: 'Projekte entdecken', requireConsent: true }">
+                            <Button size="lg" class="bg-green-400 hover:bg-cyan-600 text-black shadow-lg">
                                 Projekte entdecken
                             </Button>
                         </Link>
@@ -91,7 +90,10 @@ const techWords = [
                 <div class="flex-1">
                     <section class="bg-transparent  rounded-xl md:pl-32 md:pr-32">
                         <div id="card_panel-headline" class="flex-1 mt-0 mb-0 p-0 dark:bg-transparent">
-                            <h2 class="text-2xl bg-blue-900 dark:bg-blue-900  md:ml-32 md:mr-32 p-4 rounded-xl md:text-4xl font-bold border-2 dark:text-white text-white mb-4 text-center ">
+                            <!-- wichtig für tastertur Steuerung: ind den Container= tabindex="0" und in der class='focus:outline-none focus-visible:ring-1 focus-visible:ring-black focus-visible:ring-offset-1 dark:focus-visible:ring-white'-->
+                            <h2
+                            tabindex="0" 
+                            class="text-2xl bg-blue-900 dark:bg-blue-900  md:ml-32 md:mr-32 p-4 rounded-xl md:text-4xl font-bold border-2 dark:text-white text-white mb-4 text-center focus:outline-none focus-visible:ring-1 focus-visible:ring-black focus-visible:ring-offset-1 dark:focus-visible:ring-white">
                                 Ein Blick auf meine Arbeit & mehr
                             </h2>
                         </div>

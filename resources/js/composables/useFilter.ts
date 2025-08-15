@@ -1,33 +1,77 @@
-// /resources/js/composables/useFilter.ts
-
-import { reactive, watch } from 'vue';
+// resources/js/composables/useFilter.ts
+import { reactive, watch, onBeforeUnmount } from 'vue';
 import { router } from '@inertiajs/vue3';
-import { route } from 'ziggy-js';
+import type { FormDataConvertible } from '@inertiajs/core';
 import throttle from 'lodash/throttle';
-import { ref, watch } from 'vue';
-import { router, Head, Link } from '@inertiajs/vue3'; // 'router' muss hier sein
 
-// Die Funktion wird generisch mit <T extends object> gemacht.
-// Das bedeutet, T kann jeder Objekttyp sein.
-export function useFilter<T extends object>(routeName: string, initialFilters: T) {
-    
-    // TypeScript weiß jetzt, dass 'initialFilters' den genauen Typ T hat
-    // (z.B. { show_all: boolean }) und leitet diesen Typ für 'form' ab.
-    const usersList = ref<User[]>(props.initialUsers);
-    const showAll = ref(props.filters.show_all || false);
+export type UseFilterOptions = {
+  preserveState?: boolean;
+  preserveScroll?: boolean;
+  replace?: boolean;
+  throttleMs?: number;
+  routeParams?: Record<string, FormDataConvertible>; // optional: enger typisiert
+};
 
-    // WIR FÜGEN DEN ALERT HIER WIEDER EIN
-    watch(showAll, (newValue) => {
-        alert(`WATCHER HAT AUSGELÖST! Neuer Wert ist: ${newValue}`);
+export function useFilter<T extends Record<string, FormDataConvertible>>(
+  routeName: string,
+  initialFilters: T,
+  options: UseFilterOptions = {},
+) {
+  const filters = reactive({ ...initialFilters }) as T;
 
-        router.get(route('dashboard'), { show_all: newValue }, {
-            preserveState: true,
-            replace: true,
-            preserveScroll: true,
-        });
-    });
+  const {
+    preserveState = true,
+    preserveScroll = true,
+    replace = true,
+    throttleMs = 300,
+    routeParams = {},
+  } = options;
 
-    // Die Funktion gibt das reaktive Formular-Objekt zurück, und TypeScript
-    // kennt immer noch den genauen Typ T.
-    return form;
+  const send = () => {
+    // `filters` erfüllt jetzt das benötigte RequestPayload-Contract
+    router.get(
+      route(routeName, routeParams),
+      filters,
+      { preserveState, preserveScroll, replace },
+    );
+  };
+
+  // gedrosselte Variante + Cleanup
+  const throttledSend = throttle(send, throttleMs);
+  onBeforeUnmount(() => throttledSend.cancel());
+
+  // jede Filteränderung → Request
+  watch(filters, () => throttledSend(), { deep: true });
+
+  // kleine Helfer
+  const setFilter = <K extends keyof T>(key: K, value: T[K]) => {
+    filters[key] = value;
+  };
+
+  const resetFilters = (next?: Partial<T>) => {
+    Object.assign(filters, next ?? initialFilters);
+    throttledSend();
+  };
+
+  // optional: manuell sofort senden
+  const apply = () => send();
+
+  // optional: manuelles Aufräumen, falls außerhalb von Komponenten genutzt
+  const dispose = () => throttledSend.cancel();
+
+  return { filters, setFilter, resetFilters, apply, dispose };
 }
+
+
+/*
+Beispielnutzung
+
+const { filters, setFilter, resetFilters } = useFilter('dashboard', {
+  show_all: false,
+  month: 'all',
+});
+
+// später:
+setFilter('show_all', true);
+
+*/

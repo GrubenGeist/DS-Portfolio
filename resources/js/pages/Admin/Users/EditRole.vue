@@ -3,7 +3,7 @@ import AppLayout from '@/layouts/AppLayout.vue'; // Dein Hauptlayout
 import { type BreadcrumbItem } from '@/types'; // Stelle sicher, dass dieser Typ existiert
 import { Head, Link, useForm } from '@inertiajs/vue3';
 import { defineProps } from 'vue';
-import { route } from 'ziggy-js';
+
 
 const props = defineProps({
     user: {

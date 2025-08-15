@@ -3,64 +3,73 @@ import { router } from '@inertiajs/vue3';
 
 type Appearance = 'light' | 'dark' | 'system';
 
-// Diese Funktion wird jetzt nur noch vom Composable intern genutzt
+// nur intern genutzt
 function updateTheme(value: Appearance) {
-    if (typeof window === 'undefined') return;
+  if (typeof window === 'undefined') return;
 
-    if (value === 'system') {
-        const mediaQueryList = window.matchMedia('(prefers-color-scheme: dark)');
-        const systemTheme = mediaQueryList.matches ? 'dark' : 'light';
-        document.documentElement.classList.toggle('dark', systemTheme === 'dark');
-    } else {
-        document.documentElement.classList.toggle('dark', value === 'dark');
-    }
+  if (value === 'system') {
+    const mediaQueryList = window.matchMedia('(prefers-color-scheme: dark)');
+    const systemTheme = mediaQueryList.matches ? 'dark' : 'light';
+    document.documentElement.classList.toggle('dark', systemTheme === 'dark');
+  } else {
+    document.documentElement.classList.toggle('dark', value === 'dark');
+  }
 }
 
 const getStoredAppearance = () => {
-    if (typeof window === 'undefined') return null;
-    return localStorage.getItem('appearance') as Appearance | null;
+  if (typeof window === 'undefined') return null;
+  return (localStorage.getItem('appearance') as Appearance | null) ?? null;
 };
 
 const handleSystemThemeChange = () => {
-    const currentAppearance = getStoredAppearance();
-    updateTheme(currentAppearance || 'system');
+  const currentAppearance = getStoredAppearance();
+  updateTheme(currentAppearance || 'system');
 };
 
+// 🔒 verhindert doppelte Listener-Registrierung
+let themeInitialized = false;
+
 export function initializeTheme() {
-    if (typeof window === 'undefined') return;
-    const savedAppearance = getStoredAppearance();
-    updateTheme(savedAppearance || 'system');
-    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', handleSystemThemeChange);
+  if (typeof window === 'undefined') return;
+  if (themeInitialized) return;
+
+  const savedAppearance = getStoredAppearance();
+  updateTheme(savedAppearance || 'system');
+
+  window
+    .matchMedia('(prefers-color-scheme: dark)')
+    .addEventListener('change', handleSystemThemeChange);
+
+  themeInitialized = true;
 }
 
 export function useAppearance() {
-    const appearance = ref<Appearance>('system');
+  const appearance = ref<Appearance>('system');
 
-    onMounted(() => {
-        initializeTheme();
-        const savedAppearance = localStorage.getItem('appearance') as Appearance | null;
-        if (savedAppearance) {
-            appearance.value = savedAppearance;
-        }
-    });
+  onMounted(() => {
+    // idempotent – sicher, falls auch in app.ts aufgerufen
+    initializeTheme();
 
-    function updateAppearance(value: Appearance) {
-        appearance.value = value;
-        localStorage.setItem('appearance', value);
-        updateTheme(value);
-
-        // KORREKTUR: Wir senden die Wahl an den Server, anstatt ein Cookie zu setzen.
-        // Das Backend entscheidet dann, ob es das Cookie setzen darf.
-        router.post(route('appearance.update'), {
-            appearance: value
-        }, {
-            preserveState: true,
-            preserveScroll: true,
-        });
+    const savedAppearance = getStoredAppearance();
+    if (savedAppearance) {
+      appearance.value = savedAppearance;
     }
+  });
 
-    return {
-        appearance,
-        updateAppearance,
-    };
+  function updateAppearance(value: Appearance) {
+    appearance.value = value;
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('appearance', value);
+    }
+    updateTheme(value);
+
+    // an Server melden (Inertia)
+    router.post(
+      route('appearance.update'),
+      { appearance: value },
+      { preserveState: true, preserveScroll: true },
+    );
+  }
+
+  return { appearance, updateAppearance };
 }

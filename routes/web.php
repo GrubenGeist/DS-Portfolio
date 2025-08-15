@@ -18,7 +18,7 @@ use App\Http\Controllers\AppearanceController;
 // --- ÖFFENTLICHE ROUTEN ---
 Route::get('/', [PageController::class, 'welcome'])->name('welcome');
 Route::get('/contactform', [PageController::class, 'contactform'])->name('contactform');
-Route::post('/track-event', [AnalyticsEventController::class, 'store'])->name('api.track-event');
+//Route::post('/track-event', [AnalyticsEventController::class, 'store'])->name('api.track-event');
 Route::get('/impressum', [PageController::class, 'imprint'])->name('imprint');
 Route::get('/datenschutz', [PageController::class, 'privacy'])->name('privacy');
 Route::post('/update-appearance', [AppearanceController::class, 'update'])->name('appearance.update');

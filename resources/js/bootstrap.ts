@@ -1,36 +1,34 @@
 /**
- * We'll load the axios HTTP library which allows us to easily issue requests
- * to our Laravel back-end. This library automatically handles sending the
- * CSRF token as a header based on the value of the "XSRF" token cookie.
+ * HTTP: axios + CSRF
  */
-
 import axios from 'axios';
-window.axios = axios;
 
-// This line is the most important part.
-// It sets a default header 'X-CSRF-TOKEN' for all axios requests.
-// The value is read from a meta tag in your HTML head, which Laravel provides.
-const csrfToken = document.querySelector('meta[name="csrf-token"]');
-if (csrfToken) {
-    window.axios.defaults.headers.common['X-CSRF-TOKEN'] = csrfToken.getAttribute('content');
-} else {
+// Nur im Browser (nicht im SSR)
+if (typeof window !== 'undefined') {
+  window.axios = axios;
+
+  // CSRF aus <meta name="csrf-token" content="...">
+  const tokenEl = document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement | null;
+  const token = tokenEl?.content ?? null;
+
+  if (token) {
+    window.axios.defaults.headers.common['X-CSRF-TOKEN'] = token;
+  } else {
+    // Hinweis: in Blade sicherstellen, dass @csrf meta gesetzt ist
     console.error('CSRF token not found: https://laravel.com/docs/csrf#csrf-x-csrf-token');
+  }
+
+  window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 }
 
-window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
-
 /**
- * Echo exposes an expressive API for subscribing to channels and listening
- * for events that are broadcast by Laravel. Echo and event broadcasting
- * allows your team to easily build robust real-time web applications.
+ * Echo / Pusher (optional)
  */
-
 // import Echo from 'laravel-echo';
-
 // import Pusher from 'pusher-js';
-// window.Pusher = Pusher;
-
-// window.Echo = new Echo({
+// if (typeof window !== 'undefined') {
+//   window.Pusher = Pusher;
+//   window.Echo = new Echo({
 //     broadcaster: 'pusher',
 //     key: import.meta.env.VITE_PUSHER_APP_KEY,
 //     cluster: import.meta.env.VITE_PUSHER_APP_CLUSTER ?? 'mt1',
@@ -39,4 +37,5 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 //     wssPort: import.meta.env.VITE_PUSHER_PORT ?? 443,
 //     forceTLS: (import.meta.env.VITE_PUSHER_SCHEME ?? 'https') === 'https',
 //     enabledTransports: ['ws', 'wss'],
-// });
+//   });
+// }

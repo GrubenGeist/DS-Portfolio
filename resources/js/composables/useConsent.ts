@@ -1,5 +1,4 @@
 import { reactive, readonly } from 'vue';
-import { route } from 'ziggy-js';
 import { useGoogleAnalytics } from './useGoogleAnalytics';
 
 interface ConsentState {
@@ -19,58 +18,74 @@ const consentState = reactive<ConsentState>({
 const CONSENT_STORAGE_KEY = 'cookie_consent';
 
 export const loadConsent = () => {
-  const storedConsent = localStorage.getItem(CONSENT_STORAGE_KEY);
-  if (storedConsent) {
-    const parsedConsent = JSON.parse(storedConsent);
-    consentState.analytics = parsedConsent.analytics || false;
-    consentState.marketing = parsedConsent.marketing || false;
-    consentState.bannerVisible = false;
-  } else {
-    consentState.bannerVisible = true;
+  try {
+    const stored = localStorage.getItem(CONSENT_STORAGE_KEY);
+    if (stored) {
+      const parsed = JSON.parse(stored);
+      consentState.analytics = !!parsed.analytics;
+      consentState.marketing = !!parsed.marketing;
+      consentState.bannerVisible = false;
+      return;
+    }
+  } catch (e) {
+    console.warn('[consent] failed to read localStorage:', e);
   }
+  consentState.bannerVisible = true;
 };
 
 export function useConsent() {
-    const { updateConsent } = useGoogleAnalytics();
+  const { updateConsent } = useGoogleAnalytics();
 
-    const saveConsent = (newConsent: { analytics: boolean; marketing: boolean }) => {
-      consentState.analytics = newConsent.analytics;
-      consentState.marketing = newConsent.marketing;
-      consentState.bannerVisible = false;
+  const saveConsent = async (newConsent: { analytics: boolean; marketing: boolean }) => {
+    // 1) State + localStorage
+    consentState.analytics = newConsent.analytics;
+    consentState.marketing = newConsent.marketing;
+    consentState.bannerVisible = false;
 
-      localStorage.setItem(CONSENT_STORAGE_KEY, JSON.stringify({
-        analytics: consentState.analytics,
-        marketing: consentState.marketing,
-      }));
+    try {
+      localStorage.setItem(
+        CONSENT_STORAGE_KEY,
+        JSON.stringify({ analytics: consentState.analytics, marketing: consentState.marketing }),
+      );
+    } catch (e) {
+      console.warn('[consent] failed to write localStorage:', e);
+    }
 
-      // Sende die Zustimmung an Google.
-      updateConsent(newConsent);
+    // 2) GA Consent Mode
+    updateConsent(newConsent);
 
-      // Setze das Signal-Cookie für das Backend.
-      document.cookie = "laravel_consent=true; path=/; max-age=31536000";
+    // 3) Signal-Cookie für Backend (z. B. um Session zu starten)
+    document.cookie = 'laravel_consent=true; path=/; max-age=31536000';
 
-      // Sende die Zustimmung an den Server (fürs Dashboard-Tracking).
-      fetch(route('api.consent.store'), {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-            },
-            body: JSON.stringify({
-                analytics: consentState.analytics,
-              marketing: consentState.marketing,
-            }),
-      })
-      .catch(error => console.error('Failed to send consent decision:', error))
-      .finally(() => {
-          // Lade die Seite neu, damit die Session gestartet wird.
-          window.location.reload();
+    // 4) Optional an dein Backend melden (falls Route existiert)
+    try {
+      const csrf = (document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement)?.content || '';
+      // globales Ziggy route() – mit Fallback
+      const url = typeof route === 'function' ? route('api.consent.store') : '/api/consent';
+
+      await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+          ...(csrf ? { 'X-CSRF-TOKEN': csrf } : {}),
+        },
+        body: JSON.stringify({
+          analytics: consentState.analytics,
+          marketing: consentState.marketing,
+        }),
       });
-    };
+    } catch (e) {
+      console.warn('[consent] failed to notify server:', e);
+    } finally {
+      // 5) Seite neu laden, damit Axios/Session/Guards sicher greifen
+      window.location.reload();
+    }
+  };
 
-    return {
-        consentState: readonly(consentState),
-        loadConsent,
-        saveConsent,
-    };
+  return {
+    consentState: readonly(consentState),
+    loadConsent,
+    saveConsent,
+  };
 }

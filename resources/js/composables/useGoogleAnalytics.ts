@@ -1,46 +1,81 @@
+// resources/js/composables/useGoogleAnalytics.ts
+
+type ConsentUpdate = {
+  analytics: boolean;
+  marketing: boolean;
+  // optional:
+  // personalization?: boolean;
+  // security?: boolean;
+};
+
+const GA_ID = (import.meta.env.VITE_GA_ID as string | undefined) ?? 'G-XXXXXXXXXX';
+
+// idempotenter Guard gegen Mehrfach-Init
+let gaInitialized = false;
+
+function ensureGtag() {
+  if (typeof window === 'undefined') return;
+  window.dataLayer = window.dataLayer || [];
+  // queue-basierte Fallback-Implementierung
+  window.gtag =
+    window.gtag ||
+    function gtag(...args: any[]) {
+      window.dataLayer.push(args as any);
+    };
+}
+
 export function useGoogleAnalytics() {
-    // HINWEIS: Sobald du deinen Account hast, ersetze diesen Platzhalter.
-    const GA_MEASUREMENT_ID = 'G-XXXXXXXXXX'; // <-- ERSETZE DAS MIT DEINER ECHTEN MESS-ID
+  function init() {
+    if (typeof window === 'undefined') return;
+    if (gaInitialized) return;
+    if (!GA_ID || !GA_ID.startsWith('G-')) return; // echte GA4-ID nötig
 
-    const init = () => {
-        // Verhindert mehrfaches Initialisieren
-        if (document.getElementById('ga-script') || !GA_MEASUREMENT_ID.startsWith('G-')) return;
+    ensureGtag();
 
-        window.dataLayer = window.dataLayer || [];
-        function gtag(...args: any[]) {
-            window.dataLayer.push(args);
-        }
-        gtag('js', new Date());
+    // Consent Mode v2: Defaults
+    window.gtag('consent', 'default', {
+      ad_storage: 'denied',
+      ad_user_data: 'denied',
+      ad_personalization: 'denied',
+      analytics_storage: 'denied',
+      security_storage: 'granted',
+    });
 
-        // Consent Mode v2: Standardmäßig alles ablehnen.
-        gtag('consent', 'default', {
-            'ad_storage': 'denied',
-            'ad_user_data': 'denied',
-            'ad_personalization': 'denied',
-            'analytics_storage': 'denied'
-        });
+    // GA Tag laden (nur einmal)
+    if (!document.getElementById('ga-script')) {
+      const script = document.createElement('script');
+      script.id = 'ga-script';
+      script.async = true;
+      script.src = `https://www.googletagmanager.com/gtag/js?id=${GA_ID}`;
+      document.head.appendChild(script);
+    }
 
-        const script = document.createElement('script');
-        script.id = 'ga-script';
-        script.async = true;
-        script.src = `https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`;
-        document.head.appendChild(script);
+    window.gtag('js', new Date());
+    // Wichtig: Auto-Pageview AUS, wir tracken manuell
+    window.gtag('config', GA_ID, { send_page_view: false });
 
-        gtag('config', GA_MEASUREMENT_ID);
-        console.log('Google Analytics initialized with Consent Mode v2 defaults.');
-    };
+    gaInitialized = true;
+  }
 
-    const updateConsent = (consent: { analytics: boolean; marketing: boolean }) => {
-        if (typeof window.gtag === 'function') {
-            gtag('consent', 'update', {
-                'analytics_storage': consent.analytics ? 'granted' : 'denied',
-                'ad_storage': consent.marketing ? 'granted' : 'denied',
-                'ad_user_data': consent.marketing ? 'granted' : 'denied',
-                'ad_personalization': consent.marketing ? 'granted' : 'denied',
-            });
-            console.log('Google Analytics consent updated:', consent);
-        }
-    };
+  function updateConsent(consent: ConsentUpdate) {
+    if (typeof window === 'undefined') return;
+    ensureGtag();
 
-    return { init, updateConsent };
+    window.gtag('consent', 'update', {
+      analytics_storage: consent.analytics ? 'granted' : 'denied',
+      ad_storage: consent.marketing ? 'granted' : 'denied',
+      ad_user_data: consent.marketing ? 'granted' : 'denied',
+      ad_personalization: consent.marketing ? 'granted' : 'denied',
+      // security_storage: 'granted', // optional konstant
+    });
+  }
+
+  // Manuelles Pageview (z.B. bei Inertia-Navigation)
+  function pageview(path?: string) {
+    if (typeof window === 'undefined' || !GA_ID) return;
+    ensureGtag();
+    window.gtag('event', 'page_view', path ? { page_path: path } : undefined);
+  }
+
+  return { init, updateConsent, pageview };
 }

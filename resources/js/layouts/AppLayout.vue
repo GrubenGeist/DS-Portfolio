@@ -7,7 +7,7 @@ import FlashMessage from '@/components/FlashMessage.vue';
 
 // --- KORREKTUR 1: Fehlende Imports hinzufügen ---
 import { Link } from '@inertiajs/vue3';
-import { route } from 'ziggy-js';
+
 
 interface Props {
     breadcrumbs?: BreadcrumbItemType[];
@@ -39,25 +39,25 @@ withDefaults(defineProps<Props>(), {
           <div class="space-y-3">
             <h3 class="font-bold text-lg text-gray-900 dark:text-white">Rechtliches</h3>
             <ul class="space-y-2 text-sm">
-              <li><Link :href="route('imprint')" v-track-click="{ category: 'Footer', label: 'Impressum' }" class="hover:text-blue-500">Impressum</Link></li>
-              <li><Link :href="route('privacy')" v-track-click="{ category: 'Footer', label: 'Datenschutzerklärung' }" class="hover:text-blue-500">Datenschutzerklärung</Link></li>
+              <li><Link :href="route('imprint')" v-track-click="{ category: 'Footer', label: 'Impressum', requireConsent: true }" class="hover:text-blue-500">Impressum</Link></li>
+              <li><Link :href="route('privacy')" v-track-click="{ category: 'Footer', label: 'Datenschutzerklärung', requireConsent: true  }" class="hover:text-blue-500">Datenschutzerklärung</Link></li>
             </ul>
           </div>
 
           <div class="space-y-3">
             <h3 class="font-bold text-lg text-gray-900 dark:text-white">Socialmedia</h3>
             <ul class="space-y-2 text-sm">
-              <li><a href="https://www.linkedin.com/in/dennis-strauß-902a69220/" v-track-click="{ category: 'Footer', label: 'LinkedIn' }" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
-              <li><a href="https://www.linkedin.com/in/dennis-strauß-902a69220/" v-track-click="{ category: 'Footer', label: 'Instagram' }" target="_blank" rel="noopener noreferrer">Instagram</a></li>
+              <li><a href="https://www.linkedin.com/in/dennis-strauß-902a69220/" v-track-click="{ category: 'Footer', label: 'LinkedIn', requireConsent: true  }" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
+              <li><a href="https://www.linkedin.com/in/dennis-strauß-902a69220/" v-track-click="{ category: 'Footer', label: 'Instagram', requireConsent: true  }" target="_blank" rel="noopener noreferrer">Instagram</a></li>
             </ul>
           </div>
 
           <div class="space-y-3">
             <h3 class="font-bold text-lg text-gray-900 dark:text-white">Kontakt</h3>
              <p class="text-sm">
-              <ul><li><Link :href="route('contactform')" v-track-click="{ category: 'Footer', label: 'Kontaktformular' }" class="hover:text-blue-500">Kontakt</Link></li></ul><br>
+              <ul><li><Link :href="route('contactform')" v-track-click="{ category: 'Footer', label: 'Kontaktformular', requireConsent: true  }" class="hover:text-blue-500">Kontakt</Link></li></ul><br>
                 Fragen oder Projektideen? <br>
-                <a href="mailto:dennis-strauss@web.de" v-track-click="{ category: 'Footer', label: 'Kontaktformular' }" class="text-blue-600 dark:text-blue-400 hover:underline">
+                <a href="mailto:dennis-strauss@web.de" v-track-click="{ category: 'Footer', label: 'E-Mail Link', requireConsent: true  }" class="text-blue-600 dark:text-blue-400 hover:underline">
                   dennis-strauss@web.de
                 </a>
              </p>

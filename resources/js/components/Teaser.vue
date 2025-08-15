@@ -31,13 +31,12 @@ const props = withDefaults(defineProps<{
     buttonHref?: string;
     buttonVariant?: 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link';
 
-    // NEU: Animation-Steuerung
+    // Animation-Steuerung
     enableAnimation?: boolean;
 
 }>(), {
     // Standardwerte für alle Props
     headline: 'Standard-Überschrift',
-    // KORREKTUR: Der Standardwert für das Array wird jetzt durch eine Funktion zurückgegeben.
     paragraphs: () => ['Dies ist ein Standardtext. Bitte ersetzen Sie ihn.'],
     portraitImageUrl: '/images/elements/TemplateDude.png',
     backgroundImageUrl: '',
@@ -70,14 +69,24 @@ const imageOrderClass = computed(() => {
 });
 
 const imageRoundingClass = computed(() => {
-    return props.imagePosition === 'left' ? 'rounded-l-2xl' : 'rounded-r-2xl';
+    return props.imagePosition === 'left' ? 'md:rounded-l-2xl' : 'md:rounded-r-2xl';
 });
 </script>
 
 <template>
     <section class=" bg-white dark:bg-slate-900">
+        <!-- 
+            KORREKTUR: Barrierefreiheit
+            - tabindex="0": Macht den gesamten Container per Tastatur fokussierbar.
+            - role="region": Teilt Screenreadern mit, dass dies ein wichtiger, zusammenhängender Abschnitt ist.
+            - :aria-label="headline": Liest die Überschrift als Beschreibung für den Abschnitt vor.
+            - focus-visible Klassen: Fügen einen klaren, konsistenten Fokus-Ring nur für Tastatur-Nutzer hinzu.
+        -->
         <div 
-            class="group grid grid-cols-1 gap-0 rounded-2xl shadow-2xl"
+            tabindex="0"
+            role="region"
+            :aria-label="headline"
+            class="group grid grid-cols-1 gap-0 rounded-2xl shadow-2xl focus:outline-none focus-visible:ring-1 focus-visible:ring-black focus-visible:ring-offset-1 dark:focus-visible:ring-white"
             :class="[backgroundColor, layoutClasses]"
         >
             <!-- Text-Spalte -->
@@ -108,7 +117,7 @@ const imageRoundingClass = computed(() => {
             
             <!-- Bild-Spalte -->
             <div class="relative min-h-[350px] md:min-h-0 overflow-hidden" :class="imageOrderClass">
-                <div class="absolute inset-0 bg-white dark:bg-slate-800 overflow-hidden" :class="imageRoundingClass">
+                <div class="absolute inset-0 bg-white dark:bg-slate-800 overflow-hidden rounded-br-2xl rounded-bl-2xl md:rounded-bl-none" :class="imageRoundingClass">
                     <img 
                         v-if="backgroundImageUrl && !imageFailedToLoad"
                         :src="backgroundImageUrl" 
@@ -134,7 +143,7 @@ const imageRoundingClass = computed(() => {
                     </svg>
                 </div>
 
-                <!-- KORREKTUR: Die 'animate-float' Klasse wird nur angewendet, wenn enableAnimation true ist -->
+                <!-- Die 'animate-float' Klasse wird nur angewendet, wenn enableAnimation true ist -->
                 <div class="absolute inset-0" :class="{ 'animate-float': enableAnimation }">
                     <img 
                         :src="portraitImageUrl" 
@@ -152,7 +161,7 @@ const imageRoundingClass = computed(() => {
     </section>
 </template>
 
-<!-- NEU: Der Style-Block mit der Animation ist wieder da -->
+<!-- Der Style-Block mit der Animation ist wieder da -->
 <style>
 /* Eine einfache "Float"-Animation für das Portraitbild */
 @keyframes float {
@@ -171,6 +180,7 @@ const imageRoundingClass = computed(() => {
     animation: float 6s ease-in-out infinite;
 }
 </style>
+
 
 
 <!--  

@@ -22,8 +22,8 @@ useTilt(cardElement);
 </script>
 
 <template>
-    <div ref="cardElement" class="md:max-w-sm max-w-md w-full dark:text-white border-1-8 border-transparent rounded-md shadow-md space-y-2 overflow-hidden bg-white dark:bg-gray-800">
-        <img class="rounded-t-md p-0 w-full h-48 object-cover" :src="imageUrl" alt="Card Image">
+    <div tabindex="0" ref="cardElement" class="md:max-w-sm max-w-md w-full dark:text-white border-1-8 border-transparent rounded-md shadow-md space-y-2 overflow-hidden bg-white dark:bg-gray-800 focus:outline-none focus-visible:ring-1 focus-visible:ring-black focus-visible:ring-offset-1 dark:focus-visible:ring-white">
+        <img class="rounded-t-md p-0 w-full h-48 object-cover" :src="imageUrl" alt="Card Image"> 
 
         <div class="px-6 py-4">
             <div class="font-bold text-blue-600 dark:text-blue-400 text-xl mb-4">{{ title }}</div>
@@ -34,7 +34,7 @@ useTilt(cardElement);
         </div>
 
         <div class="px-6 pb-5">
-            <Link v-track-click="{ category: 'InfoCard Button', label: buttonText  }" :href="buttonHref" class="block w-full text-center bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-full transition duration-300">
+            <Link v-track-click="{ category: 'InfoCard Button', label: buttonText, requireConsent: true }" :href="buttonHref" class="block w-full text-center bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-full transition duration-300">
                 {{ buttonText }}
             </Link>
         </div>

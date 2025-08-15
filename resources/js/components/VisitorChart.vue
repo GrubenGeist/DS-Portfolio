@@ -17,74 +17,105 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 
 ChartJS.register(Title, Tooltip, Legend, LineElement, PointElement, CategoryScale, LinearScale);
 
+// ---------- Typen (minimal & ausreichend) ----------
+type DeviceType = 'all' | 'desktop' | 'mobile';
+
+type HistoryPoint = {
+  date: string | number | Date;
+  desktop: number;
+  mobile: number;
+};
+
+type VisitorFilters = {
+  year?: number | string;
+  month?: number | string;
+  device_type?: DeviceType;
+};
+
+type VisitorData = {
+  history: HistoryPoint[];
+  filters?: VisitorFilters;
+  availableYears?: number[];
+  activeNow?: number;
+};
+
+// ---------- Props & Emits ----------
 const props = defineProps<{
-  data: any;
+  data: VisitorData;
 }>();
 
-const emit = defineEmits(['update:filters']);
+const emit = defineEmits<{
+  (e: 'update:filters', payload: { year: string; month: string; device_type: DeviceType }): void;
+}>();
 
+// ---------- UI-Daten ----------
 const months = [
-    { value: 'all', label: 'Alle Monate' },
-    { value: '1', label: 'Januar' }, { value: '2', label: 'Februar' }, { value: '3', 'label': 'März' },
-    { value: '4', label: 'April' }, { value: '5', label: 'Mai' }, { value: '6', 'label': 'Juni' },
-    { value: '7', label: 'Juli' }, { value: '8', label: 'August' }, { value: '9', 'label': 'September' },
-    { value: '10', label: 'Oktober' }, { value: '11', label: 'November' }, { value: '12', 'label': 'Dezember' },
+  { value: 'all', label: 'Alle Monate' },
+  { value: '1', label: 'Januar' }, { value: '2', label: 'Februar' }, { value: '3', label: 'März' },
+  { value: '4', label: 'April' }, { value: '5', label: 'Mai' }, { value: '6', label: 'Juni' },
+  { value: '7', label: 'Juli' }, { value: '8', label: 'August' }, { value: '9', label: 'September' },
+  { value: '10', label: 'Oktober' }, { value: '11', label: 'November' }, { value: '12', label: 'Dezember' },
 ];
 
 const localFilters = reactive({
-  year: props.data?.filters?.year?.toString() || new Date().getFullYear().toString(),
-  month: props.data?.filters?.month?.toString() || 'all',
-  device_type: props.data?.filters?.device_type || 'all',
+  year: (props.data?.filters?.year ?? new Date().getFullYear()).toString(),
+  month: (props.data?.filters?.month ?? 'all').toString(),
+  device_type: (props.data?.filters?.device_type ?? 'all') as DeviceType,
 });
 
 watch(localFilters, (newValues) => {
-  emit('update:filters', newValues);
+  emit('update:filters', {
+    year: newValues.year,
+    month: newValues.month,
+    device_type: newValues.device_type,
+  });
 });
 
-watch(() => props.data?.filters, (newFilters) => {
-  localFilters.year = newFilters?.year?.toString() || new Date().getFullYear().toString();
-  localFilters.month = newFilters?.month?.toString() || 'all';
-  localFilters.device_type = newFilters?.device_type || 'all';
-}, { deep: true });
+watch(
+  () => props.data?.filters,
+  (newFilters) => {
+    localFilters.year = (newFilters?.year ?? new Date().getFullYear()).toString();
+    localFilters.month = (newFilters?.month ?? 'all').toString();
+    localFilters.device_type = (newFilters?.device_type ?? 'all') as DeviceType;
+  },
+  { deep: true },
+);
 
-// NEU: Berechnet die prozentuale Verteilung von Desktop vs. Mobil
+// ---------- Prozentanzeige ----------
 const devicePercentages = computed(() => {
-  const history = props.data?.history || [];
-  if (history.length === 0) {
-    return { desktop: 0, mobile: 0 };
-  }
+  const history: HistoryPoint[] = props.data?.history ?? [];
+  if (history.length === 0) return { desktop: 0, mobile: 0 };
 
-  const totalDesktop = history.reduce((sum, item) => sum + item.desktop, 0);
-  const totalMobile = history.reduce((sum, item) => sum + item.mobile, 0);
+  const totalDesktop = history.reduce((sum: number, item: HistoryPoint) => sum + item.desktop, 0);
+  const totalMobile  = history.reduce((sum: number, item: HistoryPoint) => sum + item.mobile, 0);
   const totalVisitors = totalDesktop + totalMobile;
 
-  if (totalVisitors === 0) {
-    return { desktop: 0, mobile: 0 };
-  }
+  if (totalVisitors === 0) return { desktop: 0, mobile: 0 };
 
   const desktopPercentage = Math.round((totalDesktop / totalVisitors) * 100);
-  const mobilePercentage = Math.round((totalMobile / totalVisitors) * 100);
+  const mobilePercentage  = Math.round((totalMobile / totalVisitors) * 100);
 
   return { desktop: desktopPercentage, mobile: mobilePercentage };
 });
 
+// ---------- Chart-Daten ----------
 const chartData = computed(() => {
-  const history = props.data?.history || [];
-  
-  const labels = history.map((item: any) => 
-    new Date(item.date).toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit' })
+  const history: HistoryPoint[] = props.data?.history ?? [];
+
+  const labels = history.map((item) =>
+    new Date(item.date).toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit' }),
   );
-  
-  const desktopData = history.map((item: any) => item.desktop);
-  const mobileData = history.map((item: any) => item.mobile);
+
+  const desktopData = history.map((item) => item.desktop);
+  const mobileData  = history.map((item) => item.mobile);
 
   return {
-    labels: labels,
+    labels,
     datasets: [
       {
         label: 'Desktop',
         data: desktopData,
-        borderColor: '#3b82f6', // Blau
+        borderColor: '#3b82f6',
         backgroundColor: '#3b82f6',
         tension: 0.1,
         fill: false,
@@ -92,7 +123,7 @@ const chartData = computed(() => {
       {
         label: 'Mobil',
         data: mobileData,
-        borderColor: '#10b981', // Grün
+        borderColor: '#10b981',
         backgroundColor: '#10b981',
         tension: 0.1,
         fill: false,
@@ -101,10 +132,11 @@ const chartData = computed(() => {
   };
 });
 
+// ---------- Chart-Optionen ----------
 const chartOptions = computed<ChartOptions<'line'>>(() => {
   const isDarkMode = document.documentElement.classList.contains('dark');
-  const textColor = isDarkMode ? 'rgba(255, 255, 255, 0.7)' : 'rgba(0, 0, 0, 0.7)';
-  const gridColor = isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
+  const textColor  = isDarkMode ? 'rgba(255, 255, 255, 0.7)' : 'rgba(0, 0, 0, 0.7)';
+  const gridColor  = isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
 
   return {
     responsive: true,
@@ -113,25 +145,21 @@ const chartOptions = computed<ChartOptions<'line'>>(() => {
       legend: {
         display: true,
         position: 'top',
-        labels: {
-            color: textColor
-        }
+        labels: { color: textColor },
       },
-      tooltip: {
-        enabled: true,
-      },
+      tooltip: { enabled: true },
     },
     scales: {
       x: {
         grid: { display: false },
         ticks: { color: textColor, font: { size: 12 } },
-        title: { display: true, text: 'Datum', color: textColor }
+        title: { display: true, text: 'Datum', color: textColor },
       },
       y: {
         beginAtZero: true,
         grid: { color: gridColor },
         ticks: { color: textColor, font: { size: 12 }, precision: 0 },
-        title: { display: true, text: 'Anzahl eindeutiger Besucher', color: textColor }
+        title: { display: true, text: 'Anzahl eindeutiger Besucher', color: textColor },
       },
     },
   };
@@ -145,25 +173,28 @@ const chartOptions = computed<ChartOptions<'line'>>(() => {
         <div>
           <CardTitle>Besucher-Analyse</CardTitle>
           <CardDescription>Eindeutige Besucher pro Tag nach Gerätetyp.</CardDescription>
+
           <p class="mt-2 text-lg font-bold flex items-center gap-2">
             <span class="relative flex h-3 w-3">
               <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
               <span class="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
             </span>
-            {{ data?.activeNow || 0 }} Benutzer gerade aktiv
+            {{ data?.activeNow ?? 0 }} Benutzer gerade aktiv
           </p>
-          <!-- NEU: Prozentuale Anzeige -->
+
+          <!-- Prozentuale Anzeige -->
           <div class="mt-4 flex gap-6 text-sm text-foreground/80">
             <div class="flex items-center gap-2">
-                <span class="h-2 w-2 rounded-full bg-blue-500"></span>
-                <span>Desktop: {{ devicePercentages.desktop }}%</span>
+              <span class="h-2 w-2 rounded-full bg-blue-500"></span>
+              <span>Desktop: {{ devicePercentages.desktop }}%</span>
             </div>
             <div class="flex items-center gap-2">
-                <span class="h-2 w-2 rounded-full bg-emerald-500"></span>
-                <span>Mobil: {{ devicePercentages.mobile }}%</span>
+              <span class="h-2 w-2 rounded-full bg-emerald-500"></span>
+              <span>Mobil: {{ devicePercentages.mobile }}%</span>
             </div>
           </div>
         </div>
+
         <div class="flex flex-wrap items-center gap-2">
           <Select v-model="localFilters.device_type">
             <SelectTrigger class="w-[140px]"><SelectValue placeholder="Gerätetyp" /></SelectTrigger>
@@ -173,25 +204,30 @@ const chartOptions = computed<ChartOptions<'line'>>(() => {
               <SelectItem value="mobile">Mobil</SelectItem>
             </SelectContent>
           </Select>
+
           <Select v-model="localFilters.month">
             <SelectTrigger class="w-[140px]"><SelectValue placeholder="Monat" /></SelectTrigger>
             <SelectContent>
               <SelectItem v-for="m in months" :key="m.value" :value="m.value">{{ m.label }}</SelectItem>
             </SelectContent>
           </Select>
+
           <Select v-model="localFilters.year">
             <SelectTrigger class="w-[100px]"><SelectValue placeholder="Jahr" /></SelectTrigger>
             <SelectContent>
-              <SelectItem v-for="y in data?.availableYears || []" :key="y" :value="y.toString()">{{ y }}</SelectItem>
+              <SelectItem v-for="y in data?.availableYears ?? []" :key="y" :value="y.toString()">{{ y }}</SelectItem>
             </SelectContent>
           </Select>
         </div>
       </div>
     </CardHeader>
+
     <CardContent>
       <div class="h-[250px]">
         <Line v-if="data?.history && data.history.length > 0" :data="chartData" :options="chartOptions" />
-        <p v-else class="flex items-center justify-center h-full text-sm text-muted-foreground">Keine Besucherdaten für diesen Zeitraum.</p>
+        <p v-else class="flex items-center justify-center h-full text-sm text-muted-foreground">
+          Keine Besucherdaten für diesen Zeitraum.
+        </p>
       </div>
     </CardContent>
   </Card>

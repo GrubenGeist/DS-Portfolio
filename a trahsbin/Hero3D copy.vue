@@ -492,28 +492,3 @@ npm install @tweenjs/tween.js
 npm install -D @types/tween.js
 
 -->
-
-
-
-<!-- 
-muss installiert werden
-
-# Installiert die Three.js-Bibliothek
-npm install three
-
-# Installiert die TypeScript-Typen für Three.js
-npm install -D @types/three
-
-# Installiert die TWEEN.js-Bibliothek
-npm install @tweenjs/tween.js
-
-# Installiert die TypeScript-Typen für TWEEN.js
-npm install -D @types/tween.js
-
-# Installiert die troika-three-text-Bibliothek
-npm i troika-three-text
-
-# Installiert die TypeScript-Typen für troika-three-text
-npm i -D typescript vue-tsc @types/three
-
--->

@@ -14,30 +14,30 @@ class AnalyticsEventController extends Controller
      */
     public function store(Request $request): \Illuminate\Http\JsonResponse
     {
+        // ➜ Do Not Track (DNT) sofort respektieren – nichts validieren/speichern
+        if ($request->header('DNT') === '1') {
+            return response()->noContent(); // 204
+        }
+    
         $validated = $request->validate([
             'category' => 'nullable|string|max:255',
-            'label' => 'required|string|max:255',
+            'label'    => 'required|string|max:255',
         ]);
-
+    
         $categoryId = null;
-
         if (!empty($validated['category'])) {
-            $category = Category::firstOrCreate(
-                ['name' => $validated['category']]
-            );
+            $category = Category::firstOrCreate(['name' => $validated['category']]);
             $categoryId = $category->id;
         }
-
-        // Speichere das Event in der Datenbank.
+    
         DB::table('analytics_events')->insert([
-            // KORREKTUR: Der fehlende Wert für die 'action'-Spalte wird jetzt mitgegeben.
-            'action' => 'click',
-            'label' => $validated['label'],
+            'action'      => 'click',
+            'label'       => $validated['label'],
             'category_id' => $categoryId,
-            'created_at' => now(),
-            'updated_at' => now(),
+            'created_at'  => now(),
+            'updated_at'  => now(),
         ]);
-
+    
         return response()->json(['message' => 'Event tracked.'], 201);
     }
 }

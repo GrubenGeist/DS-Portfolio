@@ -3,7 +3,6 @@ import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem } from '@/types';
 import { Head, Link, router } from '@inertiajs/vue3';
 import { defineProps, reactive, watch } from 'vue'; // reactive und watch importieren
-import { route } from 'ziggy-js';
 import throttle from 'lodash/throttle'; // throttle für die Such-Verzögerung
 import { Input } from '@/components/ui/input'; // UI-Komponente für das Suchfeld
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'; // UI-Komponenten für das Dropdown

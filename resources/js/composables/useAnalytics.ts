@@ -1,15 +1,8 @@
-// /resources/js/composables/useAnalytics.ts
+// resources/js/composables/useAnalytics.ts
 
-import { route } from 'ziggy-js';
+// Nichts global neu deklarieren – gtag ist über gtag.d.ts typisiert,
+// route() kommt global aus global-route.d.ts
 
-// Definiert, wie die gtag-Funktion für TypeScript aussieht
-declare global {
-  interface Window {
-    gtag: (...args: any[]) => void;
-  }
-}
-
-// Definiert die Struktur für unsere Event-Daten
 interface GtagEvent {
   action: string;
   category: string;
@@ -18,38 +11,30 @@ interface GtagEvent {
 }
 
 /**
- * Sendet ein benutzerdefiniertes Event an Google Analytics UND an das eigene Backend.
- * @param {GtagEvent} event - Das Event-Objekt mit action, category, etc.
+ * Event an Google Analytics (falls vorhanden) UND an dein Backend schicken.
  */
 export const trackEvent = (event: GtagEvent) => {
-  
-  // 1. An Google Analytics senden (falls das Skript geladen wurde)
-  if (typeof window.gtag !== 'undefined') {
+  // 1) Google Analytics
+  if (typeof window !== 'undefined' && typeof window.gtag === 'function') {
     window.gtag('event', event.action, {
       event_category: event.category,
       event_label: event.label,
       value: event.value,
     });
-  } else {
-    console.log('Analytics not loaded, GA event not tracked:', event);
   }
 
-  // 2. An unser eigenes Backend senden
-  try {
-    // Wir lesen den CSRF-Token aus dem <meta>-Tag der Seite.
-    const csrfToken = (document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement)?.content;
+  // 2) Eigenes Backend (API, kein CSRF nötig)
+  const url =
+    (typeof route === 'function' ? route('api.analytics-events.store') : '') ||
+    (typeof route === 'function' ? route('api.track-event') : '') ||
+    '/api/analytics-events';
 
-    fetch(route('api.track-event'), {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        // Der CSRF-Token wird hier als Header mitgeschickt, um die Anfrage zu authentifizieren.
-        'X-CSRF-TOKEN': csrfToken || '', 
-      },
-      body: JSON.stringify(event),
-    });
-  } catch (error) {
-    console.error('Could not log event to own backend:', error);
-  }
+  fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+    body: JSON.stringify({
+      category: event.category,
+      label: event.label ?? event.action,
+    }),
+  }).catch((e) => console.error('trackEvent failed:', e));
 };

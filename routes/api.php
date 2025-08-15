@@ -1,23 +1,23 @@
 <?php
-// Pfad zum Controller ggf. falls ein separater API-Controller erstellt
-use App\Http\Controllers\Admin\UserController;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Api\AnalyticsEventController;
 
-// Wenn deine API z.B. Sanctum für SPA-Authentifizierung nutzt:
+
+// Authentifizierte API-Beispiele …
 Route::middleware('auth:sanctum')->group(function () {
-
-    // Deine Route für die Benutzerliste
-    Route::get('/users', [UserController::class, 'indexApi']) // Verweist auf die Index-Methode
-        ->name('api.users.index');                   
-
-    // Hier könnten weitere API-Routen hinzukommen, z.B. für einen einzelnen User
-    // Route::get('/users/{user}', [UserController::class, 'show'])->name('api.users.show');
-
+    Route::get('/users', [UserController::class, 'indexApi'])->name('api.users.index');
+    Route::get('/user', fn (Request $r) => $r->user());
 });
 
-// Eine Route, um den aktuell authentifizierten User abzufragen (Standard bei Sanctum-Setup)
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+// Tracking-Endpoints (öffentlich, aber gedrosselt)
+Route::post('/analytics-events', [AnalyticsEventController::class, 'store'])
+    ->name('api.analytics-events.store')
+    ->middleware('throttle:track-events');
+
+// Optionaler Alias, falls du später ohne tracking-url am Button arbeiten willst
+Route::post('/track-event', [AnalyticsEventController::class, 'store'])
+    ->name('api.track-event')
+    ->middleware('throttle:track-events');

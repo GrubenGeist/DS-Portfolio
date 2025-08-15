@@ -2,7 +2,6 @@
 import AppLayout from '@/layouts/AppLayout.vue';
 import { Head, router } from '@inertiajs/vue3';
 import { reactive, watch, onMounted, onUnmounted } from 'vue';
-import { route } from 'ziggy-js';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import UserActivityTable from '@/components/UserActivityTable.vue';

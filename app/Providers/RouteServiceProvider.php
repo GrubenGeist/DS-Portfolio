@@ -3,60 +3,51 @@
 namespace App\Providers;
 
 use Illuminate\Cache\RateLimiting\Limit;
-use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
-// Ggf. nicht nötig, aber schadet nicht für Kontext
 use Illuminate\Support\Facades\Route;
 
 class RouteServiceProvider extends ServiceProvider
 {
     /**
-     * The path to your application's "home" route.
-     *
-     * Typically, users are redirected here after authentication.
-     * Passe dies ggf. an deine Anwendung an.
-     *
-     * @var string
+     * Zielroute nach dem Login (falls verwendet).
      */
-    public const HOME = '/'; // Standard ist oft '/home' oder '/dashboard'
+    public const HOME = '/';
 
     /**
-     * Define your route model bindings, pattern filters, and other route configuration.
+     * Route-Gruppen registrieren.
      */
     public function boot(): void
     {
         $this->configureRateLimiting();
 
         $this->routes(function () {
-            // API Routen Konfiguration
-            Route::middleware('api') // Wendet die 'api' Middleware Gruppe an
-                ->prefix('api')     // Stellt allen Routen in api.php '/api' voran
-                ->group(base_path('routes/api.php')); // Lädt die Routen aus routes/api.php
+            // API-Routen (bekommen automatisch das Prefix /api)
+            Route::middleware('api')
+                ->prefix('api')
+                ->group(base_path('routes/api.php'));
 
-            // Web Routen Konfiguration
-            Route::middleware('web') // Wendet die 'web' Middleware Gruppe an
-                ->group(base_path('routes/web.php')); // Lädt die Routen aus routes/web.php
+            // Web-Routen
+            Route::middleware('web')
+                ->group(base_path('routes/web.php'));
         });
     }
 
     /**
-     * Configure the rate limiters for the application.
+     * Rate Limiter konfigurieren.
      */
     protected function configureRateLimiting(): void
     {
-        // Konfiguriert das Rate Limiting für API Anfragen
+        // Standard-Limiter für API (z. B. JSON-APIs)
         RateLimiter::for('api', function (Request $request) {
-            // Beispiel: 60 Anfragen pro Minute pro User oder IP-Adresse
             return Limit::perMinute(60)->by($request->user()?->id ?: $request->ip());
         });
 
-        // Beispiel für Web Rate Limiting (falls benötigt)
-        /*
-        RateLimiter::for('web', function (Request $request) {
-            return Limit::perMinute(120)->by($request->user()?->id ?: $request->ip());
+        // ➜ Dedizierter Limiter für Tracking-Events (GhostButton etc.)
+        RateLimiter::for('track-events', function (Request $request) {
+            // Passe die Rate gerne an deinen Bedarf an (z. B. 20/min/IP)
+            return Limit::perMinute(20)->by($request->ip());
         });
-        */
     }
 }

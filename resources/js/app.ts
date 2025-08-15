@@ -6,72 +6,64 @@ import { createApp, h, type DefineComponent } from 'vue';
 import { createInertiaApp, router } from '@inertiajs/vue3';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { ZiggyVue } from 'ziggy-js';
+import type { Config as ZiggyConfig } from 'ziggy-js'; // Typ für Ziggy-Options
 import './bootstrap';
 import { initializeTheme } from './composables/useAppearance';
 import { trackClick } from '@/directives/trackClick';
 
-// KORREKTUR: Wir importieren jetzt alle notwendigen Consent- und Analytics-Funktionen
+
+// Consent + Analytics
 import { useConsent, loadConsent } from '@/composables/useConsent';
 import { useGoogleAnalytics } from '@/composables/useGoogleAnalytics';
 
-// Deine globale Komponente
+// Globale Komponente
 import ContactForm from './components/ContactForm.vue';
-
-// Extend ImportMeta interface for Vite...
-declare module 'vite/client' {
-    interface ImportMetaEnv {
-        readonly VITE_APP_NAME: string;
-        [key: string]: string | boolean | undefined;
-    }
-
-    interface ImportMeta {
-        readonly env: ImportMetaEnv;
-        readonly glob: <T>(pattern: string) => Record<string, () => Promise<T>>;
-    }
-}
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
 createInertiaApp({
-    title: (title) => `${title} - ${appName}`,
-    resolve: (name) => resolvePageComponent(`./pages/${name}.vue`, import.meta.glob<DefineComponent>('./pages/**/*.vue')),
-    setup({ el, App, props, plugin }) {
-        
-        // NEUE LOGIK FÜR CONSENT MODE V2
-        
-        // 1. Lade zuerst den Consent-Status aus dem localStorage
-        loadConsent();
-        
-        // 2. Hole den reaktiven Zustand und die GA-Funktionen
-        const { consentState } = useConsent();
-        const { init, updateConsent } = useGoogleAnalytics();
+  title: (title) => `${title} - ${appName}`,
+  resolve: (name) =>
+    resolvePageComponent(`./pages/${name}.vue`, import.meta.glob<DefineComponent>('./pages/**/*.vue')),
+  setup({ el, App, props, plugin }) {
+    // 1) Consent laden
+    loadConsent();
 
-        // 3. Initialisiere Google Analytics IMMER.
-        // Die `init`-Funktion setzt jetzt die 'denied'-Standards für den Consent Mode v2.
-        // HINWEIS: Sobald du deine Mess-ID in useGoogleAnalytics.ts eingetragen hast,
-        // entferne die Kommentarzeichen // vor der nächsten Zeile, um alles zu aktivieren.
-        // init();
+    // 2) GA-Funktionen holen (inkl. pageview)
+    const { consentState } = useConsent();
+    const { init, updateConsent, pageview } = useGoogleAnalytics();
 
-        // 4. Wenn die Zustimmung bereits bei einem früheren Besuch gegeben wurde,
-        // sende sofort ein Update an Google für diesen Seitenaufruf.
-        if (!consentState.bannerVisible) {
-            updateConsent(consentState);
-        }
+    // 3) GA initialisieren (send_page_view:false in der Composable)
+    init();
 
-        const vueApp = createApp({ render: () => h(App, props) });
+    // 4) Falls bereits Einwilligung vorliegt, sofort aktualisieren
+    if (!consentState.bannerVisible) {
+      updateConsent(consentState);
+    }
 
-        vueApp.use(plugin);
-        vueApp.use(ZiggyVue, props.initialPage.props.ziggy);
+    const vueApp = createApp({ render: () => h(App, props) });
 
-        vueApp.directive('track-click', trackClick);
-        
-        vueApp.component('contact-form', ContactForm);
+    vueApp.use(plugin);
 
-        vueApp.mount(el);
-    },
-    progress: {
-        color: '#4B5563',
-    },
+    // Ziggy-Options typsicher + Defaults absichern
+    const ziggy = (props.initialPage.props as any).ziggy as ZiggyConfig;
+    (ziggy as any).defaults ??= {} as Record<string, any>;
+    vueApp.use(ZiggyVue, ziggy);
+
+    vueApp.directive('track-click', trackClick);
+    vueApp.component('contact-form', ContactForm);
+
+    vueApp.mount(el);
+
+    // Erster Pageview nach dem initialen Mount
+    pageview(window.location.pathname + window.location.search);
+
+    // SPA-Pageviews bei Inertia-Navigation
+    router.on('navigate', () => {
+      pageview(window.location.pathname + window.location.search);
+    });
+  },
+  progress: { color: '#4B5563' },
 });
 
 // HINWEIS: Der separate 'router.on('navigate')'-Block ist nicht mehr nötig.
