@@ -67,7 +67,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-    <Head title="Über mich" />
+    <Head title="Über mich"/>
 
     <div class="space-y-8 py-12 px-4 sm:px-6 lg:px-32">
         <!-- Sektion 1: Persönliche Vorstellung mit Bild -->

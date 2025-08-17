@@ -10,58 +10,33 @@ import GhostButton from '@/components/GhostButton.vue';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import {
   NavigationMenu,
-  NavigationMenuItem,
-  NavigationMenuLink,
   NavigationMenuList,
-  navigationMenuTriggerStyle,
 } from '@/components/ui/navigation-menu';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 
 import { getInitials } from '@/composables/useInitials';
 import { useNavigation } from '@/composables/useNavigation';
-import type { NavItem, BreadcrumbItem as BreadcrumbItemType } from '@/types';
-import { Link, usePage } from '@inertiajs/vue3';
+import type { BreadcrumbItem as BreadcrumbItemType } from '@/types';
+import { Link } from '@inertiajs/vue3';
+
+// 🔹 neue modulare Nav-Komponenten
+import NavDesktop from '@/components/navigation/NavDesktop.vue';
+import NavStack from '@/components/navigation/NavStack.vue';
 
 const { appearance, updateAppearance } = useAppearance();
 const toggleTheme = () => { updateAppearance(appearance.value === 'dark' ? 'light' : 'dark'); };
 
 const {
   filteredMainNavItems,
-  filteredRightNavItems,
   isGuest,
   user,
-  canRegister,
 } = useNavigation();
-
-const page = usePage();
-const defaultAvatar = '';
 
 interface Props { breadcrumbs?: BreadcrumbItemType[] }
 const props = withDefaults(defineProps<Props>(), { breadcrumbs: () => [] });
-
-const isNavItemActive = computed(() => (item: NavItem) => {
-  if (!item) return false;
-  const currentUrl = page.url;
-  if (item.href) {
-    if (currentUrl === item.href) return true;
-    if (item.href !== '/' && currentUrl.startsWith(item.href + '/')) return true;
-  }
-  if (item.children) {
-    return item.children.some(
-      (child: NavItem) =>
-        child.href && (currentUrl === child.href || (child.href !== '/' && currentUrl.startsWith(child.href + '/'))),
-    );
-  }
-  return false;
-});
-
-const activeItemStyles = computed(
-  () => (item: NavItem) =>
-    (isNavItemActive.value(item) ? 'text-neutral-900 dark:text-neutral-50 bg-muted dark:bg-neutral-800' : ''),
-);
 </script>
 
 <template>
@@ -71,11 +46,12 @@ const activeItemStyles = computed(
         <!-- Mobile -->
         <div class="lg:hidden">
           <Sheet>
-            <SheetTrigger :as-child="true">
+            <SheetTrigger as-child>
               <Button variant="secondary" size="lg" class="mr-2 h-9 w-9">
                 <Menu class="h-5 w-5" />
               </Button>
             </SheetTrigger>
+
             <SheetContent side="left" class="w-[300px] p-6">
               <SheetTitle class="sr-only">Navigation</SheetTitle>
               <SheetHeader class="mb-4 flex justify-start text-left">
@@ -85,36 +61,10 @@ const activeItemStyles = computed(
               </SheetHeader>
 
               <div class="flex h-full flex-1 flex-col justify-between space-y-4">
-                <nav class="grid items-start gap-2 px-2 text-sm font-medium">
-                  <template v-for="item in filteredMainNavItems" :key="item.title">
-                    <div v-if="item.children && item.children.length > 0" class="space-y-1">
-                      <h4 class="px-3 py-2 font-semibold text-muted-foreground">{{ item.title }}</h4>
+                <!-- 🔹 Mobile Navigation modular -->
+                <NavStack :items="filteredMainNavItems" />
 
-                      <Link
-                        v-for="child in item.children"
-                        :key="child.title"
-                        :href="child.href ?? '#'"
-                        class="flex items-center gap-3 rounded-lg border border-border px-3 py-2 text-foreground transition-colors hover:bg-accent"
-                        :class="{ 'bg-primary text-primary-foreground hover:bg-primary/90': isNavItemActive(child) }"
-                      >
-                        <component v-if="child.icon" :is="child.icon" class="h-4 w-4" />
-                        {{ child.title }}
-                      </Link>
-                    </div>
-
-                    <Link
-                      v-else
-                      :href="item.href ?? '#'"
-                      class="flex items-center gap-3 rounded-lg border border-border px-3 py-2 text-foreground transition-colors hover:bg-accent"
-                      :class="{ 'bg-primary text-primary-foreground hover:bg-primary/90': isNavItemActive(item) }"
-                    >
-                      <component v-if="item.icon" :is="item.icon" class="h-4 w-4" />
-                      {{ item.title }}
-                    </Link>
-                  </template>
-
-                  <GhostButton :tracking-data="{ category: 'Easter Egg', label: 'MobileNavbar Ghostbutton' }" />
-                </nav>
+                <GhostButton :tracking-data="{ category: 'Easter Egg', label: 'MobileNavbar Ghostbutton' }" />
               </div>
             </SheetContent>
           </Sheet>
@@ -126,87 +76,10 @@ const activeItemStyles = computed(
             <AppLogoIcon class="size-7 fill-current text-black dark:text-white" />
           </Link>
 
+          <!-- 🔹 Desktop Navigation modular -->
           <NavigationMenu class="relative">
             <NavigationMenuList class="flex space-x-1">
-              <template v-for="item in filteredMainNavItems" :key="item.title">
-                <NavigationMenuItem>
-                  <template v-if="item.children && item.children.length > 0">
-                    <DropdownMenu>
-                      <!-- Trigger-Button -->
-                      <DropdownMenuTrigger as-child>
-                        <Button
-                          variant="ghost"
-                          :class="[navigationMenuTriggerStyle(), 'h-9 px-3 text-sm', activeItemStyles(item)]"
-                        >
-                          <component
-                            v-if="item.icon"
-                            :is="item.icon"
-                            class="mr-1.5 h-4 w-4 opacity-80"
-                          />
-                          {{ item.title }}
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="24"
-                            height="24"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-width="2"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            class="ml-1 h-3 w-3 transition group-data-[state=open]:rotate-180"
-                          >
-                            <path d="m6 9 6 6 6-6" />
-                          </svg>
-                        </Button>
-                      </DropdownMenuTrigger>
-                    
-                      <!-- Dropdown Panel -->
-                      <DropdownMenuContent class="w-56" align="start" :side-offset="5">
-                        <!-- Haupt-Link (falls item.href existiert) -->
-                        <DropdownMenuItem v-if="item.href" as-child>
-                          <Link :href="item.href" :class="activeItemStyles(item)">
-                            <component
-                              v-if="item.icon"
-                              :is="item.icon"
-                              class="mr-2 h-4 w-4"
-                            />
-                            <span>{{ item.title }}</span>
-                          </Link>
-                        </DropdownMenuItem>
-                      
-                        <!-- Kind-Links -->
-                        <DropdownMenuItem
-                          v-for="child in item.children"
-                          :key="child.title"
-                          as-child
-                        >
-                          <Link :href="child.href ?? '#'" :class="activeItemStyles(child)">
-                            <component
-                              v-if="child.icon"
-                              :is="child.icon"
-                              class="mr-2 h-4 w-4"
-                            />
-                            <span>{{ child.title }}</span>
-                          </Link>
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </template>
-
-                  <template v-else-if="item.href">
-                    <Link :href="item.href" legacy-behavior passHref>
-                      <NavigationMenuLink
-                        :active="isNavItemActive(item)"
-                        :class="[navigationMenuTriggerStyle(), activeItemStyles(item), 'h-9 px-3 text-sm']"
-                      >
-                        <component v-if="item.icon" :is="item.icon" class="mr-1.5 h-4 w-4 opacity-80" />
-                        {{ item.title }}
-                      </NavigationMenuLink>
-                    </Link>
-                  </template>
-                </NavigationMenuItem>
-              </template>
+              <NavDesktop :items="filteredMainNavItems" />
             </NavigationMenuList>
           </NavigationMenu>
         </div>
@@ -226,19 +99,13 @@ const activeItemStyles = computed(
               :class="appearance === 'dark' ? 'translate-x-7' : 'translate-x-0'"
               class="pointer-events-none relative inline-block h-6 w-6 transform rounded-full bg-white shadow-lg ring-0 transition duration-200 ease-in-out"
             >
-              <span class="absolute inset-0 flex h-full w-full items-center justify-center transition-opacity"
-                    :class="appearance === 'dark' ? 'opacity-0 ease-out duration-100' : 'opacity-100 ease-in duration-200'"></span>
-              <span class="absolute inset-0 flex h-full w-full items-center justify-center transition-opacity"
-                    :class="appearance === 'dark' ? 'opacity-100 ease-in duration-200' : 'opacity-0 ease-out duration-100'"></span>
-
               <Sun v-if="appearance !== 'dark'" class="absolute inset-0 h-full w-full p-1 text-yellow-500" />
               <Moon v-else class="absolute inset-0 h-full w-full p-1 text-slate-800" />
             </span>
           </button>
 
           <template v-if="isGuest">
-            <!-- Ein Fokusziel: Button mit as-child, Link innen -->
-            <Button variant="ghost" class="h-9 px-3 text-sm" :as-child="true">
+            <Button variant="ghost" class="h-9 px-3 text-sm" as-child>
               <Link :href="route('login')">
                 <LogIn class="mr-2 h-4 w-4" /> Login
               </Link>
@@ -248,11 +115,11 @@ const activeItemStyles = computed(
           <template v-else-if="user">
             <div class="flex items-center pr-4">
               <DropdownMenu>
-                <DropdownMenuTrigger :as-child="true">
+                <DropdownMenuTrigger as-child>
                   <Button variant="ghost" class="relative h-10 w-10 rounded-full">
                     <Avatar class="size-11">
                       <AvatarImage :src="user.avatar || ''" :alt="user.name ?? 'User Avatar'" />
-                      <AvatarFallback class="bg-muted ...">
+                      <AvatarFallback class="bg-muted">
                         {{ getInitials(user.name ?? '') }}
                       </AvatarFallback>
                     </Avatar>
