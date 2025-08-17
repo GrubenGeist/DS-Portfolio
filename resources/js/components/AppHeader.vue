@@ -22,19 +22,12 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/co
 
 import { getInitials } from '@/composables/useInitials';
 import { useNavigation } from '@/composables/useNavigation';
-
 import type { NavItem, BreadcrumbItem as BreadcrumbItemType } from '@/types';
-
 import { Link, usePage } from '@inertiajs/vue3';
 
-// Theme
 const { appearance, updateAppearance } = useAppearance();
-const toggleTheme = () => {
-  const next = appearance.value === 'dark' ? 'light' : 'dark';
-  updateAppearance(next);
-};
+const toggleTheme = () => { updateAppearance(appearance.value === 'dark' ? 'light' : 'dark'); };
 
-// Navigation / User
 const {
   filteredMainNavItems,
   filteredRightNavItems,
@@ -46,32 +39,28 @@ const {
 const page = usePage();
 const defaultAvatar = '';
 
-interface Props {
-  breadcrumbs?: BreadcrumbItemType[];
-}
+interface Props { breadcrumbs?: BreadcrumbItemType[] }
 const props = withDefaults(defineProps<Props>(), { breadcrumbs: () => [] });
 
 const isNavItemActive = computed(() => (item: NavItem) => {
   if (!item) return false;
   const currentUrl = page.url;
-
   if (item.href) {
     if (currentUrl === item.href) return true;
     if (item.href !== '/' && currentUrl.startsWith(item.href + '/')) return true;
   }
   if (item.children) {
-      return item.children.some(
-        (child: NavItem) =>
-          child.href && (currentUrl === child.href || (child.href !== '/' && currentUrl.startsWith(child.href + '/'))),
-      );
-    }
+    return item.children.some(
+      (child: NavItem) =>
+        child.href && (currentUrl === child.href || (child.href !== '/' && currentUrl.startsWith(child.href + '/'))),
+    );
+  }
   return false;
 });
 
 const activeItemStyles = computed(
-  () =>
-    (item: NavItem) =>
-      (isNavItemActive.value(item) ? 'text-neutral-900 dark:text-neutral-50 bg-muted dark:bg-neutral-800' : ''),
+  () => (item: NavItem) =>
+    (isNavItemActive.value(item) ? 'text-neutral-900 dark:text-neutral-50 bg-muted dark:bg-neutral-800' : ''),
 );
 </script>
 
@@ -87,7 +76,7 @@ const activeItemStyles = computed(
                 <Menu class="h-5 w-5" />
               </Button>
             </SheetTrigger>
-            <SheetContent side="left" class="w-300px] p-6">
+            <SheetContent side="left" class="w-[300px] p-6">
               <SheetTitle class="sr-only">Navigation</SheetTitle>
               <SheetHeader class="mb-4 flex justify-start text-left">
                 <Link :href="route('welcome')">
@@ -143,32 +132,61 @@ const activeItemStyles = computed(
                 <NavigationMenuItem>
                   <template v-if="item.children && item.children.length > 0">
                     <DropdownMenu>
+                      <!-- Trigger-Button -->
                       <DropdownMenuTrigger as-child>
                         <Button
                           variant="ghost"
-                          :class="[navigationMenuTriggerStyle(), 'h-9 px-3 text-sm focus-visible:ring-0', activeItemStyles(item)]"
+                          :class="[navigationMenuTriggerStyle(), 'h-9 px-3 text-sm', activeItemStyles(item)]"
                         >
-                          <component v-if="item.icon" :is="item.icon" class="mr-1.5 h-4 w-4 opacity-80" />
+                          <component
+                            v-if="item.icon"
+                            :is="item.icon"
+                            class="mr-1.5 h-4 w-4 opacity-80"
+                          />
                           {{ item.title }}
-                          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                               stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                               class="relative top-[1px] ml-1 h-3 w-3 transition duration-200 group-data-[state=open]:rotate-180">
-                            <path d="m6 9 6 6 6-6"></path>
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="24"
+                            height="24"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            class="ml-1 h-3 w-3 transition group-data-[state=open]:rotate-180"
+                          >
+                            <path d="m6 9 6 6 6-6" />
                           </svg>
                         </Button>
                       </DropdownMenuTrigger>
-
+                    
+                      <!-- Dropdown Panel -->
                       <DropdownMenuContent class="w-56" align="start" :side-offset="5">
+                        <!-- Haupt-Link (falls item.href existiert) -->
                         <DropdownMenuItem v-if="item.href" as-child>
                           <Link :href="item.href" :class="activeItemStyles(item)">
-                            <component v-if="item.icon" :is="item.icon" class="mr-2 h-4 w-4" />
+                            <component
+                              v-if="item.icon"
+                              :is="item.icon"
+                              class="mr-2 h-4 w-4"
+                            />
                             <span>{{ item.title }}</span>
                           </Link>
                         </DropdownMenuItem>
-
-                        <DropdownMenuItem v-for="child in item.children" :key="child.title" as-child>
+                      
+                        <!-- Kind-Links -->
+                        <DropdownMenuItem
+                          v-for="child in item.children"
+                          :key="child.title"
+                          as-child
+                        >
                           <Link :href="child.href ?? '#'" :class="activeItemStyles(child)">
-                            <component v-if="child.icon" :is="child.icon" class="mr-2 h-4 w-4" />
+                            <component
+                              v-if="child.icon"
+                              :is="child.icon"
+                              class="mr-2 h-4 w-4"
+                            />
                             <span>{{ child.title }}</span>
                           </Link>
                         </DropdownMenuItem>
@@ -198,7 +216,7 @@ const activeItemStyles = computed(
           <button
             @click="toggleTheme"
             type="button"
-            class="relative inline-flex h-7 w-14 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent bg-slate-200 dark:bg-slate-700 transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2"
+            class="relative inline-flex h-7 w-14 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent bg-slate-200 dark:bg-slate-700 transition-colors duration-200 ease-in-out"
             role="switch"
             :aria-checked="appearance === 'dark'"
           >
@@ -219,11 +237,12 @@ const activeItemStyles = computed(
           </button>
 
           <template v-if="isGuest">
-            <Link :href="route('login')">
-              <Button variant="ghost" class="h-9 px-3 text-sm">
+            <!-- Ein Fokusziel: Button mit as-child, Link innen -->
+            <Button variant="ghost" class="h-9 px-3 text-sm" :as-child="true">
+              <Link :href="route('login')">
                 <LogIn class="mr-2 h-4 w-4" /> Login
-              </Button>
-            </Link>
+              </Link>
+            </Button>
           </template>
 
           <template v-else-if="user">

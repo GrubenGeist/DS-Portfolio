@@ -5,20 +5,21 @@ import axios from 'axios';
 
 // Nur im Browser (nicht im SSR)
 if (typeof window !== 'undefined') {
+  // axios global verfügbar (falls woanders benötigt)
+  // @ts-expect-error: attach for convenience
   window.axios = axios;
 
-  // CSRF aus <meta name="csrf-token" content="...">
-  const tokenEl = document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement | null;
-  const token = tokenEl?.content ?? null;
+  // AJAX Header
+  axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
-  if (token) {
-    window.axios.defaults.headers.common['X-CSRF-TOKEN'] = token;
-  } else {
-    // Hinweis: in Blade sicherstellen, dass @csrf meta gesetzt ist
-    console.error('CSRF token not found: https://laravel.com/docs/csrf#csrf-x-csrf-token');
-  }
+  // KORREKTUR: Wir entfernen den Interceptor und kehren zum robusten Standard-Mechanismus von Laravel zurück.
+  // Axios wird jetzt angewiesen, das XSRF-TOKEN-Cookie zu lesen und als X-XSRF-TOKEN-Header zu senden.
+  // Dies geschieht automatisch vor jeder Anfrage und löst alle Timing-Probleme.
+  axios.defaults.xsrfCookieName = 'XSRF-TOKEN';
+  axios.defaults.xsrfHeaderName = 'X-XSRF-TOKEN';
 
-  window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+  // WICHTIG: Stellt sicher, dass Cookies bei Anfragen mitgesendet werden.
+  axios.defaults.withCredentials = true;
 }
 
 /**
@@ -27,7 +28,9 @@ if (typeof window !== 'undefined') {
 // import Echo from 'laravel-echo';
 // import Pusher from 'pusher-js';
 // if (typeof window !== 'undefined') {
+//   // @ts-expect-error
 //   window.Pusher = Pusher;
+//   // @ts-expect-error
 //   window.Echo = new Echo({
 //     broadcaster: 'pusher',
 //     key: import.meta.env.VITE_PUSHER_APP_KEY,

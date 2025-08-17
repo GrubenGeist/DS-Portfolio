@@ -22,7 +22,7 @@ useTilt(cardElement);
 </script>
 
 <template>
-    <div tabindex="0" ref="cardElement" class="md:max-w-sm max-w-md w-full dark:text-white border-1-8 border-transparent rounded-md shadow-md space-y-2 overflow-hidden bg-white dark:bg-gray-800 focus:outline-none focus-visible:ring-1 focus-visible:ring-black focus-visible:ring-offset-1 dark:focus-visible:ring-white">
+    <div ref="cardElement" class="md:max-w-sm max-w-md w-full dark:text-white border-1-8 border-transparent rounded-md shadow-md space-y-2 overflow-hidden bg-white dark:bg-gray-800">
         <img class="rounded-t-md p-0 w-full h-48 object-cover" :src="imageUrl" alt="Card Image"> 
 
         <div class="px-6 py-4">

@@ -8,6 +8,9 @@ use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Api\ConsentEventController; 
 use App\Http\Controllers\ContactFormController;
 use App\Http\Controllers\AppearanceController;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -32,8 +35,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/services', [PageController::class, 'services'])->name('services')->middleware('role:Admin|Company');
     Route::get('/aboutme', [PageController::class, 'aboutMe'])->name('aboutme')->middleware('role:Admin|Company');
     
-
-
     // --- ADMIN-BEREICH (Benutzerverwaltung) ---
     Route::middleware(['role:Admin'])->prefix('admin')->name('admin.')->group(function () {
         Route::get('/users', [UserController::class, 'index'])->name('users.index');
@@ -48,6 +49,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard/data', [PageController::class, 'dashboardData'])->name('dashboard.data');
 
 });
+
+Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
+    ->name('logout');
 
 // --- WEITERE ROUTEN-DATEIEN LADEN ---
 require __DIR__.'/auth.php';

@@ -83,10 +83,9 @@ const imageRoundingClass = computed(() => {
             - focus-visible Klassen: Fügen einen klaren, konsistenten Fokus-Ring nur für Tastatur-Nutzer hinzu.
         -->
         <div 
-            tabindex="0"
             role="region"
             :aria-label="headline"
-            class="group grid grid-cols-1 gap-0 rounded-2xl shadow-2xl focus:outline-none focus-visible:ring-1 focus-visible:ring-black focus-visible:ring-offset-1 dark:focus-visible:ring-white"
+            class="group grid grid-cols-1 gap-0 rounded-2xl shadow-2xl"
             :class="[backgroundColor, layoutClasses]"
         >
             <!-- Text-Spalte -->

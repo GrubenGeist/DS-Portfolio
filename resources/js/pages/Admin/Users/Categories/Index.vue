@@ -86,10 +86,10 @@ const submitDelete = (id: number) => {
               <div class="space-y-4">
                 <div>
                   <label for="name" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Name</label>
-                  <input id="name" v-model="createForm.name" type="text" class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm" />
+                  <input id="name" v-model="createForm.name" type="text" class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 rounded-md shadow-sm" />
                   <p v-if="createForm.errors.name" class="text-sm text-red-600 mt-1">{{ createForm.errors.name }}</p>
                 </div>
-                <button type="submit" :disabled="createForm.processing" class="inline-flex items-center px-4 py-2 bg-gray-800 dark:bg-gray-200 border border-transparent rounded-md font-semibold text-xs text-white dark:text-gray-800 uppercase tracking-widest hover:bg-gray-700 dark:hover:bg-white focus:bg-gray-700 dark:focus:bg-white active:bg-gray-900 dark:active:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition ease-in-out duration-150 disabled:opacity-25">
+                <button type="submit" :disabled="createForm.processing" class="inline-flex items-center px-4 py-2 bg-gray-800 dark:bg-gray-200 border border-transparent rounded-md font-semibold text-xs text-white dark:text-gray-800 uppercase tracking-widest hover:bg-gray-700 dark:hover:bg-white transition ease-in-out duration-150 disabled:opacity-25">
                   Erstellen
                 </button>
               </div>
@@ -118,7 +118,7 @@ const submitDelete = (id: number) => {
                 <tr v-for="category in categories" :key="category.id">
                   <td class="px-6 py-4 whitespace-nowrap">
                     <!-- Dieser Check verhindert den Fehler, falls das Formular noch nicht initialisiert ist -->
-                    <input v-if="editForms[category.id]" v-model="editForms[category.id].name" type="text" class="w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm" />
+                    <input v-if="editForms[category.id]" v-model="editForms[category.id].name" type="text" class="w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 rounded-md shadow-sm" />
                   </td>
                   <td class="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-500 dark:text-gray-400">{{ category.events_count }}</td>
                   <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">

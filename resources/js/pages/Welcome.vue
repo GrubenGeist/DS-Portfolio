@@ -42,7 +42,7 @@ const techWords = [
                 
                 <Hero3D :words="techWords" />
 
-                <div tabindex="0" class="relative z-10 flex flex-col bg-blue-900/100 dark:bg-gray-600/100 p-8 rounded-md items-center text-black dark:text-white focus:outline-none focus-visible:ring-1 focus-visible:ring-black focus-visible:ring-offset-1 dark:focus-visible:ring-white">
+                <div class="relative z-10 flex flex-col bg-blue-900/100 dark:bg-gray-600/100 p-8 rounded-md items-center text-black dark:text-white">
                     <h1 class="text-white dark:text-white text-5xl md:text-7xl font-extrabold tracking-tight" style=" text-shadow: 0 0 20px rgba(0,0,0,0.7);">
                         Dennis Strauß
                     </h1>
@@ -92,8 +92,8 @@ const techWords = [
                         <div id="card_panel-headline" class="flex-1 mt-0 mb-0 p-0 dark:bg-transparent">
                             <!-- wichtig für tastertur Steuerung: ind den Container= tabindex="0" und in der class='focus:outline-none focus-visible:ring-1 focus-visible:ring-black focus-visible:ring-offset-1 dark:focus-visible:ring-white'-->
                             <h2
-                            tabindex="0" 
-                            class="text-2xl bg-blue-900 dark:bg-blue-900  md:ml-32 md:mr-32 p-4 rounded-xl md:text-4xl font-bold border-2 dark:text-white text-white mb-4 text-center focus:outline-none focus-visible:ring-1 focus-visible:ring-black focus-visible:ring-offset-1 dark:focus-visible:ring-white">
+                            
+                            class="text-2xl bg-blue-900 dark:bg-blue-900  md:ml-32 md:mr-32 p-4 rounded-xl md:text-4xl font-bold border-2 dark:text-white text-white mb-4 text-center">
                                 Ein Blick auf meine Arbeit & mehr
                             </h2>
                         </div>

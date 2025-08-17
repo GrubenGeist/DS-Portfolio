@@ -13,9 +13,7 @@ import {
 } from 'lucide-vue-next';
 import { computed } from 'vue';
 
-interface Props {
-  user: User;
-}
+interface Props { user: User }
 const props = defineProps<Props>();
 
 const page = usePage();
@@ -40,21 +38,18 @@ const isAdmin = computed(() => Array.isArray(currentUserRoles.value) && currentU
 
     <template v-if="isAdmin">
       <DropdownMenuSeparator />
-
       <DropdownMenuItem :as-child="true">
         <Link class="block w-full" :href="route('dashboard')" as="button">
           <DashboardIcon class="mr-2 h-4 w-4" />
           Dashboard
         </Link>
       </DropdownMenuItem>
-
       <DropdownMenuItem :as-child="true">
         <Link class="block w-full" :href="route('admin.users.index')" as="button">
           <UsersIcon class="mr-2 h-4 w-4" />
           Benutzerverwaltung
         </Link>
       </DropdownMenuItem>
-
       <DropdownMenuItem :as-child="true">
         <Link class="block w-full" :href="route('admin.register.form')" as="button">
           <UserPlusIcon class="mr-2 h-4 w-4" />
@@ -63,10 +58,11 @@ const isAdmin = computed(() => Array.isArray(currentUserRoles.value) && currentU
       </DropdownMenuItem>
     </template>
   </DropdownMenuGroup>
-
   <DropdownMenuSeparator />
-  <DropdownMenuItem :as-child="true">
-    <Link class="block w-full" method="post" :href="route('logout')" as="button">
+
+  <!-- Diese Implementierung ist korrekt und verwendet den Standard-Mechanismus von Inertia -->
+  <DropdownMenuItem as-child>
+    <Link method="post" :href="route('logout')" as="button" class="w-full">
       <LogOut class="mr-2 h-4 w-4" />
       Abmelden
     </Link>
