@@ -19,11 +19,12 @@ const profileImageUrl = '/images/selfie.png';
 const techWords = [
     'Laravel', 'PHP', 'Vue.js', 'JavaScript (JS)', 'TypeScript',
     'HTML5', 'CSS3', 'MySQL', 'Inertia.js', 'TailwindCSS',
-    'API', 'Clean Code', 'Git', 'Variable',
+    'API', 'Clean Code', 'Git',
     'Security', 'Testing', 'Agile','Bug Fixing', 'Web Applications', 'Structure',
     'Backend','Backup','Authentifizierung','Debugging','Docker',
     'Framework','Frontend','HTTPS','Webserver','VPN (Virtual Private Network)','Development',
-    'Domain', 'Mobile First','Cookie Consent',
+    'Domain', 'Mobile First','Cookie Consent','N8N','Kubernetes','Relaunch','Automated workflows',
+    'Teamplayer','creative coding', 'Bug Hunting'
 ];
 
 
@@ -50,12 +51,12 @@ const techWords = [
                         Digitale Erlebnisse, die begeistern.
                     </p>
                     <div class="mt-8"> <!--@click="handleProjectsClick" ist für die Google Analytics -->
-                        <Link 
-                            :href="route('projects')" 
-                            v-track-click="{ category: 'Startseite', label: 'Projekte entdecken', requireConsent: true }">
-                            <Button size="lg" class="bg-green-400 hover:bg-cyan-600 text-black shadow-lg">
-                                Projekte entdecken
-                            </Button>
+                        <Link
+                          :href="route('projects')"
+                          v-track-click="{ category: 'Startseite', label: 'Projekte entdecken', requireConsent: true }"
+                          class="inline-flex items-center justify-center rounded-lg bg-green-400 hover:bg-green-200 text-black shadow-lg px-6 py-2 text-lg font-medium"
+                        >
+                          Projekte entdecken
                         </Link>
                     </div>
                 </div>
@@ -117,11 +118,12 @@ const techWords = [
                                   <!-- Wir tracken den Klick auf die "Kontakt"-Karte -->
                                   <InfoCard
                                       :image-url="contactImageUrl"
-                                      title="Web-Development"
+                                      title="Kontakt"
                                       description="Haben Sie eine Frage oder eine Projektidee?"
                                       button-text="Zum Kontaktformular"
                                       :button-href="route('contactform')"
                                       :tags="['Kommunikation', 'Beratung']"
+                                      
 
                                   />
                                   <!-- Wir tracken den Klick auf die "Zertifikate"-Karte -->

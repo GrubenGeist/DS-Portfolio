@@ -16,10 +16,10 @@ defineProps<Props>();
     <svg
         xmlns="http://www.w3.org/2000/svg"
         xmlns:xlink="http://www.w3.org/1999/xlink"
-        width="90"
+        width="100"
         zoomAndPan="magnify"
-        viewBox="0 0 375 374.999991"
-        height="65"
+        viewBox="5 85 400 200"
+        height="50"
         preserveAspectRatio="xMidYMid meet"
         version="1.0"
     >

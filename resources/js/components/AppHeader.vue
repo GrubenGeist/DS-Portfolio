@@ -40,6 +40,7 @@ const props = withDefaults(defineProps<Props>(), { breadcrumbs: () => [] });
 </script>
 
 <template>
+  
   <div>
     <div class="border-b border-sidebar-border/80 dark:bg-stone-900">
       <div class="flex h-16 w-full items-center px-2 md:px-2">
@@ -60,19 +61,25 @@ const props = withDefaults(defineProps<Props>(), { breadcrumbs: () => [] });
                 </Link>
               </SheetHeader>
 
-              <div class="flex h-full flex-1 flex-col justify-between space-y-4">
+              
+              <div class="flex h-full flex-1 flex-col space-y-2">
                 <!-- 🔹 Mobile Navigation modular -->
                 <NavStack :items="filteredMainNavItems" />
-
-                <GhostButton :tracking-data="{ category: 'Easter Egg', label: 'MobileNavbar Ghostbutton' }" />
+              
+                <!-- 🔹 GhostButton als Menüpunkt -->
+                <GhostButton 
+                  :tracking-data="{ category: 'Easter Egg', label: 'MobileNavbar Ghostbutton' }" 
+                  class="ghost-nav-item"
+                />
               </div>
+              
             </SheetContent>
           </Sheet>
         </div>
 
         <!-- Desktop -->
         <div class="hidden h-full items-center lg:flex">
-          <Link :href="route('welcome')" class="mr-12">
+          <Link :href="route('welcome')" class="mr-4 pl-2">
             <AppLogoIcon class="size-7 fill-current text-black dark:text-white" />
           </Link>
 

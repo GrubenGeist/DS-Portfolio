@@ -11,10 +11,14 @@ withDefaults(defineProps<Props>(), { breadcrumbs: () => [] });
 </script>
 
 <template>
-  <!-- Skip-Link ganz oben -->
-  <a href="#main" class="sr-only-focusable">
-    Zum Inhalt springen
-  </a>
+    <!-- Skip-Link ganz oben -->
+    <a 
+      href="#main"
+      class="sr-only focus:not-sr-only focus:block mt-2 ml-4 
+            bg-blue-600 text-white px-6 py-4 pl-8 rounded-md z-90"
+    >
+      Zum Inhalt springen
+    </a>
 
   <!-- Header-Layout inkl. Breadcrumbs -->
   <AppHeaderLayout :breadcrumbs="breadcrumbs">

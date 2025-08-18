@@ -82,20 +82,42 @@ html {
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
 }
-
-/* === Base Defaults === */
+/* === Fokus-Reset für shadcn/radix === */
 @layer base {
-  * { @apply border-border; }
-  body { @apply bg-background text-foreground; }
+  :where(
+    .radix-focus-ring,
+    .shadcn-button,
+    [data-radix-popper-content-wrapper],
+    [data-state],
+    button,
+    [role="button"],
+    input,
+    select,
+    textarea,
+    summary,
+    a
+  ) {
+    outline: none !important;
+    box-shadow: none !important;
+  }
+
+  /* Alle ring-Utilities killen */
+  :where(.ring, .ring-1, .ring-2, .ring-4, .ring-offset-1, .ring-offset-2, .ring-offset-4) {
+    box-shadow: none !important;
+  }
 }
 
 /* === A11y: Fokus & Skip-Link === */
 @layer base {
-  :where(a, button, [role="button"], input, select, textarea, summary, [tabindex]) {
-    @apply focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-500;
+  /* Globaler Fokus-Stil */
+  :where(a, button, [role="button"], input, select, textarea, summary, [tabindex]):focus-visible {
+    outline: 2px solid theme('colors.blue.800') !important;
+    outline-offset:1px !important;
+    border-radius: 0.25rem !important;
   }
-  .dark :where(a, button, [role="button"], input, select, textarea, summary, [tabindex]) {
-    @apply focus-visible:outline-red-400;
+
+  .dark :where(a, button, [role="button"], input, select, textarea, summary, [tabindex]):focus-visible {
+    outline-color: theme('colors.blue.400') !important;
   }
 
   /* Skip-Link Utility */
@@ -109,5 +131,24 @@ html {
 
 /* === Reduced Motion Helper (optional) === */
 @media (prefers-reduced-motion: reduce) {
-  .reduce-motion\:no-anim { animation: none !important; transition: none !important; }
+  .reduce-motion\:no-anim { 
+    animation: none !important; 
+    transition: none !important; 
+  }
+}
+
+/* Fokus-Stil nur für GhostButton */
+.glitch-button:focus-visible {
+  outline: none !important; /* globalen blauen Ring unterdrücken */
+  box-shadow: 0 0 8px 3px rgba(34, 211, 238, 0.6),
+              0 0 2px rgba(0, 255, 255, 0.8);
+  border-color: rgba(34, 211, 238, 0.9);
+  animation: glitch-focus 1s infinite alternate;
+}
+
+/* optionaler "glitchiger" Fokus-Effekt */
+@keyframes glitch-focus {
+  0%   { text-shadow: 2px 0 0 rgba(255,0,255,.7), -2px 0 0 rgba(0,255,255,.7); }
+  50%  { text-shadow: -2px 0 0 rgba(255,0,255,.7), 2px 0 0 rgba(0,255,255,.7); }
+  100% { text-shadow: none; }
 }

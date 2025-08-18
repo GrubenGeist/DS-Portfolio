@@ -18,7 +18,7 @@ defineProps<Props>();
         xmlns:xlink="http://www.w3.org/1999/xlink"
         width="auto"
         zoomAndPan="magnify"
-        viewBox="0 0 375 375"
+        viewBox="0 40 400 300"
         height="auto"
         preserveAspectRatio="xMidYMid meet"
         version="1.0"

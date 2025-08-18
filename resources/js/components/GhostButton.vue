@@ -7,12 +7,9 @@ import { useConsent } from '@/composables/useConsent';
 // ----- Props -----
 const props = withDefaults(defineProps<{
   trackingData?: { category: string; label: string };
-  /** Nur tracken, wenn Analytics-Consent erteilt wurde (DSGVO-streng). */
-  requireConsent?: boolean;
-  /** Optional: eigene Tracking-URL erzwingen (überschreibt Ziggy/fallback). */
-  trackingUrl?: string;
-  /** Debug-Ausgaben in der Konsole aktivieren. */
-  debug?: boolean;
+  requireConsent?: boolean;   // nur tracken, wenn Analytics-Consent
+  trackingUrl?: string;       // eigene Tracking-URL
+  debug?: boolean;            // optionale Debug-Ausgaben
 }>(), {
   requireConsent: false,
   trackingUrl: '',
@@ -27,12 +24,12 @@ let observer: MutationObserver | null = null;
 
 const GHOST_TEXTS = [
   'Here is Jhonny!',
-  'It was real enough for Georgie!',
+  'Hello Georgie!',
   'Hell is other people.',
   "They're here!",
   'I see dead people.',
   'It’s getting worse.',
-  'there is something strage',
+  'There is something strange',
   'Something’s here.',
   'It burns!',
 ];
@@ -72,30 +69,22 @@ function markSent() {
 
 // ----- Tracking -----
 async function sendTrack(url: string, payload: Record<string, unknown>) {
-  // 1) axios
   try {
     await axios.post(url, payload, { headers: { 'Content-Type': 'application/json' } });
     return true;
-  } catch (err) {
-    if (props.debug) console.warn('[GhostButton] axios failed, trying sendBeacon...', err);
-  }
-  // 2) sendBeacon
+  } catch {}
   try {
     const json = JSON.stringify(payload);
     if (typeof navigator !== 'undefined' && 'sendBeacon' in navigator) {
-      const ok = navigator.sendBeacon(url, new Blob([json], { type: 'application/json' }));
-      return ok;
+      return navigator.sendBeacon(url, new Blob([json], { type: 'application/json' }));
     }
-  } catch (err) {
-    if (props.debug) console.warn('[GhostButton] sendBeacon failed:', err);
-  }
+  } catch {}
   return false;
 }
 
 async function handleGhostClick() {
-  // Consent-Check (konfigurierbar)
+  // Consent-Check
   if (props.requireConsent && !hasAnalyticsConsent.value) {
-    if (props.debug) console.info('[GhostButton] blocked by consent (analytics=false).');
     showGhostButton.value = false;
     try { localStorage.setItem('ghostButtonHidden', 'true'); } catch {}
     scheduleGhostlyReappearance();
@@ -104,7 +93,6 @@ async function handleGhostClick() {
 
   // Anti-Spam
   if (!canSendNow()) {
-    if (props.debug) console.info('[GhostButton] throttled (too soon).');
     showGhostButton.value = false;
     try { localStorage.setItem('ghostButtonHidden', 'true'); } catch {}
     scheduleGhostlyReappearance();
@@ -112,7 +100,6 @@ async function handleGhostClick() {
   }
 
   if (props.trackingData) {
-    // API-URL (Prop > Ziggy > Fallback)
     let url = props.trackingUrl || '';
     if (!url) {
       try { url = route('api.analytics-events.store'); } catch {}
@@ -130,7 +117,6 @@ async function handleGhostClick() {
     };
 
     const ok = await sendTrack(url, payload);
-    if (props.debug) console.info('[GhostButton] track sent:', ok, url, payload);
     if (ok) markSent();
   }
 
@@ -139,14 +125,14 @@ async function handleGhostClick() {
   scheduleGhostlyReappearance();
 }
 
-// ----- Lifecyle -----
+// ----- Lifecycle -----
 onMounted(() => {
   isDarkMode.value = document.documentElement.classList.contains('dark');
   let wasHidden = false;
   try { wasHidden = localStorage.getItem('ghostButtonHidden') === 'true'; } catch {}
 
   if (!wasHidden) {
-    if (Math.random() > 0.01) {
+    if (Math.random() > 0.01) { // 99% Chance
       setRandomGhostText();
       showGhostButton.value = true;
     }
@@ -168,10 +154,11 @@ onUnmounted(() => {
 
 <template>
   <Transition name="ghost">
+  <div class="px-2">
     <button
       v-if="isDarkMode && showGhostButton"
       @click="handleGhostClick"
-      class="glitch-button flex items-center gap-3 rounded-md border border-cyan-300/20 px-3 py-2"
+      class="glitch-button flex w-full items-center gap-3 rounded-md border border-cyan-300/20 px-3 py-2  text-sm text-left text-cyan-300/70 hover:bg-neutral-800"
       :data-text="ghostButtonText"
     >
       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
@@ -180,16 +167,20 @@ onUnmounted(() => {
         <path d="M6 4h8a4 4 0 0 1 4 4v8a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8a4 4 0 0 1 4-4Z"></path>
         <path d="M12 18a6 6 0 0 0-6-6 6 6 0 0 1 6-6"></path>
       </svg>
-      <span class="text-cyan-300/50">{{ ghostButtonText }}</span>
+      <span>{{ ghostButtonText }}</span>
     </button>
+    </div>
   </Transition>
 </template>
 
 <style>
+.ghost-enter-active,
 .ghost-leave-active { transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
-.ghost-leave-to { opacity: 0; transform: translateY(-20px) scale(0.8); }
+.ghost-enter-from { opacity: 0; transform: translateY(10px) scale(0.95); }
+.ghost-enter-to { opacity: 1; transform: translateY(0) scale(1); }
+.ghost-leave-to { opacity: 0; transform: translateY(-10px) scale(0.95); }
 
-/* einfacher Glitch-Effekt */
+/* Glitch-Animation */
 .glitch-button {
   animation: glitch-jiggle 4s infinite alternate;
   will-change: transform;
