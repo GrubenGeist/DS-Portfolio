@@ -12,38 +12,30 @@ import {
 } from '@/components/ui/dialog';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
-// KORREKTUR: Wir importieren die zentrale Logik
 import { useConsent } from '@/composables/useConsent';
 
-// Holt die globalen Consent-Funktionen und den Zustand aus unserem Composable
 const { consentState, saveConsent } = useConsent();
 
-// Zustand, ob das Einstellungs-Modal sichtbar ist
 const showSettingsModal = ref(false);
 
-// Lokaler Zustand nur für die Schalter im Modal
 const localSwitches = ref({
   analytics: consentState.analytics,
   marketing: consentState.marketing,
 });
 
-// Funktion, um alle Cookies zu akzeptieren
 const acceptAll = () => {
-  // Ruft die zentrale Speicherfunktion auf
   saveConsent({
     analytics: true,
     marketing: true,
   });
 };
 
-// Funktion, um die aktuelle Auswahl aus dem Modal zu speichern
 const saveSelection = () => {
-  // Ruft die zentrale Speicherfunktion mit den Werten aus den Schaltern auf
   saveConsent({
     analytics: localSwitches.value.analytics,
     marketing: localSwitches.value.marketing,
   });
-  showSettingsModal.value = false; // Modal schließen
+  showSettingsModal.value = false;
 };
 </script>
 
@@ -57,21 +49,21 @@ const saveSelection = () => {
     leave-from-class="transform translate-y-0 opacity-100"
     leave-to-class="transform translate-y-full opacity-0"
   >
-    <div v-if="consentState.bannerVisible" class="fixed bottom-0 inset-x-0 z-50 p-4">
-      <div class="max-w-7xl mx-auto p-6 bg-background/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-lg shadow-2xl border border-border">
+    <div v-if="consentState.bannerVisible" class="fixed bottom-0 inset-x-0 z-50 p-2">
+      <div class="dark:text-black max-w-7xl mx-auto p-6 bg-background/80 text-white bg-gray-900/90 dark:bg-gray-100/90 backdrop-blur-sm rounded-lg shadow-2xl border border-border">
         <div class="flex flex-col md:flex-row items-center justify-between gap-6">
-          <div class="flex items-start gap-4">
-            <Cookie class="h-8 w-8 text-primary flex-shrink-0 mt-1" />
+          <div class="flex items-start gap-4 ">
+            <Cookie class="h-8 w-8 text-primary flex-shrink-0 mt-1 dark:text-black text-white" />
             <div>
-              <h3 class="font-semibold">Cookie-Einstellungen</h3>
-              <p class="text-sm text-foreground/80 mt-1">
-                Diese Seite verwendet Cookies, um die Benutzerfreundlichkeit zu verbessern. Du kannst deine Auswahl jederzeit anpassen.
+              <h3 class="font-semibold">{{ $t('cookie_banner.title') }}</h3>
+              <p class="dark:text-black text-sm text-foreground/80 mt-1 text-white">
+                {{ $t('cookie_banner.description') }}
               </p>
             </div>
           </div>
           <div class="flex gap-2 flex-shrink-0">
-            <Button variant="outline" @click="showSettingsModal = true">Anpassen</Button>
-            <Button @click="acceptAll">Alle akzeptieren</Button>
+            <Button class="border border-stone-900/20 dark:bg-gray-600 dark:text-white text-black bg-gray-100" variant="outline" @click="showSettingsModal = true">{{ $t('cookie_banner.button_customize') }}</Button>
+            <Button class="border border-stone-900/20 bg-blue-800 dark:bg-yellow-400" @click="acceptAll">{{ $t('cookie_banner.button_accept_all') }}</Button>
           </div>
         </div>
       </div>
@@ -80,30 +72,29 @@ const saveSelection = () => {
 
   <!-- Das Einstellungs-Modal -->
   <Dialog :open="showSettingsModal" @update:open="showSettingsModal = $event">
-    <DialogContent>
+    <DialogContent class="dark:bg-gray-100/90 dark:text-black text-white bg-gray-900 ">
       <DialogHeader>
-        <DialogTitle>Cookie-Einstellungen anpassen</DialogTitle>
-        <DialogDescription>
-          Wähle aus, welche Arten von Cookies wir verwenden dürfen. Notwendige Cookies können nicht deaktiviert werden.
+        <DialogTitle>{{ $t('cookie_banner.modal.title') }}</DialogTitle>
+        <DialogDescription class="dark:text-black text-white/70 text-xs pr-12">
+          {{ $t('cookie_banner.modal.description') }}
         </DialogDescription>
       </DialogHeader>
-      <div class="space-y-4 py-4">
+      <div class="space-y-4 py-4 ">
         <div class="flex items-center justify-between">
-          <Label for="necessary-cookies" class="font-semibold">Notwendige Cookies</Label>
-          <Switch id="necessary-cookies" :checked="true" disabled />
+          <Label for="necessary-cookies" class="font-semibold">{{ $t('cookie_banner.modal.label_necessary') }}</Label>
+          <Switch class="border border-stone-900/20  dark:data-[state=checked]:bg-yellow-400 dark:data-[state=unchecked]:bg-yellow-900 data-[state=checked]:bg-blue-500 data-[state=unchecked]:bg-gray-400" id="necessary-cookies" :checked="true" disabled />
         </div>
         <div class="flex items-center justify-between">
-          <Label for="analytics-cookies" class="cursor-pointer">Analyse-Cookies</Label>
-          <Switch id="analytics-cookies" v-model:checked="localSwitches.analytics" />
+          <Label for="analytics-cookies" class="cursor-pointer">{{ $t('cookie_banner.modal.label_analytics') }}</Label>
+          <Switch class="border border-stone-900/20 dark:data-[state=checked]:bg-yellow-400 dark:data-[state=unchecked]:bg-yellow-900 data-[state=checked]:bg-blue-500 data-[state=unchecked]:bg-gray-400" id="analytics-cookies" v-model:checked="localSwitches.analytics" />
         </div>
-        <div class="flex items-center justify-between">
-          <Label for="marketing-cookies" class="cursor-pointer">Marketing-Cookies</Label>
-          <Switch id="marketing-cookies" v-model:checked="localSwitches.marketing" />
+        <div class="flex items-center justify-between ">
+          <Label for="marketing-cookies" class="cursor-pointer ">{{ $t('cookie_banner.modal.label_marketing') }}</Label>
+          <Switch class="border border-stone-900/20 dark:data-[state=checked]:bg-yellow-400 dark:data-[state=unchecked]:bg-yellow-900 data-[state=checked]:bg-blue-500 data-[state=unchecked]:bg-gray-400" id="marketing-cookies" v-model:checked="localSwitches.marketing" />
         </div>
       </div>
       <DialogFooter>
-        <!-- Der Button ruft jetzt die korrigierte Speicherfunktion auf -->
-        <Button @click="saveSelection">Auswahl speichern</Button>
+        <Button class="border border-stone-900/20 bg-blue-800 dark:bg-yellow-400" @click="saveSelection">{{ $t('cookie_banner.modal.button_save') }}</Button>
       </DialogFooter>
     </DialogContent>
   </Dialog>

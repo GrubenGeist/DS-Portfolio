@@ -11,6 +11,7 @@ use App\Http\Controllers\AppearanceController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\LocaleController;
 
 /*
 |--------------------------------------------------------------------------
@@ -25,8 +26,9 @@ Route::get('/contactform', [PageController::class, 'contactform'])->name('contac
 Route::get('/impressum', [PageController::class, 'imprint'])->name('imprint');
 Route::get('/datenschutz', [PageController::class, 'privacy'])->name('privacy');
 Route::post('/update-appearance', [AppearanceController::class, 'update'])->name('appearance.update');
-
+Route::post('/locale/switch', [LocaleController::class, 'switch'])->name('locale.switch');
 Route::post('/consent-event', [ConsentEventController::class, 'store'])->name('api.consent.store');
+
 // --- GESCHÜTZTE ROUTEN ---
 Route::middleware(['auth', 'verified'])->group(function () {
     // Allgemeine Seiten

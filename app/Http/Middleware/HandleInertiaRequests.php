@@ -2,10 +2,10 @@
 
 namespace App\Http\Middleware;
 
-use Illuminate\Foundation\Inspiring;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route as LaravelRoute;
 use Inertia\Middleware;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Route as LaravelRoute;
 use Tighten\Ziggy\Ziggy;
 
 class HandleInertiaRequests extends Middleware
@@ -13,16 +13,12 @@ class HandleInertiaRequests extends Middleware
     /**
      * The root template that's loaded on the first page visit.
      *
-     * @see https://inertiajs.com/server-side-setup#root-template
-     *
      * @var string
      */
     protected $rootView = 'app';
 
     /**
      * Determines the current asset version.
-     *
-     * @see https://inertiajs.com/asset-versioning
      */
     public function version(Request $request): ?string
     {
@@ -32,20 +28,17 @@ class HandleInertiaRequests extends Middleware
     /**
      * Define the props that are shared by default.
      *
-     * @see https://inertiajs.com/shared-data
-     *
      * @return array<string, mixed>
      */
     public function share(Request $request): array
     {
-        [$message, $author] = str(\Illuminate\Foundation\Inspiring::quotes()->random())->explode('-');
-
         $loggedInUser = $request->user();
 
         return [
             ...parent::share($request),
-            'name' => config('app.name'),
-            'quote' => ['message' => trim($message), 'author' => trim($author)],
+            // Wir fügen das CSRF-Token hinzu, damit 'fetch' es verwenden kann.
+            'csrf_token' => csrf_token(),
+
             'auth' => [
                 'user' => $loggedInUser ? [
                     'id' => $loggedInUser->id,
@@ -58,18 +51,31 @@ class HandleInertiaRequests extends Middleware
                     'updated_at' => $loggedInUser->updated_at ? $loggedInUser->updated_at->toIso8601String() : null,
                 ] : null,
             ],
-            'ziggy' => [
+            'ziggy' => fn () => [
                 ...(new Ziggy)->toArray(),
                 'location' => $request->url(),
             ],
             'canRegister' => LaravelRoute::has('register'),
             
-            // KORREKTUR: Dieser Block wurde zu deinen bestehenden geteilten Daten hinzugefügt.
-            'flash' => function () use ($request) {
-                return [
-                    'success' => $request->session()->get('success'),
-                    'error' => $request->session()->get('error'),
-                ];
+            'flash' => fn () => [
+                'success' => $request->session()->get('success'),
+                'error' => $request->session()->get('error'),
+            ],
+            
+            // Hier laden wir die Sprache und die Übersetzungen
+            'locale' => fn () => app()->getLocale(),
+            
+            'translations' => function () {
+                $translations = [];
+                // Greift auf unsere config/localization.php zu
+                foreach (config('localization.supported_locales', ['en', 'de']) as $locale) {
+                    $path = lang_path("{$locale}.json");
+
+                    if (File::exists($path)) {
+                        $translations[$locale] = json_decode(File::get($path), true);
+                    }
+                }
+                return $translations;
             },
         ];
     }

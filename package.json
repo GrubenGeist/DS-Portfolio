@@ -23,7 +23,7 @@
         "lint": "eslint . --fix"
     },
     "dependencies": {
-        "@inertiajs/vue3": "^2.0.0-beta.3",
+        "@inertiajs/vue3": "^2.1.2",
         "@tweenjs/tween.js": "^25.0.0",
         "@vitejs/plugin-vue": "^5.2.1",
         "@vueuse/core": "^12.8.2",
@@ -47,10 +47,12 @@
         "vite": "^6.2.0",
         "vue": "^3.5.13",
         "vue-chartjs": "^5.3.2",
+        "vue-i18n": "^11.1.11",
         "ziggy-js": "^2.5.2"
     },
     "devDependencies": {
         "@eslint/js": "^9.19.0",
+        "@intlify/unplugin-vue-i18n": "^6.0.8",
         "@tailwindcss/forms": "^0.5.10",
         "@types/lodash": "^4.17.18",
         "@types/node": "^22.13.5",

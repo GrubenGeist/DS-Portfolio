@@ -2,17 +2,22 @@
 import AppLayout from '@/layouts/AppLayout.vue';
 import type { BreadcrumbItem, Project, Skill } from '@/types';
 import { Head } from '@inertiajs/vue3';
-import { ref } from 'vue';
+import { ref, computed } from 'vue'; // `computed` importieren
+import { useI18n } from 'vue-i18n'; // `useI18n` importieren
 
 // Importiere die neuen Komponenten
 import ProjectCard from '@/components/ProjectCard.vue';
 import InteractiveCard from '@/components/InteractiveCard.vue';
 import SkillHexagon from '@/components/SkillHexagon.vue';
 
+// Holen Sie sich die Übersetzungsfunktion `t`
+const { t } = useI18n();
+
 // --- Breadcrumbs ---
-const breadcrumbs: BreadcrumbItem[] = [
-    { title: 'Projekte', href: '/projects' },
-];
+// Wir machen die Breadcrumbs "computed", damit sie sich bei Sprachwechsel aktualisieren
+const breadcrumbs = computed<BreadcrumbItem[]>(() => [
+    { title: t('projects.breadcrumb'), href: '/projects' },
+]);
 
 const gameCards = ref([
     {
@@ -50,33 +55,33 @@ const gameCards = ref([
 ]);
 
 
-// --- KORREKTUR: Daten wieder eingefügt ---
-const projects = ref<Project[]>([
+// --- Projekte ---
+// Die Projektdaten werden "computed", damit sich die Texte reaktiv ändern
+const projects = computed<Project[]>(() => [
     {
-        title: 'Projekt Alpha',
-        description: 'Eine komplexe E-Commerce-Plattform mit Echtzeit-Bestandsmanagement.',
+        title: t('projects.project_alpha.title'),
+        description: t('projects.project_alpha.description'),
         image: 'https://img.freepik.com/vektoren-kostenlos/nachtmeerlandschaft-vollmond-und-sterne-leuchten_107791-7397.jpg?semt=ais_hybrid&w=740',
         technologies: ['Laravel', 'Vue.js', 'Inertia.js', 'MySQL', 'Redis'],
         liveUrl: '#',
         repoUrl: '#',
     },
     {
-        title: 'Dashboard Beta',
-        description: 'Ein Analyse-Dashboard zur Visualisierung von Unternehmensdaten.',
+        title: t('projects.project_beta.title'),
+        description: t('projects.project_beta.description'),
         image: 'https://img.freepik.com/fotos-kostenlos/neon-tropisches-monstera-blattbanner_53876-138943.jpg?semt=ais_hybrid&w=740',
         technologies: ['Vue.js', 'Chart.js', 'Tailwind CSS', 'Laravel API'],
         liveUrl: '#',
         repoUrl: '#',
     },
     {
-        title: 'Tool Gamma',
-        description: 'Ein SaaS-Tool für Team-Kollaboration mit Kanban-Boards und Chat.',
+        title: t('projects.project_gamma.title'),
+        description: t('projects.project_gamma.description'),
         image: 'https://ultrawidewallpapers.net/wallpapers/329/highres/aishot-1341.jpg',
         technologies: ['Laravel', 'Reverb', 'Vue.js', 'PostgreSQL'],
         liveUrl: '#',
         repoUrl: '#',
     },
-
 ]);
 
 const skills = ref<Skill[]>([
@@ -90,40 +95,56 @@ const skills = ref<Skill[]>([
 </script>
 
 <template>
-    <Head title="Projekte" />
+    <Head :title="t('projects.head_title')" />
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex h-full flex-1 flex-col gap-8 p-4 text-slate-300">
 
             <section id="projekte">
                  <div class="text-center mb-12">
-                     <h2 class="text-3xl font-bold text-white">Meine Projekte</h2>
-                     <p class="text-slate-400 max-w-2xl mx-auto mt-2">Eine Auswahl meiner Arbeiten, die meine Fähigkeiten demonstrieren.</p>
+                      <h2 class="text-3xl font-bold text-white">{{ $t('projects.headline') }}</h2>
+                      <p class="text-slate-400 max-w-2xl mx-auto mt-2">{{ $t('projects.description') }}</p>
                  </div>
                  <div class="grid auto-rows-min gap-8 md:grid-cols-2 lg:grid-cols-3">
-                     <div v-for="project in projects" :key="project.title">
-                         <ProjectCard :project="project" />
-                     </div>
+                      <div v-for="project in projects" :key="project.title">
+                           <ProjectCard :project="project" />
+                      </div>
                  </div>
             </section>
 
             <div class="p-0" id="Game Card">
                 <section id="game-cards">
                     <div class="text-center mb-12">
-                         <h2 class="text-3xl font-bold text-white">Interaktive Karten</h2>
-                         <p class="text-slate-400 max-w-2xl mx-auto mt-2">Klicke zum Drehen.</p>
+                         <h2 class="text-3xl font-bold text-white">{{ $t('projects.interactive_cards.headline') }}</h2>
+                         <p class="text-slate-400 max-w-2xl mx-auto mt-2">{{ $t('projects.interactive_cards.description') }}</p>
                     </div>
                     <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8">
-                        <div v-for="(card, index) in gameCards" :key="index">
-                            <InteractiveCard 
-                                :front-image-url="card.front"
-                                :back-image-url="card.back"
-                                :character-image-url="card.character"
-                                :audio-url="card.sound"
-                            />
-                        </div>
+                         <div v-for="(card, index) in gameCards" :key="index">
+                             <InteractiveCard
+                                 :front-image-url="card.front"
+                                 :back-image-url="card.back"
+                                 :character-image-url="card.character"
+                                 :audio-url="card.sound"
+                             />
+                         </div>
                     </div>
                 </section>
             </div>
+            
+            <section id="skills" class="lg:col-span-2 py-10 rounded-xl border border-sidebar-border/70 dark:border-sidebar-border bg-grid-slate-800">
+                <div class="container mx-auto px-6 h-full flex flex-col justify-center">
+                    <div class="text-center mb-12">
+                        <h2 class="text-3xl font-bold text-white">{{ $t('projects.skills.headline') }}</h2>
+                        <p class="text-slate-400 max-w-2xl mx-auto mt-2">{{ $t('projects.skills.description') }}</p>
+                    </div>
+                    <div class="flex flex-wrap justify-center items-center gap-4">
+                        <SkillHexagon v-for="skill in skills" :key="skill.name" :skill="skill" />
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </AppLayout>
+</template>
             <!-- Eine Einzelne Karte <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
                 <InteractiveCard 
@@ -141,7 +162,7 @@ const skills = ref<Skill[]>([
                                 </a>
                             </div>
                         </template>                
-                </InteractiveCard> </div>-->
+                </InteractiveCard> </div>
                 
 
                 <section id="skills" class="lg:col-span-2 py-10 rounded-xl border border-sidebar-border/70 dark:border-sidebar-border bg-grid-slate-800">
@@ -159,7 +180,7 @@ const skills = ref<Skill[]>([
             </div>
         
     </AppLayout>
-</template>
+</template> -->
 
 <style>
 /* Diese globalen Stile bleiben hier, da sie die Sektionen layouten */

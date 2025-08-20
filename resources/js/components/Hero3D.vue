@@ -4,37 +4,29 @@ import * as THREE from 'three';
 import { FontLoader } from 'three/examples/jsm/loaders/FontLoader.js';
 import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry.js';
 import { Info, X } from 'lucide-vue-next';
+import { useI18n } from 'vue-i18n';
+
+// Holen Sie sich die Übersetzungsfunktion `t`
+const { t } = useI18n();
 
 // =============================================================================
 // PROPS & KONFIGURATION
 // =============================================================================
 interface Hero3DProps {
   words: string[];
-
-  // --- Container-Dimensionen ---
   containerHeight?: string;
-
-  // --- Wolken-Dimensionen ---
   cloudWidth?: number;
   cloudHeight?: number;
   cloudDepth?: number;
   wordCount?: number;
   wordSpacing?: number;
-
-  // --- Schrift-Einstellungen ---
   fontUrl?: string;
   fontSize?: number;
   fontDepth?: number;
-
-  // --- Animations-Einstellungen ---
   autoRotateSpeed?: number;
   cameraHoverEffect?: boolean;
-
-  // --- Plattform-spezifische Einstellungen ---
   faceCameraOnMobile?: boolean;
   faceCameraOnDesktop?: boolean;
-
-  // --- Interaktions-Effekte ---
   enableForegroundFade?: boolean;
   foregroundFadeDepth?: number;
 }
@@ -93,8 +85,8 @@ let mouseY = typeof window !== 'undefined' ? window.innerHeight / 2 : 0;
 
 // Performance-Helfer
 const geometryCache = new Map<string, THREE.BufferGeometry>(); // pro Wort eine Geometrie
-const _worldPos = new THREE.Vector3();                          // temp Vektor wiederverwenden
-let frameCount = 0;                                             // für LookAt-Throttle
+const _worldPos = new THREE.Vector3();                           // temp Vektor wiederverwenden
+let frameCount = 0;                                            // für LookAt-Throttle
 const LOOKAT_EVERY = 3;
 
 // ==== Mini-Optimierungen ====
@@ -118,7 +110,6 @@ function setupReducedMotion() {
   updateAutoRotate(prefersReducedMql.matches);
 
   reducedMotionListener = (e: MediaQueryListEvent) => updateAutoRotate(e.matches);
-  // cross-browser: addEventListener / addListener
   if ('addEventListener' in prefersReducedMql) {
     prefersReducedMql.addEventListener('change', reducedMotionListener);
   } else {
@@ -173,7 +164,6 @@ const initScene = () => {
   camera.position.z = 25;
 
   renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' });
-  // DPR Cap (mobil niedriger)
   const dprCap = isMobile.value ? 1.3 : 1.8;
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, dprCap));
   renderer.setSize(container.clientWidth, container.clientHeight);
@@ -185,7 +175,6 @@ const initScene = () => {
     const isDark = document.documentElement.classList.contains('dark');
     const initialColor = isDark ? darkModeColor : lightModeColor;
 
-    // Transparenz nur aktivieren, wenn Fading benötigt wird
     textMaterial = new THREE.MeshBasicMaterial({
       color: initialColor,
       transparent: props.enableForegroundFade,
@@ -195,19 +184,14 @@ const initScene = () => {
     cloudGroup = new THREE.Group();
     wordMeshes = [];
 
-    // >>> Mobile Word Cap beachten <<<
     const count = isMobile.value ? Math.min(props.wordCount, MOBILE_WORD_CAP) : props.wordCount;
 
     for (let i = 0; i < count; i++) {
       const randomWord = props.words[Math.floor(Math.random() * props.words.length)];
       const textGeometry = getTextGeometry(randomWord, font);
-
-      // Wenn per-Mesh-Opacity gebraucht wird -> eigenes Material, sonst shared
       const material = props.enableForegroundFade ? textMaterial.clone() : textMaterial;
-
       const textMesh = new THREE.Mesh(textGeometry, material);
 
-      // Startposition
       textMesh.userData.initialPosition = new THREE.Vector3(
         (Math.random() - 0.5) * props.cloudWidth * props.wordSpacing,
         (Math.random() - 0.5) * props.cloudHeight * props.wordSpacing,
@@ -220,7 +204,6 @@ const initScene = () => {
     }
     scene.add(cloudGroup);
 
-    // Theme-Wechsel effizient beobachten (statt pro Frame in animate)
     themeObserver = new MutationObserver(() => {
       const dark = document.documentElement.classList.contains('dark');
       const targetColor = dark ? darkModeColor : lightModeColor;
@@ -228,13 +211,11 @@ const initScene = () => {
     });
     themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
 
-    // Start der Animationsschleife (sichtbarkeitsgesteuert unten)
     startLoop();
   });
 
   setupEventListeners();
 
-  // Sichtbarkeit: nur rendern, wenn sichtbar
   if (containerRef.value) {
     io = new IntersectionObserver(([e]) => (e.isIntersecting ? startLoop() : stopLoop()), {
       root: null,
@@ -254,11 +235,9 @@ const setupEventListeners = () => {
   const container = containerRef.value;
   renderer.domElement.style.cursor = 'grab';
 
-  // Hover-Status
   container.addEventListener('mouseenter', () => { isMouseOver.value = true; });
   container.addEventListener('mouseleave', () => { isMouseOver.value = false; });
 
-  // Drag Start
   container.addEventListener('mousedown', (e) => {
     isDragging.value = true;
     renderer!.domElement.style.cursor = 'grabbing';
@@ -274,7 +253,6 @@ const setupEventListeners = () => {
     }
   }, { passive: true });
 
-  // Drag End
   window.addEventListener('mouseup', () => {
     if (isDragging.value) {
       isDragging.value = false;
@@ -308,7 +286,6 @@ const setupEventListeners = () => {
   };
   window.addEventListener('touchmove', touchMoveListener, { passive: true });
 
-  // Debounced Resize
   let resizeRaf = 0;
   resizeListener = () => {
     if (resizeRaf) cancelAnimationFrame(resizeRaf);
@@ -329,12 +306,10 @@ const setupEventListeners = () => {
 const animate = (time: number) => {
   if (!running) return;
 
-  // Auto-Rotation nur wenn nicht gedragt (und reduced-motion beachtet)
   if (cloudGroup && !isDragging.value) {
     cloudGroup.rotation.y += autoRotateSpeedEffective;
   }
 
-  // Kamera-Hover-Effekt
   if (camera && props.cameraHoverEffect && !isDragging.value) {
     if (isMouseOver.value) {
       camera.position.x += ((mouseX - window.innerWidth / 2) / 400 - camera.position.x) * 0.05;
@@ -345,7 +320,6 @@ const animate = (time: number) => {
     }
   }
 
-  // Wörter: Blickrichtung & Foreground-Fade
   if (wordMeshes.length > 0) {
     const faceCam = (isMobile.value && props.faceCameraOnMobile) || (!isMobile.value && props.faceCameraOnDesktop);
     const doLookAt = faceCam && (frameCount++ % LOOKAT_EVERY === 0);
@@ -380,43 +354,36 @@ const animate = (time: number) => {
 // =============================================================================
 onMounted(() => {
   isMobile.value = window.innerWidth < 768;
-  setupReducedMotion();   // <- reduced-motion aktivieren
+  setupReducedMotion();
   initScene();
 });
 
 onUnmounted(() => {
-  // Loop stoppen
   stopLoop();
 
-  // DOM entfernen
   if (renderer && renderer.domElement && containerRef.value?.contains(renderer.domElement)) {
     containerRef.value.removeChild(renderer.domElement);
   }
 
-  // Materialien entsorgen (Geometrie via Cache, s.u.)
   cloudGroup?.traverse(obj => {
     const mesh = obj as THREE.Mesh;
     if (mesh && (mesh as any).isMesh) {
       const mat = mesh.material as THREE.Material | THREE.Material[];
       if (Array.isArray(mat)) mat.forEach(m => m.dispose());
       else mat?.dispose();
-      // Geometrie-Dispose NICHT hier, da geteilt über geometryCache
     }
   });
   textMaterial?.dispose();
 
-  // Geometrien aus dem Cache entsorgen (jede genau einmal)
   geometryCache.forEach((g) => g.dispose());
   geometryCache.clear();
 
-  // Renderer freigeben
   if (renderer) {
     renderer.dispose();
     renderer.forceContextLoss();
     renderer = null;
   }
 
-  // Observer & Listener abbauen
   io?.disconnect(); io = null;
   themeObserver?.disconnect(); themeObserver = null;
 
@@ -426,7 +393,6 @@ onUnmounted(() => {
   if (touchEndListener) window.removeEventListener('touchend', touchEndListener);
   if (visibilityListener) document.removeEventListener('visibilitychange', visibilityListener);
 
-  // reduced-motion Listener entfernen (cross-browser)
   if (prefersReducedMql && reducedMotionListener) {
     if ('removeEventListener' in prefersReducedMql) {
       prefersReducedMql.removeEventListener('change', reducedMotionListener);
@@ -465,9 +431,9 @@ onUnmounted(() => {
           v-if="showInfoBox"
           class="absolute top-12 right-0 w-64 bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm p-4 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700"
         >
-          <h4 class="font-bold text-gray-900 dark:text-white">Interaktion</h4>
+          <h4 class="font-bold text-gray-900 dark:text-white">{{ $t('hero3d.info.title') }}</h4>
           <ul class="mt-2 text-sm text-gray-700 dark:text-gray-300 list-disc pl-5 space-y-1">
-            <li><strong>Ziehen:</strong> Wolke drehen</li>
+            <li><strong>{{ $t('hero3d.info.drag_label') }}</strong> {{ $t('hero3d.info.drag_action') }}</li>
           </ul>
         </div>
       </Transition>

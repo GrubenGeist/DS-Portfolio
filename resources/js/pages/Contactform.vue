@@ -2,6 +2,7 @@
 import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/vue3';
+import ContactFormInner from '@/components/ContactFormInner.vue';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -15,8 +16,8 @@ const breadcrumbs: BreadcrumbItem[] = [
     <Head title="Dashboard" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
-        <div>
-            <contact-form />
-        </div>
+    <div class="py-8 px-4">
+      <ContactFormInner />
+    </div>
     </AppLayout>
 </template>

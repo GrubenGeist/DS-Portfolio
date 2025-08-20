@@ -4,7 +4,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Api\AnalyticsEventController;
+use App\Http\Controllers\Api\ContactController;
+use App\Http\Controllers\LocaleController;
 
+//Kontakt Formular
+Route::post('/contact', [ContactController::class, 'store'])->name('api.contact');
 
 // Authentifizierte API-Beispiele …
 Route::middleware('auth:sanctum')->group(function () {
@@ -21,3 +25,6 @@ Route::post('/analytics-events', [AnalyticsEventController::class, 'store'])
 Route::post('/track-event', [AnalyticsEventController::class, 'store'])
     ->name('api.track-event')
     ->middleware('throttle:track-events');
+
+// Switch DE/EN für speichern der Sprach einstellung
+Route::post('/locale/switch', [LocaleController::class, 'switchApi']);

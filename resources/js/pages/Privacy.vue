@@ -404,3 +404,140 @@ const privacySections: PrivacySection[] = [
         </div>
     </div>
 </template>
+
+
+<!-- Übersetzungs Vorlage
+
+<!-- /resources/js/Pages/Privacy.vue 
+
+<script setup lang="ts">
+import AppLayout from '@/layouts/AppLayout.vue';
+import { Head } from '@inertiajs/vue3';
+import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+defineOptions({ layout: AppLayout });
+
+// Holen Sie sich die Übersetzungsfunktion `t`
+const { t } = useI18n();
+
+// Die "Schablone" (Interface) für unsere Abschnitte.
+// Wir ändern `title` und `content` zu `titleKey` und `contentKey`.
+interface PrivacySection {
+    titleKey: string;
+    contentKey: string;
+    isMainTitle?: boolean;
+    isSubSection?: boolean;
+    titleClass?: string;
+    contentClass?: string;
+}
+
+// Die STRUKTUR der Seite wird hier definiert.
+// Der INHALT wird reaktiv aus den JSON-Dateien geladen.
+const privacySections = computed<PrivacySection[]>(() => [
+    {
+        titleKey: 'privacy.s0.title',
+        contentKey: 'privacy.s0.content',
+        titleClass: 'font-semibold',
+        contentClass:'text-sm',
+    },
+    {
+        titleKey: 'privacy.s1.title',
+        contentKey: 'privacy.s1.content',
+        titleClass: 'font-semibold',
+        contentClass:'text-sm',
+    },
+    {
+        titleKey: 'privacy.s2.title',
+        contentKey: 'privacy.s2.content',
+        titleClass: 'font-semibold',
+        contentClass:'text-sm',
+    },
+    {
+        titleKey: 'privacy.s3.title',
+        contentKey: 'privacy.s3.content',
+        titleClass: 'font-semibold',
+        contentClass:'text-sm',
+    },
+    {
+        titleKey: 'privacy.s4.title',
+        contentKey: 'privacy.s4.content',
+        titleClass: 'font-semibold',
+        contentClass:'text-sm',
+    },
+    {
+        titleKey: 'privacy.s5.title',
+        contentKey: 'privacy.s5.content',
+        titleClass: 'font-semibold',
+        contentClass:'text-sm',
+    },
+    {
+        titleKey: 'privacy.s6.title',
+        contentKey: 'privacy.s6.content',
+        titleClass: 'font-semibold',
+        contentClass:'text-sm',
+    },
+    {
+        titleKey: 'privacy.s7.title',
+        contentKey: 'privacy.s7.content',
+        titleClass: 'font-semibold',
+        contentClass:'text-sm',
+    },
+    // Hinweis: Ich habe hier nur die ersten 8 Abschnitte übersetzt,
+    // um die JSON-Dateien nicht zu überladen. Das Prinzip ist für alle
+    // weiteren Abschnitte exakt dasselbe:
+    // 1. Schlüssel in de.json & en.json anlegen (z.B. "privacy.s8.title")
+    // 2. Neuen Abschnitt hier in der `computed`-Property hinzufügen.
+]);
+</script>
+
+<template>
+    <Head :title="t('privacy.head_title')"/>
+    
+    <!-- Der Hauptcontainer für die Seite 
+    <div class="container mx-auto px-4 py-8 md:py-20">
+        <!-- Die Inhalts-Karte 
+        <div class="max-w-4xl mx-auto bg-white dark:bg-slate-800 rounded-lg shadow-2xl overflow-hidden">
+            
+            <!-- Der Header mit Farbverlauf und Hintergrund-Icon 
+            <div class="relative bg-gradient-to-br from-blue-700 to-blue-800 p-8 md:p-12 overflow-hidden">
+                <!-- Das Icon (Schild) liegt im Hintergrund --
+                <div class="absolute -bottom-12 -right-12 text-white opacity-10">
+                    <svg xmlns="[http://www.w3.org/2000/svg](http://www.w3.org/2000/svg)" width="160" height="160" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-shield-check"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/><path d="m9 12 2 2 4-4"/></svg>
+                </div>
+
+                <!-- Der Text liegt mit z-10 im Vordergrund --
+                <div class="relative z-10">
+                    <h1 class="text-3xl md:text-4xl font-bold text-white">
+                        {{ $t('privacy.main_headline') }}
+                    </h1>
+                    <p class="mt-2 text-blue-200">{{ $t('privacy.last_updated') }}</p>
+                </div>
+            </div>
+
+            <!-- Der eigentliche Textinhalt auf weißem/dunklem Hintergrund --
+            <div class="p-8 md:p-12 prose dark:prose-invert max-w-none">
+                <!-- Das Template rendert den Inhalt jetzt dynamisch aus der computed-Property --
+                <div v-for="(section, index) in privacySections" :key="index" class="mb-8 last:mb-0">
+                    
+                    <h1 v-if="section.isMainTitle" :class="section.titleClass" class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-6">{{ t(section.titleKey) }}</h1>
+                    <h2 v-else-if="!section.isSubSection" :class="section.titleClass">{{ t(section.titleKey) }}</h2>
+                    <strong v-else :class="section.titleClass">{{ t(section.titleKey) }}</strong>
+                    
+                    <div
+                        v-html="t(section.contentKey)"
+                        class="text-gray-700 dark:text-gray-300"
+                        :class="section.contentClass"
+                    ></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+
+
+
+
+
+
+-->

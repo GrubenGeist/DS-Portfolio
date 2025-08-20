@@ -2,35 +2,38 @@
 import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/vue3';
-import PlaceholderPattern from '../components/PlaceholderPattern.vue';
+import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 
-const breadcrumbs: BreadcrumbItem[] = [
+// Holen Sie sich die Übersetzungsfunktion `t`
+const { t } = useI18n();
+
+// KORREKTUR: Wir entfernen defineOptions, da das Layout manuell im Template verwendet wird,
+// um die Breadcrumbs zu übergeben.
+// defineOptions({ layout: AppLayout });
+
+const breadcrumbs = computed<BreadcrumbItem[]>(() => [
     {
-        title: 'Dienstleistungen',
-        href: '/services',
+        title: t('services.breadcrumb'),
+        href: route('services'),
     },
-];
+]);
 </script>
 
 <template>
-    <Head title="Dashboard" />
+    <Head :title="t('services.head_title')" />
 
+    <!-- Das Layout wird hier manuell um den Inhalt gelegt, um die Breadcrumbs zu übergeben. -->
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex-1 container mx-auto dark:border-r md:text-center">
             <section class="my-10" aria-labelledby="slider-heading">
                 <div class="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mt-8 bg-muted dark:border-r md:text-center rounded-xl">
-                        <div class="col-span-2 md:col-span-2 dark:text-white pl-1 md:place-items-center pr-1 md:text-justify border-1-8 border-transparent rounded-md shadow-md space-y-1 text-2xl font-bold bg-muted">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mt-8 bg-muted dark:bg-slate-800/50 dark:border-r md:text-center rounded-xl">
+                        <div class="col-span-2 md:col-span-2 dark:text-white pl-1 md:place-items-center pr-1 md:text-justify border-1-8 border-transparent rounded-md shadow-md space-y-1 text-2xl font-bold bg-muted dark:bg-slate-800">
                             <section class="services panel">
-                                <h2>Meine Dienstleistungen</h2>
+                                <h2>{{ $t('services.headline') }}</h2>
                                 <p>
-                                    Irgendwann bin Ich auch Selbstständig und biete Vereinzelt Dienstleistungen an, 
-                                    in den Bereichen 3D-Druck, Websitegestaltung, Website Programmierung und Außerdem Handle ich mit verschiedenster Technik Hardware vielleicht wer weis :P. 
-                                </p>
-                                <p>
-                                </p>
-                                <p>
-                                
+                                    {{ $t('services.description') }}
                                 </p>
                             </section>
                         </div>
@@ -57,11 +60,19 @@ const breadcrumbs: BreadcrumbItem[] = [
     margin-bottom: 20px;
 }
 
+.dark .services h2 {
+    color: #FFF;
+}
+
 .services p {
     font-size: 16px;
     color: #666;
     line-height: 1.5;
     margin-bottom: 20px;
+}
+
+.dark .services p {
+    color: #ccc;
 }
 
 </style>

@@ -12,6 +12,10 @@ import {
   Users as UsersIcon,
 } from 'lucide-vue-next';
 import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+// Holen Sie sich die Übersetzungsfunktion `t`
+const { t } = useI18n();
 
 interface Props { user: User }
 const props = defineProps<Props>();
@@ -22,49 +26,52 @@ const isAdmin = computed(() => Array.isArray(currentUserRoles.value) && currentU
 </script>
 
 <template>
-  <DropdownMenuLabel class="p-0 font-normal">
+  <DropdownMenuLabel class="p-0 font-normal" :aria-label="t('user_menu.aria.user_info')">
     <div class="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
       <UserInfo :user="props.user" :show-email="true" />
     </div>
   </DropdownMenuLabel>
   <DropdownMenuSeparator />
-  <DropdownMenuGroup>
+
+  <DropdownMenuGroup :aria-label="t('user_menu.aria.general_actions')">
     <DropdownMenuItem :as-child="true">
       <Link class="block w-full" :href="route('settings.index')" as="button">
         <Settings class="mr-2 h-4 w-4" />
-        Einstellungen
+        {{ $t('user_menu.settings') }}
       </Link>
     </DropdownMenuItem>
 
     <template v-if="isAdmin">
       <DropdownMenuSeparator />
-      <DropdownMenuItem :as-child="true">
-        <Link class="block w-full" :href="route('dashboard')" as="button">
-          <DashboardIcon class="mr-2 h-4 w-4" />
-          Dashboard
-        </Link>
-      </DropdownMenuItem>
-      <DropdownMenuItem :as-child="true">
-        <Link class="block w-full" :href="route('admin.users.index')" as="button">
-          <UsersIcon class="mr-2 h-4 w-4" />
-          Benutzerverwaltung
-        </Link>
-      </DropdownMenuItem>
-      <DropdownMenuItem :as-child="true">
-        <Link class="block w-full" :href="route('admin.register.form')" as="button">
-          <UserPlusIcon class="mr-2 h-4 w-4" />
-          Neuen Benutzer anlegen
-        </Link>
-      </DropdownMenuItem>
+      <DropdownMenuGroup :aria-label="t('user_menu.aria.admin_actions')">
+        <DropdownMenuItem :as-child="true">
+          <Link class="block w-full" :href="route('dashboard')" as="button">
+            <DashboardIcon class="mr-2 h-4 w-4" />
+            {{ $t('user_menu.dashboard') }}
+          </Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem :as-child="true">
+          <Link class="block w-full" :href="route('admin.users.index')" as="button">
+            <UsersIcon class="mr-2 h-4 w-4" />
+            {{ $t('user_menu.user_management') }}
+          </Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem :as-child="true">
+          <Link class="block w-full" :href="route('admin.register.form')" as="button">
+            <UserPlusIcon class="mr-2 h-4 w-4" />
+            {{ $t('user_menu.create_user') }}
+          </Link>
+        </DropdownMenuItem>
+      </DropdownMenuGroup>
     </template>
   </DropdownMenuGroup>
+
   <DropdownMenuSeparator />
 
-  <!-- Diese Implementierung ist korrekt und verwendet den Standard-Mechanismus von Inertia -->
   <DropdownMenuItem as-child>
     <Link method="post" :href="route('logout')" as="button" class="w-full">
       <LogOut class="mr-2 h-4 w-4" />
-      Abmelden
+      {{ $t('user_menu.logout') }}
     </Link>
   </DropdownMenuItem>
 </template>

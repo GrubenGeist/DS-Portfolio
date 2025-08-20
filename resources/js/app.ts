@@ -2,14 +2,15 @@
 import '../css/app.css';
 
 import { createApp, h, type DefineComponent } from 'vue';
-import { createInertiaApp, router } from '@inertiajs/vue3';
+import { createInertiaApp } from '@inertiajs/vue3'; // 'router' wird hier nicht mehr direkt benötigt
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { ZiggyVue } from 'ziggy-js';
 import type { Config as ZiggyConfig } from 'ziggy-js';
+import i18n from './i18n';
+
 
 // Wichtig: bootstrap.ts konfiguriert Axios mit dem CSRF-Token.
-// Wir verlassen uns vollständig auf diesen Mechanismus.
-import './bootstrap'; 
+import './bootstrap';
 
 import { initializeTheme } from './composables/useAppearance';
 import { trackClick } from '@/directives/trackClick';
@@ -19,12 +20,9 @@ import { useConsent, loadConsent } from '@/composables/useConsent';
 import { useGoogleAnalytics } from '@/composables/useGoogleAnalytics';
 
 // Globale Komponente
-import ContactForm from './components/ContactForm.vue';
+import ContactForm from './components/ContactFormInner.vue';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
-
-// KORREKTUR: Der gesamte manuelle CSRF-Block (readCookie, syncMetaCsrfWithCookie, router.on('before'), router.on('navigate'))
-// wurde entfernt. Inertia und bootstrap.ts kümmern sich automatisch und korrekt darum.
 
 /** ---------------- Inertia App ---------------- */
 createInertiaApp({
@@ -32,20 +30,32 @@ createInertiaApp({
   resolve: (name) =>
     resolvePageComponent(`./pages/${name}.vue`, import.meta.glob<DefineComponent>('./pages/**/*.vue')),
   setup({ el, App, props, plugin }) {
+
+    // --- i18n-Setup ---
+    const initialLocale = props.initialPage.props.locale || 'de';
+    const allMessages = props.initialPage.props.translations || {};
+
+    i18n.global.locale.value = initialLocale;
+
+    Object.keys(allMessages).forEach(locale => {
+        i18n.global.setLocaleMessage(locale, allMessages[locale]);
+    });
+
+    const vueApp = createApp({ render: () => h(App, props) });
+    vueApp.use(plugin);
+    vueApp.use(i18n);
+    
+
     // Consent laden
     loadConsent();
 
     // GA vorbereiten
     const { consentState } = useConsent();
-    const { init, updateConsent, pageview } = useGoogleAnalytics();
-    // init(); // Auskommentiert, bis du eine GA ID hast
+    const { init, updateConsent } = useGoogleAnalytics();
     if (!consentState.bannerVisible) updateConsent(consentState);
 
-    const vueApp = createApp({ render: () => h(App, props) });
-    vueApp.use(plugin);
-
     // Ziggy
-    const ziggy = (props.initialPage.props as any).ziggy as ZiggyConfig;
+    const ziggy = ((props.initialPage.props as any)?.ziggy ?? {}) as ZiggyConfig;
     (ziggy as any).defaults ??= {} as Record<string, any>;
     vueApp.use(ZiggyVue, ziggy);
 
@@ -53,14 +63,10 @@ createInertiaApp({
     vueApp.directive('track-click', trackClick);
     vueApp.component('contact-form', ContactForm);
 
+    // WICHTIG: Die App wird nur EINMAL hier, ganz am Ende, gemountet.
     vueApp.mount(el);
-
-    // Pageviews für GA (optional)
-    router.on('navigate', () => {
-      // pageview(window.location.pathname + window.location.search); // Auskommentiert
-    });
   },
-  progress: { color: '#4B5563' },
+  progress: false,
 });
 
 // Theme init

@@ -7,6 +7,10 @@ import { Label } from '@/components/ui/label';
 import UserActivityTable from '@/components/UserActivityTable.vue';
 import AnalyticsChart from '@/components/AnalyticsChart.vue';
 import VisitorChart from '@/components/VisitorChart.vue';
+import { useI18n } from 'vue-i18n';
+
+// Holen Sie sich die Übersetzungsfunktion `t`
+const { t } = useI18n();
 
 const props = defineProps<{
     initialUsers: any[];
@@ -31,7 +35,6 @@ const filters = reactive({
     analytics_category_id: props.analyticsData.filters.category_id || 'all',
     visitor_year: props.visitorData.filters.year,
     visitor_month: props.visitorData.filters.month,
-    // NEU: Geräte-Filter im zentralen State
     visitor_device_type: props.visitorData.filters.device_type || 'all',
 });
 
@@ -67,7 +70,6 @@ function updateAnalyticsFilters(newFilters: { year: string, month: string, categ
     fetchData();
 }
 
-// NEU: Handler für Besucher-Filter wurde erweitert
 function updateVisitorFilters(newFilters: { year: string, month: string, device_type: string }) {
     filters.visitor_year = parseInt(newFilters.year, 10);
     filters.visitor_month = newFilters.month === 'all' ? 'all' : parseInt(newFilters.month, 10);
@@ -93,24 +95,24 @@ onUnmounted(() => {
 </script>
 
 <template>
-    <Head title="Dashboard" />
+    <Head :title="t('dashboard.head_title')" />
     <div class="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
         <!-- Stat-Karten -->
         <div class="grid auto-rows-min gap-4 md:grid-cols-4">
             <div class="p-6 bg-white dark:bg-slate-800 rounded-xl border border-border">
-                <h3 class="text-sm font-medium text-muted-foreground">Gesamte Zustimmungen</h3>
+                <h3 class="text-sm font-medium text-muted-foreground">{{ $t('dashboard.stats.total_consents') }}</h3>
                 <p class="text-3xl font-bold">{{ dashboardData.stats.totalConsents }}</p>
             </div>
             <div class="p-6 bg-white dark:bg-slate-800 rounded-xl border border-border">
-                <h3 class="text-sm font-medium text-muted-foreground">Analyse-Zustimmungsrate</h3>
+                <h3 class="text-sm font-medium text-muted-foreground">{{ $t('dashboard.stats.analytics_rate') }}</h3>
                 <p class="text-3xl font-bold">{{ dashboardData.stats.analyticsAcceptanceRate }}%</p>
             </div>
             <div class="p-6 bg-white dark:bg-slate-800 rounded-xl border border-border">
-                <h3 class="text-sm font-medium text-muted-foreground">Aktive Besucher (5 Min.)</h3>
+                <h3 class="text-sm font-medium text-muted-foreground">{{ $t('dashboard.stats.active_visitors') }}</h3>
                 <p class="text-3xl font-bold">{{ dashboardData.visitorData.activeNow }}</p>
             </div>
              <div class="p-6 bg-white dark:bg-slate-800 rounded-xl border border-border">
-                 <h3 class="text-sm font-medium text-muted-foreground">Klicks heute</h3>
+                 <h3 class="text-sm font-medium text-muted-foreground">{{ $t('dashboard.stats.clicks_today') }}</h3>
                  <p class="text-3xl font-bold">{{ dashboardData.analyticsData.totalToday }}</p>
             </div>
         </div>
@@ -122,10 +124,10 @@ onUnmounted(() => {
         <!-- Benutzer-Aktivitätstabelle -->
         <div class="relative flex-1 rounded-xl border border-sidebar-border/70 p-4 dark:border-sidebar-border">
             <div class="mb-4 flex items-center justify-between">
-                <h2 class="text-xl font-semibold dark:text-white">Benutzer-Aktivität</h2>
+                <h2 class="text-xl font-semibold dark:text-white">{{ $t('dashboard.user_activity.title') }}</h2>
                 <div class="flex items-center space-x-2">
                     <Checkbox id="show-all" v-model:checked="filters.show_all" />
-                    <Label for="show-all" class="text-sm font-medium">Alle Benutzer anzeigen</Label>
+                    <Label for="show-all" class="text-sm font-medium">{{ $t('dashboard.user_activity.show_all_users') }}</Label>
                 </div>
             </div>
             <UserActivityTable :users="initialUsers" />

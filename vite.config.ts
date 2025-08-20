@@ -5,6 +5,7 @@ import path from 'path';
 import tailwindcss from 'tailwindcss';
 import { resolve } from 'node:path';
 import { defineConfig, loadEnv } from 'vite';
+import VueI18nPlugin from '@intlify/unplugin-vue-i18n/vite';
 
 export default defineConfig(({ mode }) => {
     // Lädt die .env-Variablen
@@ -24,6 +25,9 @@ export default defineConfig(({ mode }) => {
                         includeAbsolute: false,
                     },
                 },
+            }),
+            VueI18nPlugin({
+                include: resolve(__dirname, './resources/js/locales/'),
             }),
         ],
         resolve: {

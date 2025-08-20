@@ -6,6 +6,10 @@ import { Label } from '@/components/ui/label';
 import AuthLayout from '@/layouts/AuthLayout.vue';
 import { Head, useForm } from '@inertiajs/vue3';
 import { LoaderCircle } from 'lucide-vue-next';
+import { useI18n } from 'vue-i18n';
+
+// Holen Sie sich die Übersetzungsfunktion `t`
+const { t } = useI18n();
 
 const form = useForm<{ password: string }>({
   password: '',
@@ -20,15 +24,15 @@ const submit = () => {
 
 <template>
   <AuthLayout
-    title="Confirm your password"
-    description="This is a secure area of the application. Please confirm your password before continuing."
+    :title="t('auth.confirm_password.title')"
+    :description="t('auth.confirm_password.description')"
   >
-    <Head title="Confirm password" />
+    <Head :title="t('auth.confirm_password.head_title')" />
 
     <form @submit.prevent="submit">
       <div class="space-y-6">
         <div class="grid gap-2">
-          <Label for="password">Password</Label>
+          <Label for="password">{{ $t('auth.confirm_password.label') }}</Label>
           <Input
             id="password"
             type="password"
@@ -44,7 +48,7 @@ const submit = () => {
         <div class="flex items-center">
           <Button class="w-full" type="submit" :disabled="form.processing">
             <LoaderCircle v-if="form.processing" class="h-4 w-4 animate-spin" />
-            Confirm Password
+            {{ $t('auth.confirm_password.button') }}
           </Button>
         </div>
       </div>

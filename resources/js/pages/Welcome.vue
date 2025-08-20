@@ -1,33 +1,49 @@
 <script setup lang="ts">
+import { computed } from 'vue'; // WICHTIG: computed importieren
+import { useI18n } from 'vue-i18n'; // WICHTIG: useI18n importieren
 import AppLayout from '@/layouts/AppLayout.vue';
 import { Head, Link } from '@inertiajs/vue3';
-import { Button } from '@/components/ui/button';
 import Hero3D from '@/components/Hero3D.vue';
-import InfoCard from '@/components/InfoCard.vue'; 
+import InfoCard from '@/components/InfoCard.vue';
 import DividingLine from '@/components/DividingLine.vue';
-
 import Teaser from '@/components/Teaser.vue';
+
+// Holen Sie sich die Übersetzungsfunktion `t`
+const { t } = useI18n();
+
+// --- Übersetzte Texte als computed Properties definieren ---
+
+// Hero Sektion
+const heroSubtitle = computed(() => t('hero.subtitle'));
+const heroButton = computed(() => t('hero.button'));
+
+// Teaser Sektion
+const teaserHeadline = computed(() => t('teaser.headline'));
+const teaserParagraphs = computed(() => [
+    t('teaser.p1'),
+    t('teaser.p2'),
+    t('teaser.p3'),
+]);
+
+// InfoCards Sektion
+const infocardsHeadline = computed(() => t('infocards.headline'));
 
 // ----------------------------Images Imports------------------------------------------------
 const projectImageUrl = '/images/Projects.png';
 const contactImageUrl = '/images/ContactUs.png';
 const certificatesImageUrl = '/images/Certificates.png';
-// Lade hier ein professionelles, quadratisches Bild von dir in den `/public/images/`-Ordner
-const profileImageUrl = '/images/selfie.png'; 
 
 //Ein Array mit den Wörtern, die im 3D-Raum fliegen sollen
 const techWords = [
     'Laravel', 'PHP', 'Vue.js', 'JavaScript (JS)', 'TypeScript',
     'HTML5', 'CSS3', 'MySQL', 'Inertia.js', 'TailwindCSS',
-    'API', 'Clean Code', 'Git',
+    'API', 'Clean Code', 'Git', 'Variable',
     'Security', 'Testing', 'Agile','Bug Fixing', 'Web Applications', 'Structure',
     'Backend','Backup','Authentifizierung','Debugging','Docker',
     'Framework','Frontend','HTTPS','Webserver','VPN (Virtual Private Network)','Development',
-    'Domain', 'Mobile First','Cookie Consent','N8N','Kubernetes','Relaunch','Automated workflows',
-    'Teamplayer','creative coding', 'Bug Hunting'
+    'Domain', 'Mobile First','Cookie Consent','N8N','Kubernetes','Relaunch','Automatism','Workflows',
+    'Teamplayer','creative coding',
 ];
-
-
 </script>
 
 <template>
@@ -36,11 +52,9 @@ const techWords = [
         <div class="flex-1">
             <section
                 class=" relative h-[90vh] w-full flex items-center justify-center text-center overflow-hidden text-black dark:text-white"
-                :style=" 'bg-transparent' "
-                style="background-size: cover; background-position: center;"
                 >
                 <div class="absolute inset-0 bg-transparent"></div>
-                
+
                 <Hero3D :words="techWords" />
 
                 <div class="relative z-10 flex flex-col bg-blue-900/100 dark:bg-gray-600/100 p-8 rounded-md items-center text-black dark:text-white">
@@ -48,28 +62,23 @@ const techWords = [
                         Dennis Strauß
                     </h1>
                     <p class="text-white dark:text-white mt-4 text-lg md:text-xl max-w-2xl mx-auto " style="text-shadow: 0 0 10px rgba(0,0,0,0.7);">
-                        Digitale Erlebnisse, die begeistern.
+                        {{ heroSubtitle }}
                     </p>
-                    <div class="mt-8"> <!--@click="handleProjectsClick" ist für die Google Analytics -->
+                    <div class="mt-8">
                         <Link
                           :href="route('projects')"
                           v-track-click="{ category: 'Startseite', label: 'Projekte entdecken', requireConsent: true }"
                           class="inline-flex items-center justify-center rounded-lg bg-green-400 hover:bg-green-200 text-black shadow-lg px-6 py-2 text-lg font-medium"
                         >
-                          Projekte entdecken
+                          {{ heroButton }}
                         </Link>
                     </div>
                 </div>
             </section>
 
-            <Teaser 
-                headline="Kreativer Anwendungsentwickler mit Fokus auf sauberen Code"
-                :paragraphs="[
-                    'Hallo, ich bin Dennis Strauß, ein Anwendungsentwickler mit Fokus auf maßgeschneiderte Softwarelösungen.',
-                    'Mit fundierten Kenntnissen in modernen Technologien wie Laravel, Drupal, Python, JavaScript und mehr sowie einem klaren Blick für sauberen, wartbaren Code entwickle ich leistungsstarke Anwendungen, die Prozesse optimieren und Nutzer begeistern.',
-                    'Hier finden Sie eine Auswahl meiner bisherigen Projekte, technischer Schwerpunkte und Informationen zu meinem beruflichen Werdegang. Ich freue mich, wenn Sie einen Einblick in meine Arbeit gewinnen und vielleicht schon bald den passenden Partner für Ihr nächstes Softwareprojekt gefunden haben.',
-                    
-                ]"
+            <Teaser
+                :headline="teaserHeadline"
+                :paragraphs="teaserParagraphs"
                 portraitImageUrl="/images/elements/TeaserBildDennis.png"
                 backgroundImageUrl="/images/elements/BgStartseitePortrait.png"
                 :backgroundHeight="'170%'"
@@ -78,8 +87,8 @@ const techWords = [
                 :portraitPositionY="'-0.5%'"
                 :enableAnimation="true"
             />
-                  
-            <DividingLine 
+
+            <DividingLine
                 color="bg-blue-500"
                 thickness="h-0.5"
                 opacity="opacity-20"
@@ -91,57 +100,42 @@ const techWords = [
                 <div class="flex-1">
                     <section class="bg-transparent  rounded-xl md:pl-32 md:pr-32">
                         <div id="card_panel-headline" class="flex-1 mt-0 mb-0 p-0 dark:bg-transparent">
-                            <!-- wichtig für tastertur Steuerung: ind den Container= tabindex="0" und in der class='focus:outline-none focus-visible:ring-1 focus-visible:ring-black focus-visible:ring-offset-1 dark:focus-visible:ring-white'-->
                             <h2
-                            
                             class="text-2xl bg-blue-900 dark:bg-blue-900  md:ml-32 md:mr-32 p-4 rounded-xl md:text-4xl font-bold border-2 dark:text-white text-white mb-4 text-center">
-                                Ein Blick auf meine Arbeit & mehr
+                                {{ infocardsHeadline }}
                             </h2>
                         </div>
                         <div id="card_panel" class="flex-1 mt-0 dar:bg-transparent p-0">
-
                           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 md:gap-11 gap-6 md:ml-24 md:mr-24 justify-items-center" style="perspective: 2000px;">
-                               <!-- Wir tracken den Klick auf die "Projekte"-Karte -->
-                                  <InfoCard
-                                      :image-url="projectImageUrl"
-                                      title="Meine Projekte"
-                                      description= "Entdecken Sie eine Auswahl meiner bisherigen Projekte"
-                                      button-text="Projekte ansehen"
-                                      :button-href="route('projects')"
-                                      :tags="['Laravel', 'Vue', 'PHP']" 
-                                  /> 
-                                  <!--
-                                      Dient zum Tracken von Elementen wenn du ein neues Element Tracken möchtest ändere das Label
-                                      ein Import ist nicht nötig da die trackClick.ts Direktive das übernimmt
-                                      v-track-click="{ category: 'Info Cards', label: 'Projekte' }" 
-                                  --> 
-                                  <!-- Wir tracken den Klick auf die "Kontakt"-Karte -->
-                                  <InfoCard
-                                      :image-url="contactImageUrl"
-                                      title="Kontakt"
-                                      description="Haben Sie eine Frage oder eine Projektidee?"
-                                      button-text="Zum Kontaktformular"
-                                      :button-href="route('contactform')"
-                                      :tags="['Kommunikation', 'Beratung']"
-                                      
-
-                                  />
-                                  <!-- Wir tracken den Klick auf die "Zertifikate"-Karte -->
-                                  <InfoCard
-                                      :image-url="certificatesImageUrl"
-                                      title="Zertifikate"
-                                      description="Ein Überblick über meine Qualifikationen"
-                                      button-text="Zertifikate ansehen"
-                                      :button-href="route('projects')"
-                                      :tags="['Qualifikation', 'Weiterbildung']"
-
-                                  />
+                                <InfoCard
+                                    :image-url="projectImageUrl"
+                                    :title="t('infocards.projects.title')"
+                                    :description="t('infocards.projects.description')"
+                                    :button-text="t('infocards.projects.button')"
+                                    :button-href="route('projects')"
+                                    :tags="['Laravel', 'Vue', 'PHP']"
+                                />
+                                <InfoCard
+                                    :image-url="contactImageUrl"
+                                    :title="t('infocards.contact.title')"
+                                    :description="t('infocards.contact.description')"
+                                    :button-text="t('infocards.contact.button')"
+                                    :button-href="route('contactform')"
+                                    :tags="['Kommunikation', 'Beratung']"
+                                />
+                                <InfoCard
+                                    :image-url="certificatesImageUrl"
+                                    :title="t('infocards.certificates.title')"
+                                    :description="t('infocards.certificates.description')"
+                                    :button-text="t('infocards.certificates.button')"
+                                    :button-href="route('projects')"
+                                    :tags="['Qualifikation', 'Weiterbildung']"
+                                />
                             </div>
                         </div>
                     </section>
-                </div> 
+                </div>
             </div>
         </div>
-        
     </AppLayout>
 </template>

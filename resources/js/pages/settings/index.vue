@@ -1,70 +1,74 @@
 // resources/js/Pages/Settings/Index.vue
 
 <script setup lang="ts">
-import AppLayout from '@/layouts/AppLayout.vue'; // Dein Hauptlayout
+import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem } from '@/types';
 import { Head, Link, usePage } from '@inertiajs/vue3';
-import { Palette, ShieldCheck, UserCircle, Users } from 'lucide-vue-next'; // Beispiel-Icons
+import { Palette, ShieldCheck, UserCircle, Users } from 'lucide-vue-next';
 import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+// Holen Sie sich die Übersetzungsfunktion `t`
+const { t } = useI18n();
 
 defineOptions({ layout: AppLayout });
 
-// Props, die vom SettingsController kommen (hier nur breadcrumbs als Beispiel)
 const props = defineProps<{
     breadcrumbs: BreadcrumbItem[];
 }>();
 
 const page = usePage();
-const currentUserRoles = computed(() => page.props.auth.user?.roles || []);
+const currentUserRoles = computed(() => (page.props as any).auth.user?.roles || []);
 const isAdmin = computed(() => currentUserRoles.value.includes('Admin'));
 
 interface SettingLink {
     href: string;
     title: string;
     description: string;
-    icon: any; // Typ für Lucide Icon Komponenten
+    icon: any;
     show: boolean;
 }
 
+// Die Links sind jetzt eine "computed" Eigenschaft, um auf Sprachwechsel zu reagieren
 const settingLinks = computed<SettingLink[]>(() => [
     {
         href: route('settings.profile.edit'),
-        title: 'Profil bearbeiten',
-        description: 'Persönliche Informationen und E-Mail-Adresse aktualisieren.',
+        title: t('settings.index.profile.title'),
+        description: t('settings.index.profile.description'),
         icon: UserCircle,
         show: true,
     },
     {
         href: route('settings.password.edit'),
-        title: 'Passwort ändern',
-        description: 'Sicherheit durch ein neues Passwort erhöhen.',
+        title: t('settings.index.password.title'),
+        description: t('settings.index.password.description'),
         icon: ShieldCheck,
         show: true,
     },
     {
         href: route('settings.appearance'),
-        title: 'Erscheinungsbild',
-        description: 'Anpassen, wie die Anwendung für dich aussieht.',
+        title: t('settings.index.appearance.title'),
+        description: t('settings.index.appearance.description'),
         icon: Palette,
-        show: true, // Du kannst hier auch eine Feature-Flag oder ähnliches prüfen
+        show: true,
     },
     {
         href: route('admin.users.index'),
-        title: 'Benutzerverwaltung',
-        description: 'Benutzerkonten und deren Rollen verwalten.',
+        title: t('settings.index.user_management.title'),
+        description: t('settings.index.user_management.description'),
         icon: Users,
-        show: isAdmin.value, // Nur für Admins anzeigen
+        show: isAdmin.value,
     },
 ]);
 </script>
 
 <template>
-    <Head title="Einstellungen" />
+    <Head :title="t('settings.index.head_title')" />
     <div class="py-12">
         <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
             <div class="mb-8">
-                <h1 class="text-3xl font-bold text-gray-900 dark:text-gray-100">Einstellungen</h1>
-                <p class="mt-1 text-lg text-gray-600 dark:text-gray-400">Verwalte hier deine Account-Einstellungen und Präferenzen.</p>
+                <h1 class="text-3xl font-bold text-gray-900 dark:text-gray-100">{{ $t('settings.index.headline') }}</h1>
+                <p class="mt-1 text-lg text-gray-600 dark:text-gray-400">{{ $t('settings.index.description') }}</p>
             </div>
 
             <div class="grid grid-cols-1 gap-6 md:grid-cols-2">

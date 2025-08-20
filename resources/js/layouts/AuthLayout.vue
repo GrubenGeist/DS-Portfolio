@@ -5,7 +5,7 @@ defineProps<{ title?: string; description?: string }>();
 </script>
 
 <template>
-  <a href="#main" class="sr-only-focusable">Zum Inhalt springen</a>
+  <a href="#main" class="sr-only-focusable">{{ $t('auth_layout.skip_to_content') }}</a>
 
   <AuthLayout :title="title" :description="description">
     <main id="main" tabindex="-1" role="main" class="focus:outline-none">

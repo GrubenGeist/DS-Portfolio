@@ -12,14 +12,11 @@ withDefaults(defineProps<Props>(), { breadcrumbs: () => [] });
 
 <template>
     <!-- Skip-Link ganz oben -->
-    <a 
-      href="#main"
-      class="sr-only focus:not-sr-only focus:block mt-2 ml-4 
-            bg-blue-600 text-white px-6 py-4 pl-8 rounded-md z-90"
-    >
-      Zum Inhalt springen
+    <div class="sr-only-focusable-div">
+    <a href="#main" class="sr-only-focusable">
+      {{ $t('layout.skip_to_content') }}
     </a>
-
+    </div>
   <!-- Header-Layout inkl. Breadcrumbs -->
   <AppHeaderLayout :breadcrumbs="breadcrumbs">
     <!-- Hauptinhalt mit eindeutiger ID & Fokusziel -->
@@ -33,52 +30,52 @@ withDefaults(defineProps<Props>(), { breadcrumbs: () => [] });
   <Footer>
     <div class="grid grid-cols-1 px-2 md:place-items-center md:grid-cols-3 lg:grid-cols-4 gap-10">
       <div class="space-y-3">
-        <h3 class="font-bold text-lg text-gray-900 dark:text-white">Motto</h3>
-        <p class="text-sm">Wachse immer ein Stück über dich Hinaus!</p>
+        <h3 class="font-bold text-lg text-gray-900 dark:text-white">{{ $t('layout.footer.motto_headline') }}</h3>
+        <p class="text-sm">{{ $t('layout.footer.motto_text') }}</p>
       </div>
 
       <div class="space-y-3">
-        <h3 class="font-bold text-lg text-gray-900 dark:text-white">Rechtliches</h3>
+        <h3 class="font-bold text-lg text-gray-900 dark:text-white">{{ $t('layout.footer.legal_headline') }}</h3>
         <ul class="space-y-2 text-sm">
           <li>
             <Link
               :href="route('imprint')"
               v-track-click="{ category: 'Footer', label: 'Impressum', requireConsent: true }"
               class="hover:text-blue-500"
-            >Impressum</Link>
+            >{{ $t('layout.footer.legal_imprint') }}</Link>
           </li>
           <li>
             <Link
               :href="route('privacy')"
               v-track-click="{ category: 'Footer', label: 'Datenschutzerklärung', requireConsent: true }"
               class="hover:text-blue-500"
-            >Datenschutzerklärung</Link>
+            >{{ $t('layout.footer.legal_privacy') }}</Link>
           </li>
         </ul>
       </div>
 
       <div class="space-y-3">
-        <h3 class="font-bold text-lg text-gray-900 dark:text-white">Socialmedia</h3>
+        <h3 class="font-bold text-lg text-gray-900 dark:text-white">{{ $t('layout.footer.social_headline') }}</h3>
         <ul class="space-y-2 text-sm">
           <li>
             <a
               href="https://www.linkedin.com/in/dennis-strauß-902a69220/"
               v-track-click="{ category: 'Footer', label: 'LinkedIn', requireConsent: true }"
               target="_blank" rel="noopener noreferrer"
-            >LinkedIn</a>
+            >{{ $t('layout.footer.social_linkedin') }}</a>
           </li>
           <li>
             <a
               href="https://www.linkedin.com/in/dennis-strauß-902a69220/"
               v-track-click="{ category: 'Footer', label: 'Instagram', requireConsent: true }"
               target="_blank" rel="noopener noreferrer"
-            >Instagram</a>
+            >{{ $t('layout.footer.social_instagram') }}</a>
           </li>
         </ul>
       </div>
 
       <div class="space-y-3">
-        <h3 class="font-bold text-lg text-gray-900 dark:text-white">Kontakt</h3>
+        <h3 class="font-bold text-lg text-gray-900 dark:text-white">{{ $t('layout.footer.contact_headline') }}</h3>
         <p class="text-sm">
           <ul>
             <li>
@@ -86,11 +83,11 @@ withDefaults(defineProps<Props>(), { breadcrumbs: () => [] });
                 :href="route('contactform')"
                 v-track-click="{ category: 'Footer', label: 'Kontaktformular', requireConsent: true }"
                 class="hover:text-blue-500"
-              >Kontakt</Link>
+              >{{ $t('layout.footer.contact_link') }}</Link>
             </li>
           </ul>
           <br />
-          Fragen oder Projektideen? <br />
+          {{ $t('layout.footer.contact_text') }} <br />
           <a
             href="mailto:dennis-strauss@web.de"
             v-track-click="{ category: 'Footer', label: 'E-Mail Link', requireConsent: true }"
@@ -101,7 +98,7 @@ withDefaults(defineProps<Props>(), { breadcrumbs: () => [] });
     </div>
 
     <div class="mt-10 pt-8 border-t border-gray-300 dark:border-gray-700 text-center text-sm">
-      <p>&copy; {{ new Date().getFullYear() }} Dennis Strauß. Alle Rechte vorbehalten.</p>
+      <p>&copy; {{ new Date().getFullYear() }} {{ $t('layout.footer.copyright') }}</p>
     </div>
   </Footer>
 
