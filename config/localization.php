@@ -13,5 +13,7 @@ return [
     | und die Routen-Parameter zu validieren.
     |
     */
-    'supported_locales' => ['en', 'de'],
+    'supported_locales' => [
+        'de', 'en', 'us', 'es', 'fr', 'it', 'at', 'ch', 'no', 'sw', 'th', 'jp','ps', 'cn', 'vn', 'tr', 'kr', 'ph', 'ae' 
+    ],
 ];

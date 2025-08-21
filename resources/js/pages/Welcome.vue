@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { computed } from 'vue'; // WICHTIG: computed importieren
-import { useI18n } from 'vue-i18n'; // WICHTIG: useI18n importieren
+import { computed } from 'vue'; 
+import { useI18n } from 'vue-i18n'; 
 import AppLayout from '@/layouts/AppLayout.vue';
 import { Head, Link } from '@inertiajs/vue3';
 import Hero3D from '@/components/Hero3D.vue';
@@ -75,8 +75,8 @@ const techWords = [
                     </div>
                 </div>
             </section>
-
-            <Teaser
+            
+            <Teaser 
                 :headline="teaserHeadline"
                 :paragraphs="teaserParagraphs"
                 portraitImageUrl="/images/elements/TeaserBildDennis.png"

@@ -74,7 +74,7 @@ const imageRoundingClass = computed(() => {
 </script>
 
 <template>
-    <section class=" bg-white dark:bg-slate-900">
+    <section class=" bg-white dark:bg-slate-900 text-pretty break-words">
         <!-- 
             KORREKTUR: Barrierefreiheit
             - tabindex="0": Macht den gesamten Container per Tastatur fokussierbar.
@@ -91,7 +91,7 @@ const imageRoundingClass = computed(() => {
             <!-- Text-Spalte -->
             <div class="p-8 md:p-12 lg:p-16 flex flex-col justify-center">
                 <h2 
-                    class="text-4xl md:text-5xl font-bold mb-6 leading-tight"
+                    class="text-2xl md:text-5xl font-bold mb-6 leading-tight break-words"
                     :class="headlineColor"
                 >
                     {{ headline }}
@@ -99,7 +99,7 @@ const imageRoundingClass = computed(() => {
                 <p 
                     v-for="(paragraph, index) in paragraphs" 
                     :key="index" 
-                    class="text-lg leading-relaxed text-justify md:mr-60" 
+                    class="text-lg leading-relaxed text-justify md:mr-20 text-pretty break-words" 
                     :class="[{ 'mt-4': index > 0 }, textColor]"
                 >
                     {{ paragraph }}
@@ -120,7 +120,7 @@ const imageRoundingClass = computed(() => {
                     <img 
                         v-if="backgroundImageUrl && !imageFailedToLoad"
                         :src="backgroundImageUrl" 
-                        alt="Hintergrundmuster"
+                        alt="Hintergrundmuster abgerundete Linien vertikal verlaufend"
                         @error="imageFailedToLoad = true"
                         class="absolute"
                         :style="{ 
