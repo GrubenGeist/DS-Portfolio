@@ -48,7 +48,7 @@ const goBack = () => {
                 @click="goBack"
                 variant="ghost"
                 size="icon"
-                class="absolute top-4 left-4"
+                class="absolute top-4 text-white text-black left-4"
             >
                 <ArrowLeft class="h-5 w-5" />
                 <span class="sr-only">Zurück</span>
