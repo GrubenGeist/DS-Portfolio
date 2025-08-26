@@ -1,5 +1,7 @@
 import { reactive, readonly } from 'vue';
 import { useGoogleAnalytics } from './useGoogleAnalytics';
+import { router } from '@inertiajs/vue3';
+import type { VisitOptions } from '@inertiajs/core'; 
 
 interface ConsentState {
   necessary: boolean;
@@ -54,13 +56,12 @@ export function useConsent() {
     // 2) GA Consent Mode
     updateConsent(newConsent);
 
-    // 3) Signal-Cookie für Backend (z. B. um Session zu starten)
-    document.cookie = 'laravel_consent=true; path=/; max-age=31536000';
+    // 3) Signal-Cookie für Backend
+    document.cookie = 'laravel_consent=true; path=/; max-age=31536000; SameSite=Strict';
 
-    // 4) Optional an dein Backend melden (falls Route existiert)
+    // 4) Optional an dein Backend melden
     try {
       const csrf = (document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement)?.content || '';
-      // globales Ziggy route() – mit Fallback
       const url = typeof route === 'function' ? route('api.consent.store') : '/api/consent';
 
       await fetch(url, {
@@ -78,8 +79,7 @@ export function useConsent() {
     } catch (e) {
       console.warn('[consent] failed to notify server:', e);
     } finally {
-      // 5) Seite neu laden, damit Axios/Session/Guards sicher greifen
-      window.location.reload();
+      router.reload({ preserveScroll: true } as Partial<VisitOptions>);
     }
   };
 

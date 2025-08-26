@@ -32,7 +32,7 @@ return Application::configure(basePath: dirname(__DIR__))
             \App\Http\Middleware\StartSessionIfConsentGiven::class
         );
 
-        $middleware->encryptCookies(except: ['appearance']);
+        $middleware->encryptCookies(except: ['appearance','laravel_consent']);
         $middleware->statefulApi();
         $middleware->web(append: [
             HandleAppearance::class,
