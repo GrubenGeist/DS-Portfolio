@@ -70,7 +70,7 @@ const techWords = [
                           v-track-click="{ category: 'Startseite', label: 'Projekte entdecken', requireConsent: true }"
                           class="inline-flex items-center justify-center rounded-lg bg-green-400 hover:bg-green-200 text-black shadow-lg px-6 py-2 text-lg font-medium"
                         >
-                          {{ heroButton }}
+                          {{ heroButton }} 
                         </Link>
                     </div>
                 </div>
