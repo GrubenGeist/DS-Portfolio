@@ -7,6 +7,7 @@ import { Head, Link, usePage } from '@inertiajs/vue3';
 import { Palette, ShieldCheck, UserCircle, Users } from 'lucide-vue-next';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
+import SettingsLayout from '@/layouts/settings/Layout.vue';
 
 // Holen Sie sich die Übersetzungsfunktion `t`
 const { t } = useI18n();
@@ -64,6 +65,7 @@ const settingLinks = computed<SettingLink[]>(() => [
 
 <template>
     <Head :title="t('settings.index.head_title')" />
+    <SettingsLayout>
     <div class="py-12">
         <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
             <div class="mb-8">
@@ -90,4 +92,5 @@ const settingLinks = computed<SettingLink[]>(() => [
             </div>
         </div>
     </div>
+    </SettingsLayout>
 </template>

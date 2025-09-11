@@ -11,18 +11,16 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 
-// =================================================================
+
 // 1. Zentrale Design-Konfiguration
-// =================================================================
 const designConfig = {
   triggerFlagClasses: 'w-6 h-auto rounded-sm',
   dropdownFlagClasses: 'w-5 h-auto rounded-sm',
   dropdownContentClasses: 'max-h-[220px] overflow-y-auto',
 };
 
-// =================================================================
+
 // 2. Basis-Konfiguration der Sprachen (ohne Text)
-// =================================================================
 // Diese Liste enthält nur noch die technischen Informationen.
 // Die sichtbaren Namen (labels) kommen aus den JSON-Dateien.
 const languageConfig = [
@@ -47,13 +45,12 @@ const languageConfig = [
   { code: 'ae', flagUrl: '/images/flags/ae.svg' },
 ];
 
-// =================================================================
+
 // 3. Logik
-// =================================================================
 const { t, locale } = useI18n();
 const csrfToken = (usePage().props as any).csrf_token;
 
-// `supportedLanguages` ist jetzt eine `computed`-Eigenschaft.
+// `supportedLanguages` ist eine `computed`-Eigenschaft.
 // Sie nimmt die Basis-Konfiguration und fügt die übersetzten Labels hinzu.
 const supportedLanguages = computed(() => {
     return languageConfig.map(lang => ({

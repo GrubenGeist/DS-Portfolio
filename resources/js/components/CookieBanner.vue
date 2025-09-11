@@ -50,7 +50,7 @@ const saveSelection = () => {
     leave-to-class="transform translate-y-full opacity-0"
   >
     <div v-if="consentState.bannerVisible" class="fixed bottom-0 inset-x-0 z-50 p-2">
-      <div class="dark:text-black max-w-7xl mx-auto p-6 bg-background/80 text-white bg-gray-900/90 dark:bg-gray-100/90 backdrop-blur-sm rounded-lg shadow-2xl border border-border">
+      <div class="dark:text-black max-w-7xl mx-auto p-6 text-white bg-gray-900/90 dark:bg-gray-100/90 backdrop-blur-sm rounded-lg shadow-2xl border border-border">
         <div class="flex flex-col md:flex-row items-center justify-between gap-6">
           <div class="flex items-start gap-4 ">
             <Cookie class="h-8 w-8 text-primary flex-shrink-0 mt-1 dark:text-black text-white" />

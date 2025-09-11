@@ -58,7 +58,7 @@ Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
 
 // --- WEITERE ROUTEN-DATEIEN LADEN ---
 require __DIR__.'/auth.php';
-require __DIR__.'/settings.php'; // Wir laden die Einstellungs-Routen wieder
+require __DIR__.'/settings.php'; // laden der Settings-Routen
 
 /*
 Verfügbare Benutzer Rollen (zur Information aus deiner alten web.php):

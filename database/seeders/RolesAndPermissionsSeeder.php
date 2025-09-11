@@ -38,6 +38,7 @@ class RolesAndPermissionsSeeder extends Seeder
                 'first_name' => 'Admin', // Geändert von 'name'
                 'last_name' => 'User',   // Hinzugefügt
                 'password' => Hash::make('ds-it-admin-pw1'),
+                'email_verified_at' => now(), // KORREKTUR: Fehlende Spalte hinzugefügt
             ]
         );
         $adminUser->assignRole($adminRole);
@@ -48,6 +49,7 @@ class RolesAndPermissionsSeeder extends Seeder
                 'first_name' => 'Test',      // Geändert von 'name'
                 'last_name' => 'Company',    // Hinzugefügt
                 'password' => Hash::make('CompanyPW'),
+                'email_verified_at' => now(), // KORREKTUR: Fehlende Spalte hinzugefügt
             ]
         );
         $companyUser->assignRole($companyRole);
@@ -58,6 +60,7 @@ class RolesAndPermissionsSeeder extends Seeder
                 'first_name' => 'Test',      // Geändert von 'name'
                 'last_name' => 'Kunde',      // Hinzugefügt
                 'password' => Hash::make('CustomerPW'),
+                'email_verified_at' => now(), // KORREKTUR: Fehlende Spalte hinzugefügt
             ]
         );
         $customerUser->assignRole($customerRole);
