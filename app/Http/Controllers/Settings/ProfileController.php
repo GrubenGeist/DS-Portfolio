@@ -24,11 +24,7 @@ class ProfileController extends Controller
         return Inertia::render('settings/Profile', [
             'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
             'status' => session('status'),
-            'breadcrumbs' => [
-                
-                ['label' => 'Einstellungen'],
-                ['label' => 'Profil bearbeiten'],
-            ],
+
         ]);
     }
 
@@ -37,14 +33,20 @@ class ProfileController extends Controller
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
-        // Die Validierung erfolgt automatisch durch den ProfileUpdateRequest.
-        $request->user()->fill($request->validated());
+        $user = $request->user();
+        $validatedData = $request->validated();
 
-        if ($request->user()->isDirty('email')) {
-            $request->user()->email_verified_at = null;
+        // Prüfen, ob die E-Mail geändert wird, BEVOR wir updaten
+        $emailIsDirty = isset($validatedData['email']) && $user->email !== $validatedData['email'];
+
+        // Führe das Update durch
+        $user->update($validatedData);
+
+        // Setze die Verifizierung zurück, WENN die E-Mail geändert wurde
+        if ($emailIsDirty) {
+            $user->email_verified_at = null;
+            $user->save();
         }
-
-        $request->user()->save();
 
         return Redirect::route('settings.profile.edit')->with('success', 'Profil erfolgreich aktualisiert.');
     }
