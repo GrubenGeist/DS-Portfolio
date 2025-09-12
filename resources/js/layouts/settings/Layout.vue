@@ -14,7 +14,7 @@ const { t } = useI18n();
 const sidebarNavItems = computed<NavItem[]>(() => [
   { title: t('settings.layout.nav.profile'),    href: route('settings.profile.edit') },
   { title: t('settings.layout.nav.password'),   href: route('settings.password.edit') },
-  //{ title: t('settings.layout.nav.appearance'), href: route('settings.appearance') },
+  { title: t('settings.layout.nav.appearance'), href: route('settings.appearance.edit') },
 ]);
 
 const page = usePage();

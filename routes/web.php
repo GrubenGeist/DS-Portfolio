@@ -25,7 +25,6 @@ Route::get('/contactform', [PageController::class, 'contactform'])->name('contac
 //Route::post('/track-event', [AnalyticsEventController::class, 'store'])->name('api.track-event');
 Route::get('/impressum', [PageController::class, 'imprint'])->name('imprint');
 Route::get('/datenschutz', [PageController::class, 'privacy'])->name('privacy');
-Route::post('/update-appearance', [AppearanceController::class, 'update'])->name('appearance.update');
 Route::post('/locale/switch', [LocaleController::class, 'switch'])->name('locale.switch');
 Route::post('/consent-event', [ConsentEventController::class, 'store'])->name('api.consent.store');
 
