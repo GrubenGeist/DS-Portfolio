@@ -35,10 +35,10 @@ const isAdmin = computed(() => Array.isArray(currentUserRoles.value) && currentU
 
   <DropdownMenuGroup :aria-label="t('user_menu.aria.general_actions')">
     <DropdownMenuItem :as-child="true">
-      <Link class="block w-full" :href="route('settings.index')" as="button">
-        <Settings class="mr-2 h-4 w-4" />
-        {{ $t('user_menu.settings') }}
-      </Link>
+    <Link :href="route('settings.profile.edit')">
+      <Settings class="mr-2 size-4" />
+        <span>{{ $t('user_menu.settings') }}</span>
+    </Link>
     </DropdownMenuItem>
 
     <template v-if="isAdmin">

@@ -17,7 +17,7 @@ const { t } = useI18n();
 const breadcrumbItems = computed<BreadcrumbItem[]>(() => [
     {
         title: t('settings.appearance.breadcrumb'),
-        href: route('settings.appearance'),
+        href: route('settings.appearance.edit'),
     },
 ]);
 </script>

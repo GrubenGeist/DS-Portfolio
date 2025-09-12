@@ -47,7 +47,8 @@ const settingLinks = computed<SettingLink[]>(() => [
         show: true,
     },
     {
-        href: route('settings.appearance'),
+        // HIER IST DIE KORREKTUR: 'settings.appearance' zu 'settings.appearance.edit' geändert
+        href: route('settings.appearance.edit'),
         title: t('settings.index.appearance.title'),
         description: t('settings.index.appearance.description'),
         icon: Palette,
