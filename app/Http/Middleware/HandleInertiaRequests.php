@@ -10,6 +10,7 @@ use Tighten\Ziggy\Ziggy;
 
 class HandleInertiaRequests extends Middleware
 {
+    
     /**
      * The root template that's loaded on the first page visit.
      *
@@ -42,6 +43,9 @@ class HandleInertiaRequests extends Middleware
             'auth' => [
                 'user' => $loggedInUser ? [
                     'id' => $loggedInUser->id,
+                    'first_name' => $loggedInUser->first_name,
+                    'last_name' => $loggedInUser->last_name,
+                    'company'=>$loggedInUser->company,
                     'name' => $loggedInUser->name,
                     'email' => $loggedInUser->email,
                     'roles' => $loggedInUser->getRoleNames()->toArray(),

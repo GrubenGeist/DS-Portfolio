@@ -11,7 +11,7 @@
     "nav.header.aria_mobile_nav": "Mobile Navigation",
     "nav.header.aria_main_nav": "Hauptnavigation",
     "nav.header.aria_toggle_theme": "Theme umschalten",
-    "nav.header.aria_user_menu": "Benutzermenü",   
+    "nav.header.aria_user_menu": "Benutzermenü",
     "nav.language_switcher.aria_label": "Sprache ändern, aktuell ausgewählt: {language}",
     "nav.language_switcher.menu_label": "Verfügbare Sprachen",
 
@@ -34,7 +34,7 @@
     "languages.kr": "Koreanisch",
     "languages.ph": "Philippinisch",
     "languages.ae": "VAE",
-    
+
     "aboutme.head_title": "Über mich",
     "aboutme.breadcrumb": "Über mich",
     "aboutme.profile_alt": "Profilbild von Dennis",
@@ -108,7 +108,7 @@
     "teaser.p1": "Hallo, ich bin Dennis Strauß, ein Anwendungsentwickler mit Fokus auf maßgeschneiderte Softwarelösungen.",
     "teaser.p2": "Mit fundierten Kenntnissen in modernen Technologien wie Laravel, Drupal, Python, JavaScript und mehr sowie einem klaren Blick für sauberen, wartbaren Code entwickle ich leistungsstarke Anwendungen, die Prozesse optimieren und Nutzer begeistern.",
     "teaser.p3": "Hier finden Sie eine Auswahl meiner bisherigen Projekte, technischer Schwerpunkte und Informationen zu meinem beruflichen Werdegang. Ich freue mich, wenn Sie einen Einblick in meine Arbeit gewinnen und vielleicht schon bald den passenden Partner für Ihr nächstes Softwareprojekt gefunden haben.",
-    
+
     "infocards.headline": "Ein Blick auf meine Arbeit & mehr",
     "infocards.projects.title": "Meine Projekte",
     "infocards.projects.description": "Entdecken Sie eine Auswahl meiner bisherigen Projekte",
@@ -213,7 +213,11 @@
     "categories.back_to_dashboard": "Zurück zum Dashboard",
     "categories.create.title": "Neue Kategorie erstellen",
     "categories.create.description": "Fügen Sie eine neue Kategorie für die Klick-Analyse hinzu.",
-    "categories.create.label_name": "Name",
+    "categories.create.label_firstname": "Vorname",
+    "categories.create.label_lastname": "Nachname",
+    "categories.create.label_company": "Unternehmen",
+    "categories.create.button_edit": "Bearbeiten",
+    "categories.create.button_cancel": "Abbrechen",
     "categories.create.button_create": "Erstellen",
     "categories.manage.title": "Bestehende Kategorien",
     "categories.manage.description": "Bearbeiten oder löschen Sie hier Ihre Tracking-Kategorien.",
@@ -297,7 +301,7 @@
     "auth.register.label_password_confirmation": "Passwort bestätigen",
     "auth.register.label_role": "Benutzerrolle",
     "auth.register.placeholder_role": "Rolle auswählen",
-    "auth.register.button_create": "Account anlegen",
+    "auth.register.button_create": "Benuter anlegen",
 
     "auth.reset_password.head_title": "Passwort zurücksetzen",
     "auth.reset_password.title": "Passwort zurücksetzen",
@@ -341,32 +345,92 @@
     "settings.index.user_management.title": "Benutzerverwaltung",
     "settings.index.user_management.description": "Benutzerkonten und deren Rollen verwalten.",
 
-    "settings.password.head_title": "Passwort ändern",
-    "settings.password.breadcrumb": "Passwort Einstellungen",
-    "settings.password.title": "Passwort aktualisieren",
-    "settings.password.description": "Stellen Sie sicher, dass Ihr Konto ein langes, zufälliges Passwort verwendet, um sicher zu bleiben.",
-    "settings.password.label_current": "Aktuelles Passwort",
-    "settings.password.placeholder_current": "Aktuelles Passwort",
-    "settings.password.label_new": "Neues Passwort",
-    "settings.password.placeholder_new": "Neues Passwort",
-    "settings.password.label_confirm": "Passwort bestätigen",
-    "settings.password.placeholder_confirm": "Passwort bestätigen",
-    "settings.password.button_save": "Passwort speichern",
-    "settings.password.save_success_message": "Gespeichert.",
+    "userprofile.settings.head_title": "Profileinstellungen",
+    "userprofile.settings.breadcrumb": "Profileinstellungen",
+    "userprofile.settings.title": "Profilinformationen",
+    "userprofile.settings.description": "Aktualisieren Sie Ihren Namen und Ihre E-Mail-Adresse",
+    "userprofile.settings.button_change": "Bearbeiten",
+    "userprofile.settings.aria_edit_profile":"Bearbeiten",
+    "userprofile.settings.label_firstname": "Vorname",
+    "userprofile.settings.label_lastname": "Nachname",
+    "userprofile.settings.label_company": "Unternehmen",
+    "userprofile.settings.label_name": "Name",
+    "userprofile.settings.placeholder_name": "Vollständiger Name",
+    "userprofile.settings.label_email": "E-Mail-Adresse",
+    "userprofile.settings.placeholder_email": "",
+    "userprofile.settings.unverified_email_text": "Ihre E-Mail-Adresse ist nicht verifiziert.",
+    "userprofile.settings.resend_verification_link": "Klicken Sie hier, um die Bestätigungs-E-Mail erneut zu senden.",
+    "userprofile.settings.verification_link_sent": "Ein neuer Bestätigungslink wurde an Ihre E-Mail-Adresse gesendet.",
+    "userprofile.settings.button_save": "Speichern",
+    "userprofile.settings.button_cancel": "Abbrechen",
+    "userprofile.settings.save_success_message": "Gespeichert.",
 
-    "settings.profile.head_title": "Profileinstellungen",
-    "settings.profile.breadcrumb": "Profileinstellungen",
-    "settings.profile.title": "Profilinformationen",
-    "settings.profile.description": "Aktualisieren Sie Ihren Namen und Ihre E-Mail-Adresse",
-    "settings.profile.label_name": "Name",
-    "settings.profile.placeholder_name": "Vollständiger Name",
-    "settings.profile.label_email": "E-Mail-Adresse",
-    "settings.profile.placeholder_email": "",
-    "settings.profile.unverified_email_text": "Ihre E-Mail-Adresse ist nicht verifiziert.",
-    "settings.profile.resend_verification_link": "Klicken Sie hier, um die Bestätigungs-E-Mail erneut zu senden.",
-    "settings.profile.verification_link_sent": "Ein neuer Bestätigungslink wurde an Ihre E-Mail-Adresse gesendet.",
-    "settings.profile.button_save": "Speichern",
-    "settings.profile.save_success_message": "Gespeichert.",
+    "userprofile.settings.password.head_title": "Passwort ändern",
+    "userprofile.settings.password.breadcrumb": "Passwort Einstellungen",
+    "userprofile.settings.password.title": "Passwort ändern",
+    "userprofile.settings.password.description": "Stellen Sie sicher, dass Ihr Konto ein langes, zufälliges Passwort verwendet, um sicher zu bleiben.",
+    "userprofile.settings.password.button_change": "Passwort aktualisieren",
+    "userprofile.settings.password.aria_change_password":"Passwort aktualisieren",
+    "userprofile.settings.password.label_current": "Aktuelles Passwort",
+    "userprofile.settings.password.placeholder_current": "Aktuelles Passwort",
+    "userprofile.settings.password.label_new": "Neues Passwort",
+    "userprofile.settings.password.placeholder_new": "Neues Passwort",
+    "userprofile.settings.password.label_confirm": "Passwort bestätigen",
+    "userprofile.settings.password.placeholder_confirm": "Passwort bestätigen",
+    "userprofile.settings.password.button_save": "Passwort speichern",
+    "userprofile.settings.password.button_cancel": "Abbrechen",
+    "userprofile.settings.password.save_success_message": "Gespeichert.",
+
+    "userprofile.settings.nav.new_user_register": "Benutzer Verwalten",
+    "settings.layout.nav.create_user":"Neuen Benutzer Anlegen",
+
+    "settings.register.button_cancel":"Abbrechen",
+
+
+    "settings": {
+        "layout": {
+            "nav": {
+                "user_management": "Benutzerverwaltung"
+            }
+        }
+    },
+
+    "users": {
+        "description": "Verwalte hier alle Benutzer des Systems.",
+        "main_headline": "Benutzerverwaltung",
+        "head_title": "Benutzerverwaltung",
+        "add_new_button": "Neuen Benutzer anlegen",
+        "confirm_delete": "Sind Sie sicher, dass Sie diesen Benutzer löschen möchten?",
+        "breadcrumb_settings": "Einstellungen",
+        "breadcrumb_user_management": "Benutzerverwaltung",
+        "filters": {
+            "search_placeholder": "Suche nach Name oder E-Mail...",
+            "role_placeholder": "Rolle filtern",
+            "role_all": "Alle Rollen",
+            "role_admin": "Admin",
+            "role_company": "Company",
+            "role_customer": "Customer"
+        },
+        "table": {
+            "header_user": "Benutzer",
+            "header_role": "Rolle",
+            "header_actions": "Aktionen",
+            "no_users_found": "Keine Benutzer gefunden.",
+            "no_role": "Keine Rolle zugewiesen",
+            "button_edit_role": "Rolle bearbeiten",
+            "button_delete": "Löschen"
+        }
+    },
+
+    "settings.delete_account.title": "Benutzerkonto Löschen",
+    "settings.delete_account.description": "Sobald Ihr Konto gelöscht ist, werden alle seine Ressourcen und Daten dauerhaft gelöscht. Bevor Sie Ihr Konto löschen, laden Sie bitte alle Daten oder Informationen herunter, die Sie behalten möchten.",
+    "settings.delete_account.button_delete": "Konto Löschen",
+    "settings.delete_account.modal_title": "Möchten Sie Ihr Konto wirklich löschen?",
+    "settings.delete_account.modal_description": "Diese Aktion kann nicht rückgängig gemacht werden. Dadurch werden Ihre persönlichen Daten dauerhaft gelöscht. Bitte geben Sie Ihr Passwort ein, um zu bestätigen, dass Sie Ihr Konto dauerhaft löschen möchten.",
+    "settings.delete_account.password_label": "Passwort",
+    "settings.delete_account.password_placeholder": "Passwort",
+    "settings.delete_account.button_cancel": "Abbrechen",
+    "settings.delete_account.button_confirm_delete": "Konto endgültig löschen",
 
     "hero3d.info.title": "Interaktion",
     "hero3d.info.drag_label": "Ziehen:",

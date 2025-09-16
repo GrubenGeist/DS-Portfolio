@@ -153,11 +153,11 @@ const mobileMenuOpen = ref(false);
         </div>
       </div>
     </div>
-
+<!--
     <div v-if="props.breadcrumbs && props.breadcrumbs.length > 0" class="flex w-full border-b border-sidebar-border/70">
       <div class="flex h-12 w-full items-center justify-start px-2 md:px-44 text-sm text-muted-foreground">
         <Breadcrumbs :breadcrumbs="props.breadcrumbs" />
       </div>
-    </div>
+    </div> -->
   </div>
 </template>

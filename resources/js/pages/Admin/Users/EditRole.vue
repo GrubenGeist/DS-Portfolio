@@ -1,17 +1,20 @@
 <script setup lang="ts">
-import AppLayout from '@/layouts/AppLayout.vue';
-import { type BreadcrumbItem } from '@/types';
+// .../pages/Admin/Users/EditRole.vue
+
 import { Head, Link, useForm } from '@inertiajs/vue3';
 import { defineProps, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
-// Holen Sie sich die Übersetzungsfunktion `t`
+// Layouts
+import AppLayout from '@/layouts/AppLayout.vue';
+import SettingsLayout from '@/layouts/settings/Layout.vue';
+import type { BreadcrumbItem } from '@/types';
+
 const { t } = useI18n();
 
 const props = defineProps({
     user: {
-        // KORREKTUR: Wir geben TypeScript eine genaue Struktur für das User-Objekt vor,
-        // um den "unendlichen Typ"-Fehler zu beheben.
         type: Object as () => {
             id: number;
             first_name: string;
@@ -26,37 +29,35 @@ const props = defineProps({
     },
 });
 
-// KORREKTUR: Das Layout wird hier persistent gesetzt.
-defineOptions({ layout: AppLayout });
+// KORREKTUR: Wir weisen das verschachtelte Einstellungs-Layout zu.
+defineOptions({
+  layout: [AppLayout, SettingsLayout],
+});
 
 const form = useForm({
     role: props.user.roles && props.user.roles.length > 0 ? props.user.roles[0].name : null,
 });
 
 const updateRole = () => {
-    // KORREKTUR: Routenname an Admin-Struktur angepasst
     form.put(route('admin.users.updateRole', props.user.id));
 };
 
-// Breadcrumbs sind jetzt "computed", um auf Sprachwechsel zu reagieren
+// KORREKTUR: Die Breadcrumbs müssen auf die Profil-Seite als Startpunkt verweisen.
 const breadcrumbs = computed<BreadcrumbItem[]>(() => {
     const userName = `${props.user.first_name} ${props.user.last_name}`;
     return [
-        { title: t('edit_role.breadcrumb_settings'), href: route('settings.index') },
+        { title: t('edit_role.breadcrumb_settings'), href: route('settings.profile.edit') },
         { title: t('edit_role.breadcrumb_user_management'), href: route('admin.users.index') },
         { title: t('edit_role.breadcrumb_edit_user', { userName: userName }) },
     ];
 });
 
 const userFullName = computed(() => `${props.user.first_name} ${props.user.last_name}`);
-
 </script>
 
 <template>
     <Head :title="t('edit_role.head_title', { userName: userFullName })" />
     
-    <!-- KORREKTUR: Der überflüssige <AppLayout>-Wrapper wird hier entfernt. -->
-    <!-- Das Layout wird bereits durch `defineOptions` im Script-Teil angewendet. -->
     <div class="mx-auto max-w-2xl px-4 py-8 sm:px-6 lg:px-8">
         <h1 class="mb-6 text-2xl font-semibold">
             {{ $t('edit_role.main_headline') }} <span class="font-bold">{{ userFullName }}</span>
@@ -64,16 +65,16 @@ const userFullName = computed(() => `${props.user.first_name} ${props.user.last_
         <form @submit.prevent="updateRole" class="space-y-6 rounded-lg bg-white p-6 shadow-md dark:bg-slate-800">
             <div>
                 <label for="role-select" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ $t('edit_role.form.label') }}</label>
-                <select
-                    id="role-select"
-                    v-model="form.role"
-                    class="mt-1 block w-full rounded-md border-gray-300 py-2 pl-3 pr-10 text-base focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 sm:text-sm"
-                >
-                    <option :value="null">{{ $t('edit_role.form.no_role_option') }}</option>
-                    <option v-for="roleOption in roles" :key="roleOption.id" :value="roleOption.name">
-                        {{ roleOption.name }}
-                    </option>
-                </select>
+                            <Select v-model="form.role">
+                <SelectTrigger id="role-select" class="mt-1">
+                        <SelectValue :placeholder="t('edit_role.form.no_role_option')" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        <SelectItem v-for="roleOption in roles" :key="roleOption.id" :value="roleOption.name">
+                            {{ roleOption.name }}
+                        </SelectItem>
+                    </SelectContent>
+                </Select>
                 <div v-if="form.errors.role" class="mt-1 text-sm text-red-500">
                     {{ form.errors.role }}
                 </div>

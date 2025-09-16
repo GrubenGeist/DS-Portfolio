@@ -1,31 +1,39 @@
 <script setup lang="ts">
-import { useForm } from '@inertiajs/vue3';
 import { ref } from 'vue';
+import { useForm } from '@inertiajs/vue3';
+import { useI18n } from 'vue-i18n';
 
-import HeadingSmall from '@/components/HeadingSmall.vue';
-import InputError from '@/components/InputError.vue';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
-  DialogClose,
   DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
+  DialogClose,
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import InputError from '@/components/InputError.vue';
+import HeadingSmall from './HeadingSmall.vue';
 
+const { t } = useI18n();
+const confirmingUserDeletion = ref(false);
 const passwordInput = ref<HTMLInputElement | null>(null);
 
-const form = useForm<{ password: string }>({
+const form = useForm({
   password: '',
 });
 
+const confirmUserDeletion = () => {
+  confirmingUserDeletion.value = true;
+  setTimeout(() => passwordInput.value?.focus(), 250);
+};
+
 const deleteUser = () => {
-  form.delete(route('profile.destroy'), {
+  form.delete(route('settings.profile.destroy'), {
     preserveScroll: true,
     onSuccess: () => closeModal(),
     onError: () => passwordInput.value?.focus(),
@@ -34,62 +42,62 @@ const deleteUser = () => {
 };
 
 const closeModal = () => {
-  form.clearErrors();
+  confirmingUserDeletion.value = false;
   form.reset();
 };
 </script>
 
 <template>
-  <div class="space-y-6">
-    <HeadingSmall title="Delete account" description="Delete your account and all of its resources" />
+  <section class="flex flex-col space-y-6">
+    <HeadingSmall 
+      :title="t('settings.delete_account.title')" 
+      :description="t('settings.delete_account.description')" 
+    />
 
-    <div class="space-y-4 rounded-lg border border-red-100 bg-red-50 p-4 dark:border-red-200/10 dark:bg-red-700/10">
-      <div class="relative space-y-0.5 text-red-600 dark:text-red-100">
-        <p class="font-medium">Warning</p>
-        <p class="text-sm">Please proceed with caution, this cannot be undone.</p>
-      </div>
-
-      <Dialog>
+    <div class="flex"> <Dialog>
         <DialogTrigger as-child>
-          <Button variant="destructive">Delete account</Button>
+          <Button variant="destructive">{{ t('settings.delete_account.button_delete') }}</Button>
         </DialogTrigger>
-
-        <DialogContent>
-          <form class="space-y-6" @submit.prevent="deleteUser">
-            <DialogHeader class="space-y-3">
-              <DialogTitle>Are you sure you want to delete your account?</DialogTitle>
-              <DialogDescription>
-                Once your account is deleted, all of its resources and data will also be permanently deleted. Please
-                enter your password to confirm you would like to permanently delete your account.
-              </DialogDescription>
-            </DialogHeader>
-
-            <div class="grid gap-2">
-              <Label for="password" class="sr-only">Password</Label>
-              <Input
-                id="password"
-                type="password"
-                name="password"
-                ref="passwordInput"
-                v-model="form.password"
-                placeholder="Password"
-              />
-              <InputError :message="form.errors.password" />
-            </div>
-
-            <DialogFooter class="gap-2">
-              <DialogClose as-child>
-                <Button variant="secondary" @click="closeModal">Cancel</Button>
-              </DialogClose>
-
-              <!-- submit ohne verschachtelten <button> -->
-              <Button variant="destructive" type="submit" :disabled="form.processing">
-                Delete account
+        <DialogContent class="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>{{ t('settings.delete_account.modal_title') }}</DialogTitle>
+            <DialogDescription>
+              {{ t('settings.delete_account.modal_description') }}
+            </DialogDescription>
+          </DialogHeader>
+          <div class="grid gap-4 py-4">
+              <div class="grid gap-2">
+                  <Label for="password" class="sr-only">{{ t('settings.delete_account.password_label') }}</Label>
+                  <Input
+                      id="password"
+                      ref="passwordInput"
+                      v-model="form.password"
+                      type="password"
+                      class="mt-1 block w-full"
+                      :placeholder="t('settings.delete_account.password_placeholder')"
+                      @keyup.enter="deleteUser"
+                  />
+                  <InputError :message="form.errors.password" class="mt-2" />
+              </div>
+          </div>
+          <DialogFooter class="sm:justify-end gap-2">
+            <DialogClose as-child>
+              <Button type="button" variant="secondary">
+                {{ t('settings.delete_account.button_cancel') }}
               </Button>
-            </DialogFooter>
-          </form>
+            </DialogClose>
+            <Button
+              type="button"
+              variant="destructive"
+              :class="{ 'opacity-25': form.processing }"
+              :disabled="form.processing"
+              @click="deleteUser"
+            >
+              {{ t('settings.delete_account.button_confirm_delete') }}
+            </Button>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
     </div>
-  </div>
+  </section>
 </template>

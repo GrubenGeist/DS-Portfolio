@@ -17,6 +17,7 @@ Route::middleware(['auth', 'verified'])
         Route::delete('profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
         // Passwort
+        Route::put('password', [ProfileController::class, 'updatePassword'])->name('password.update');
         Route::get('password', [PasswordController::class, 'edit'])->name('password.edit');
         Route::put('password', [PasswordController::class, 'update'])->name('password.update');
 
