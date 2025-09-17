@@ -15,27 +15,26 @@ const props = withDefaults(defineProps<Props>(), {
 
 const { getInitials } = useInitials();
 
-// garantiert boolean (nicht nur truthy string)
 const showAvatar = computed(() => {
   const a = props.user?.avatar;
   return typeof a === 'string' && a.length > 0;
 });
 
-// sichere Strings für AvatarImage
-const avatarSrc = computed(() => (typeof props.user?.avatar === 'string' ? props.user.avatar : ''));
 const avatarAlt = computed(() => props.user?.name ?? 'User Avatar');
 </script>
 
 <template>
-  <Avatar class="h-8 w-8 overflow-hidden rounded-lg">
-    <AvatarImage v-if="showAvatar" :src="avatarSrc" :alt="avatarAlt" />
-    <AvatarFallback class="rounded-lg text-black dark:text-white">
-      {{ getInitials((user?.name ?? '')) }}
-    </AvatarFallback>
-  </Avatar>
+  <div v-if="user" class="flex items-center gap-3">
+    <Avatar class="h-9 w-9">
+      <AvatarImage v-if="showAvatar" :src="user.avatar || ''" :alt="avatarAlt" />
+      <AvatarFallback>
+        {{ getInitials(user.name ?? '') }}
+      </AvatarFallback>
+    </Avatar>
 
-  <div class="grid flex-1 text-left text-sm leading-tight">
-    <span class="truncate font-medium">{{ user?.name ?? '' }}</span>
-    <span v-if="showEmail" class="truncate text-xs text-muted-foreground">{{ user?.email ?? '' }}</span>
+    <div class="grid flex-1 text-left text-sm leading-tight">
+      <span class="truncate font-semibold">{{ user.name ?? '' }}</span>
+      <span v-if="showEmail" class="truncate text-xs text-muted-foreground">{{ user.email ?? '' }}</span>
+    </div>
   </div>
 </template>

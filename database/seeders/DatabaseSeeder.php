@@ -15,7 +15,10 @@ class DatabaseSeeder extends Seeder
             RoleSeeder::class,
             RolesAndPermissionsSeeder::class,
             UserSeeder::class,
-            SeedAnalyticsEvents::class,
+           // SeedAnalyticsEvents::class,
+           // VisitSeeder::class,
+           // VisitsTableSeeder::class
+           // VisitTableSeeder_UserAgents::class
 
         ]);
     }

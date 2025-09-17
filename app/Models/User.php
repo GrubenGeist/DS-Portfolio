@@ -15,7 +15,6 @@ class User extends Authenticatable
 
     /**
      * The attributes that are mass assignable.
-     *
      * @var array<int, string>
      */
     protected $fillable = [
@@ -27,8 +26,15 @@ class User extends Authenticatable
     ];
 
     /**
-     * The attributes that should be hidden for serialization.
+     * HINZUGEFÜGT: Diese Eigenschaft weist Laravel an, den 'name'-Accessor
+     * immer mitzusenden, wenn das User-Objekt umgewandelt wird.
      *
+     * @var array
+     */
+    protected $appends = ['name'];
+
+    /**
+     * The attributes that should be hidden for serialization.
      * @var array<int, string>
      */
     protected $hidden = [
@@ -38,18 +44,22 @@ class User extends Authenticatable
 
     /**
      * Get the attributes that should be cast.
-     *
      * @return array<string, string>
      */
-    protected function casts(): array{
+    protected function casts(): array
+    {
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
-            'last_login_at' => 'datetime', 
+            'last_login_at' => 'datetime',
         ];
     }
 
-    public function getNameAttribute(): string{
-            return $this->first_name . ' ' . $this->last_name;
+    /**
+     * Dein bereits existierender, perfekter Accessor.
+     */
+    public function getNameAttribute(): string
+    {
+        return $this->first_name . ' ' . $this->last_name;
     }
 }

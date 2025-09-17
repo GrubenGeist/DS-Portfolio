@@ -31,12 +31,17 @@ Route::post('/consent-event', [ConsentEventController::class, 'store'])->name('a
 // --- GESCHÜTZTE ROUTEN ---
 Route::middleware(['auth', 'verified'])->group(function () {
     // Allgemeine Seiten
-    Route::get('/dashboard', [PageController::class, 'dashboard'])->name('dashboard')->middleware('role:Admin');
     Route::get('/projects', [PageController::class, 'projects'])->name('projects')->middleware('role:Admin|Company');
     Route::get('/services', [PageController::class, 'services'])->name('services')->middleware('role:Admin|Company');
     Route::get('/aboutme', [PageController::class, 'aboutMe'])->name('aboutme')->middleware('role:Admin|Company');
     Route::get('/lebenslauf', [PageController::class, 'lebenslauf'])->name('lebenslauf')->middleware('role:Admin|Company');
+
+    // Dashboard nur für Admins
+    Route::get('/dashboard', [PageController::class, 'dashboard'])->name('dashboard')->middleware('role:Admin');
     
+    // Route für Polling (Echtzeit-Update)
+    Route::get('/dashboard/data', [PageController::class, 'dashboardData'])->name('dashboard.data')->middleware('role:Admin');
+
     // --- ADMIN-BEREICH (Benutzerverwaltung) ---
     Route::middleware(['role:Admin'])->prefix('admin')->name('admin.')->group(function () {
         Route::get('/users', [UserController::class, 'index'])->name('users.index');
@@ -45,10 +50,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
         Route::resource('categories', CategoryController::class);
     });
-
-    // --- API-ROUTEN FÜR DAS DASHBOARD ---
-    // Diese Route ist jetzt auch geschützt und nur für eingeloggte Benutzer erreichbar.
-    Route::get('/dashboard/data', [PageController::class, 'dashboardData'])->name('dashboard.data');
 
 });
 

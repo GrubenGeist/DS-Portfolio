@@ -4,42 +4,30 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use App\Models\Category; // WICHTIG: Das Category-Model importieren
+use Carbon\Carbon;
 
 class SeedAnalyticsEvents extends Seeder
 {
     /**
      * Run the database seeds.
+     * * Erstellt zufällige Analytics-Events für die letzten 30 Tage.
      */
     public function run(): void
     {
-        // Dieser Seeder wurde verwendet, um die Datenbank während der Entwicklung mit
-        // Testdaten für die Klick-Analyse zu füllen. Für den Live-Betrieb ist er
-        // nicht notwendig, kann aber für Testzwecke beibehalten werden.
-        // Wenn Sie keine automatischen Testdaten benötigen, kann diese Methode leer bleiben.
+        // Leere die Tabelle, um bei jedem Seed saubere Daten zu haben.
+        DB::table('analytics_events')->truncate();
 
-        /*
-        $eventsData = [
-            'Test-Kategorie A' => ['Test-Ereignis A', 'Test-Ereignis B'],
-            'Test-Kategorie B' => ['Test-Ereignis C', 'Test-Ereignis A'],
-            'Footer Links' => ['Impressum Klick', 'Datenschutz Klick'],
-        ];
+        $actions = ['button_click', 'link_click', 'image_click'];
+        $labels = ['hero-cta', 'contact-submit', 'project-card-1', 'footer-imprint', 'nav-projects'];
 
-        foreach ($eventsData as $categoryName => $labels) {
-            $category = Category::firstOrCreate(['name' => $categoryName]);
-
-            foreach ($labels as $label) {
-                for ($i = 0; $i < rand(1, 5); $i++) {
-                    DB::table('analytics_events')->insert([
-                        'action' => 'click',
-                        'label' => $label,
-                        'category_id' => $category->id,
-                        'created_at' => now()->subDays(rand(0, 365)),
-                        'updated_at' => now(),
-                    ]);
-                }
-            }
+        // Erstelle 150 zufällige Events.
+        for ($i = 0; $i < 150; $i++) {
+            DB::table('analytics_events')->insert([
+                'action' => $actions[array_rand($actions)],
+                'label' => $labels[array_rand($labels)],
+                'created_at' => Carbon::now()->subDays(rand(0, 30))->subMinutes(rand(0, 1440)),
+                'updated_at' => now(),
+            ]);
         }
-        */
     }
 }

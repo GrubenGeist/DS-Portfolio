@@ -87,7 +87,7 @@ watch(() => filters.show_all, (newValue) => {
 
 let pollingIntervalId: number | null = null;
 onMounted(() => {
-    pollingIntervalId = window.setInterval(fetchData, 5000);
+    pollingIntervalId = window.setInterval(fetchData, 2000);
 });
 onUnmounted(() => {
     if (pollingIntervalId) clearInterval(pollingIntervalId);

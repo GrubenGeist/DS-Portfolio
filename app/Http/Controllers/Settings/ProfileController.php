@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Settings;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Settings\ProfileUpdateRequest; // Wichtig: Den neuen Request verwenden
+use App\Http\Requests\Settings\ProfileUpdateRequest;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use Inertia\Response as InertiaResponse;
+use Illuminate\Support\Facades\Hash;      // <-- NEU: Import für Passwort-Hashing
+use Illuminate\Validation\Rules\Password;  // <-- NEU: Import für Passwort-Regeln
 
 class ProfileController extends Controller
 {
@@ -19,12 +21,13 @@ class ProfileController extends Controller
      */
     public function edit(Request $request): InertiaResponse
     {
-        // Rendert jetzt die korrekte Vue-Komponente.
-        // Das 'user'-Objekt müssen wir nicht mehr manuell übergeben, Inertia macht das global.
         return Inertia::render('settings/Profile', [
             'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
             'status' => session('status'),
-
+            // HINZUGEFÜGT: Breadcrumbs sind wichtig für die Navigation
+            'breadcrumbs' => [
+                ['label' => 'Einstellungen'],
+            ],
         ]);
     }
 
@@ -35,20 +38,35 @@ class ProfileController extends Controller
     {
         $user = $request->user();
         $validatedData = $request->validated();
-
-        // Prüfen, ob die E-Mail geändert wird, BEVOR wir updaten
+        
         $emailIsDirty = isset($validatedData['email']) && $user->email !== $validatedData['email'];
-
-        // Führe das Update durch
+        
         $user->update($validatedData);
 
-        // Setze die Verifizierung zurück, WENN die E-Mail geändert wurde
         if ($emailIsDirty) {
             $user->email_verified_at = null;
             $user->save();
         }
 
         return Redirect::route('settings.profile.edit')->with('success', 'Profil erfolgreich aktualisiert.');
+    }
+
+    /**
+     * Methode zur Aktualisierung des Passworts.
+     * Die Logik wurde aus dem alten PasswordController hierher verschoben.
+     */
+    public function updatePassword(Request $request): RedirectResponse
+    {
+        $validated = $request->validate([
+            'current_password' => ['required', 'current_password'],
+            'password' => ['required', Password::defaults(), 'confirmed'],
+        ]);
+
+        $request->user()->update([
+            'password' => Hash::make($validated['password']),
+        ]);
+
+        return back()->with('success', 'Passwort erfolgreich geändert.');
     }
 
     /**

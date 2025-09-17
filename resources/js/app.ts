@@ -1,88 +1,91 @@
 // resources/js/app.ts
 import '../css/app.css';
 
-import { createApp, h, type DefineComponent } from 'vue';
-import { createInertiaApp } from '@inertiajs/vue3'; // 'router' wird hier nicht mehr direkt benötigt
+import { createApp, h, type DefineComponent, watchEffect } from 'vue';
+// Der Router wird hier direkt importiert, das ist der korrekte Weg.
+import { createInertiaApp, router } from '@inertiajs/vue3';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { ZiggyVue } from 'ziggy-js';
 import type { Config as ZiggyConfig } from 'ziggy-js';
-import i18n from './i18n';
-
-
-// Wichtig: bootstrap.ts konfiguriert Axios mit dem CSRF-Token.
+import  i18n  from './i18n';
 import './bootstrap';
 
-import { initializeTheme } from './composables/useAppearance';
-import { trackClick } from '@/directives/trackClick';
+import  trackClickDirective  from './directives/trackClick';
 
 // Consent + Analytics
-import { useConsent, loadConsent } from '@/composables/useConsent';
-import { useGoogleAnalytics } from '@/composables/useGoogleAnalytics';
-
-// Globale Komponente
-import ContactForm from './components/ContactFormInner.vue';
+import { useConsent, loadConsent } from './composables/useConsent';
+import { useGoogleAnalytics } from './composables/useGoogleAnalytics';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
-/** ---------------- Inertia App ---------------- */
 createInertiaApp({
-  title: (title) => `${title} - ${appName}`,
-  resolve: (name) =>
-    resolvePageComponent(`./pages/${name}.vue`, import.meta.glob<DefineComponent>('./pages/**/*.vue')),
-  setup({ el, App, props, plugin }) {
+    title: (title) => `${title} - ${appName}`,
+    resolve: (name) => resolvePageComponent(`./pages/${name}.vue`, import.meta.glob<DefineComponent>('./pages/**/*.vue')),
+    setup({ el, App, props, plugin }) {
+        // --- i18n-Setup ---
+        const initialLocale = (props.initialPage.props.locale as string) || 'de';
+        const allMessages = (props.initialPage.props.translations as Record<string, any>) || {};
 
-    // --- i18n-Setup ---
-    const initialLocale = props.initialPage.props.locale || 'de';
-    const allMessages = props.initialPage.props.translations || {};
+        i18n.global.locale.value = initialLocale;
+        Object.keys(allMessages).forEach((locale) => {
+            i18n.global.setLocaleMessage(locale, allMessages[locale]);
+        });
+        // --- Ende i18n-Setup ---
 
-    i18n.global.locale.value = initialLocale;
+        const vueApp = createApp({ render: () => h(App, props) });
+        vueApp.use(plugin).use(i18n);
 
-    Object.keys(allMessages).forEach(locale => {
-        i18n.global.setLocaleMessage(locale, allMessages[locale]);
-    });
+        // --- Korrekte Consent & GA Architektur ---
+        loadConsent();
+        const { consentState } = useConsent();
+        vueApp.provide('consent', consentState);
 
-    const vueApp = createApp({ render: () => h(App, props) });
-    vueApp.use(plugin);
-    vueApp.use(i18n);
-    
+        const { init: initGA, updateGAConsent } = useGoogleAnalytics();
 
-    // Consent laden
-    loadConsent();
+        initGA();
 
-    // GA vorbereiten
-    const { consentState } = useConsent();
-    const { init, updateConsent } = useGoogleAnalytics();
-    if (!consentState.bannerVisible) updateConsent(consentState);
+        watchEffect(() => {
+            updateGAConsent(consentState);
+        });
+        // --- Ende Consent & GA Architektur ---
 
-    // Ziggy
-    const ziggy = ((props.initialPage.props as any)?.ziggy ?? {}) as ZiggyConfig;
-    (ziggy as any).defaults ??= {} as Record<string, any>;
-    vueApp.use(ZiggyVue, ziggy);
+        // Ziggy
+        const ziggy = (props.initialPage.props as any)?.ziggy as ZiggyConfig;
+        vueApp.use(ZiggyVue, ziggy);
 
-    // Direktiven/Komponenten
-    vueApp.directive('track-click', trackClick);
-    vueApp.component('contact-form', ContactForm);
+        // Direktiven
+        vueApp.directive('track-click', trackClickDirective);
 
-    // WICHTIG: Die App wird nur EINMAL hier, ganz am Ende, gemountet.
-    vueApp.mount(el);
-  },
-  progress: false,
+        vueApp.mount(el);
+    },
+    progress: {
+        color: '#4B5563',
+    },
 });
 
-// Theme init
-initializeTheme();
+// Der Event-Listener für Seitenwechsel. Er wird NUR HIER, außerhalb von setup, platziert.
+router.on('navigate', () => {
+    const { consentState } = useConsent();
+    const { trackPageView } = useGoogleAnalytics();
 
+    // Wir prüfen vor jedem Tracking, ob die Zustimmung noch gilt.
+    if (consentState.analytics) {
+        trackPageView();
+    }
+});
 
 /* ====== Easter Egg (so lassen) ====== */
 const styles = [
-  'font-size: 16px',
-  'font-family: monospace',
-  'background: #000000ff',
-  'color: #48ff00ff',
-  'padding: 3px 20px',
-  'border-radius: 5px',
-  'line-height: 1.0',
+    'font-size: 16px',
+    'font-family: monospace',
+    'background: #000000ff',
+    'color: #48ff00ff',
+    'padding: 3px 20px',
+    'border-radius: 5px',
+    'line-height: 1.0',
 ].join(';');
+
+// ... (console.log etc.)
 
 
 // const message = `Neugierig? 😉

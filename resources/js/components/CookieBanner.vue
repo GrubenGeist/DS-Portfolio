@@ -62,8 +62,8 @@ const saveSelection = () => {
             </div>
           </div>
           <div class="flex gap-2 flex-shrink-0">
-            <Button class="border border-stone-900/20 dark:bg-gray-600 dark:text-white text-black bg-gray-100" variant="outline" @click="showSettingsModal = true">{{ $t('cookie_banner.button_customize') }}</Button>
-            <Button class="border border-stone-900/20 bg-blue-800 dark:bg-yellow-400" @click="acceptAll">{{ $t('cookie_banner.button_accept_all') }}</Button>
+            <Button class="border border-stone-900/20 dark:bg-gray-600 dark:hover:bg-gray-500  dark:text-white text-black bg-gray-100" variant="outline" @click="showSettingsModal = true">{{ $t('cookie_banner.button_customize') }}</Button>
+            <Button class="border border-stone-900/20 dark:bg-yellow-400 dark:hover:bg-yellow-300 dark:text-black bg-blue-800 hover:bg-blue-600 text-white hover:text-white" @click="acceptAll">{{ $t('cookie_banner.button_accept_all') }}</Button>
           </div>
         </div>
       </div>
@@ -94,7 +94,7 @@ const saveSelection = () => {
         </div>
       </div>
       <DialogFooter>
-        <Button class="border border-stone-900/20 bg-blue-800 dark:bg-yellow-400" @click="saveSelection">{{ $t('cookie_banner.modal.button_save') }}</Button>
+        <Button class="border border-stone-900/20 dark:bg-yellow-400 dark:hover:bg-yellow-300 dark:text-black bg-blue-800 hover:bg-blue-600 text-white hover:text-white" @click="saveSelection">{{ $t('cookie_banner.modal.button_save') }}</Button>
       </DialogFooter>
     </DialogContent>
   </Dialog>
