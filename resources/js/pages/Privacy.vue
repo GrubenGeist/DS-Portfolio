@@ -341,6 +341,36 @@ const privacySections: PrivacySection[] = [
         ],
         contentClass:'text-sm',
     },
+    {
+        title: 'Einsatz von Google Analytics',
+        titleClass: 'font-semibold',
+        content: [
+            
+            '<br>Wir nutzen den Webanalysedienst Google Analytics, bereitgestellt von Google LLC, 1600 Amphitheatre Parkway, Mountain View, CA 94043, USA bzw. Google Ireland Limited, Gordon House, Barrow Street, Dublin 4, Irland. Google Analytics verwendet Cookies und ähnliche Technologien, die eine Analyse der Nutzung unserer Website durch Sie ermöglichen. Dabei können pseudonymisierte Informationen über die Benutzung dieser Website erhoben und an Server von Google in den USA übertragen und dort gespeichert werden. <br><br>',
+            
+            '<strong>Zweck der Verarbeitung</strong><br>',
+            '<ul class="list-disc pl-5"><li> Die Nutzung von Google Analytics dient der Analyse des Nutzerverhaltens, um unsere Website und unser Angebot stetig zu verbessern. <br><br></li></ul>',
+
+            '<strong>Datenweitergabe an Google</strong><br>',
+            '<ul class="list-disc pl-5"><li> Wenn die Einstellung zur Datenfreigabe aktiviert ist, können die erhobenen Daten auch von Google selbst zu eigenen Zwecken, z. B. zur Verbesserung von Produkten und Diensten, verarbeitet werden. In diesem Fall handeln wir und Google als eigenständige Verantwortliche im Sinne der DSGVO. <br><br></li></ul>',
+
+            '<strong>Rechtsgrundlage</strong><br>',
+            '<ul class="list-disc pl-5"><li> Die Verarbeitung erfolgt ausschließlich mit Ihrer Einwilligung (Art. 6 Abs. 1 lit. a DSGVO). Diese können Sie über unser Consent-Tool jederzeit erteilen oder widerrufen. <br><br></li></ul>',
+
+            '<strong>Maßnahmen zum Schutz Ihrer Daten</strong><br>',
+            '<ul class="list-disc pl-5"><li> IP-Anonymisierung ist auf dieser Website aktiviert, sodass Ihre IP-Adresse innerhalb der EU/EWR vor der Übertragung an Google gekürzt wird. <br></li></ul>',
+            '<ul class="list-disc pl-5"><li> Wir haben mit Google die notwendigen Verträge und Standardvertragsklauseln abgeschlossen, um ein angemessenes Datenschutzniveau sicherzustellen. <br></li></ul>',
+            '<ul class="list-disc pl-5"><li> Sie können die Speicherung von Cookies verhindern, indem Sie Ihre Browser-Einstellungen anpassen oder die Erfassung durch Google Analytics mit einem Browser-Add-on verhindern: https://tools.google.com/dlpage/gaoptout. <br><br></li></ul>',
+
+            '<strong>Speicher- und Löschfristen</strong><br>',
+            '<ul class="list-disc pl-5"><li> Die von uns gesetzten Cookies werden nach maximal 2 Jahren gelöscht. Reports und statistische Daten in Google Analytics werden je nach gewählter Einstellung nach 14 Monaten gelöscht. <br><br></li></ul>',
+
+            '<strong>Empfänger</strong><br>',
+            '<ul class="list-disc pl-5"><li>Empfänger der Daten ist Google LLC (USA). Eine Datenübermittlung in die USA kann stattfinden. Google ist verpflichtet, hierfür geeignete Schutzmechanismen (z. B. Standardvertragsklauseln oder das EU-U.S. Data Privacy Framework) einzuhalten. <br><br></li></ul>',
+        
+        ],
+        contentClass:'text-sm',
+    },
     /* TEMPLATE Für Spätere Einträge
     {
         title: '',

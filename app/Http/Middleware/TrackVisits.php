@@ -2,65 +2,51 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Visit;
 use Closure;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Response;
 
 class TrackVisits
 {
-    /**
-     * Handle an incoming request.
-     *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
-     */
     public function handle(Request $request, Closure $next): Response
     {
-        // Bedingung 1: Der Nutzer muss den Cookies zugestimmt haben.
-        if ($request->hasCookie('laravel_consent')) {
-            
-            // Bedingung 2: Ich tracken jede GET-Anfrage, AUSSER der reinen Datenabfrage für das Dashboard.
-            if ($request->isMethod('get') && !$request->routeIs('dashboard.data')) {
+        // Admins nicht tracken
+        if ($request->user() && $request->user()->hasRole('Admin')) {
+            return $next($request);
+        }
 
-                // Bedingung 3: Ich tracken keine eingeloggten Admins, um die Statistik sauber zu halten.
-                if (!Auth::check() || !Auth::user()->hasRole('Admin')) {
-                
-                    // =============================================================================
-                    // Anonymisierter Besucher-Fingerabdruck
-                    // =============================================================================
-                    // Ich erstelle eine eindeutige, aber anonyme ID für den Besucher,
-                    // indem ich seine IP-Adresse und seinen User-Agent hashen.
-                    // Dieser Hash ist nicht auf die Person zurückführbar, aber beständig.
-                    
-                    $ipAddress = $request->ip();
-                    $userAgent = $request->header('User-Agent', '');
-                    
-                    // Ein "Salt" fügt dem Hash zusätzliche Zufälligkeit hinzu.
-                    // Ich verwenden den sicheren App-Key von Laravel.
-                    $salt = config('app.key'); 
-                    
-                    $visitorId = hash('sha256', $ipAddress . $userAgent . $salt);
+        // Gäste nur mit Consent
+        if (!$request->hasCookie('laravel_consent') && !$request->user()) {
+            return $next($request);
+        }
 
-                    // Logik zur Geräteerkennung (bleibt unverändert)
-                    $deviceType = 'desktop';
-                    $mobileKeywords = ['mobile', 'android', 'iphone', 'ipod', 'blackberry', 'windows phone'];
-                    foreach ($mobileKeywords as $keyword) {
-                        if (str_contains(strtolower($userAgent), $keyword)) {
-                            $deviceType = 'mobile';
-                            break;
-                        }
-                    }
+        // Hashes erstellen
+        $ipAddressHash = sha1($request->ip());
+        $userAgent     = $request->userAgent() ?? '';
+        $userAgentHash = sha1($userAgent);
 
-                    // Speichere den Besuch in der Datenbank.
-                    DB::table('visits')->insert([
-                        'visitor_id' => $visitorId,
-                        'device_type' => $deviceType,
-                        'visited_at' => now(),
-                    ]);
-                }
+        $deviceType = stripos($userAgent, 'mobile') !== false ? 'mobile' : 'desktop';
+
+        // Besucher suchen
+        $visit = Visit::query()
+            ->where('ip_address_hash', $ipAddressHash)
+            ->where('user_agent_hash', $userAgentHash)
+            ->first();
+
+        if ($visit) {
+            // Nur updaten, wenn letzter Eintrag älter als 30 Sekunden
+            if ($visit->last_seen === null || $visit->last_seen->lt(now()->subSeconds(30))) {
+                $visit->update(['last_seen' => now()]);
             }
+        } else {
+            // Neuer Datensatz
+            Visit::create([
+                'ip_address_hash' => $ipAddressHash,
+                'user_agent_hash' => $userAgentHash,
+                'device_type'     => $deviceType,
+                'last_seen'       => now(),
+            ]);
         }
 
         return $next($request);

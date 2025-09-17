@@ -297,7 +297,7 @@
     "auth.register.label_email": "E-Mail",
     "auth.register.placeholder_email": "",
     "auth.register.label_password": "Passwort",
-    "auth.register.placeholder_password": "••••••••",
+    "auth.register.placeholder_password": "",
     "auth.register.label_password_confirmation": "Passwort bestätigen",
     "auth.register.label_role": "Benutzerrolle",
     "auth.register.placeholder_role": "Rolle auswählen",
