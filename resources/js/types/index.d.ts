@@ -12,6 +12,7 @@ export interface BreadcrumbItem {
 
 /* Navigationseinträge (Icon optional, Kinder rekursiv) */
 export interface NavItem {
+  show: unknown;
   title: string;
   href?: string;
   icon?: Component;

@@ -60,7 +60,7 @@ const breadcrumbs = computed<BreadcrumbItem[]>(() => [
 <template>
   <Head :title="t('auth.register.head_title')" />
 
-  <Card class="mx-auto max-w-2xl">
+  <Card class="dark:bg-white/10 bg-blue-200/20 mx-auto max-w-2xl">
     <CardHeader>
       <CardTitle>{{ t('auth.register.title') }}</CardTitle>
       <CardDescription>{{ t('auth.register.description') }}</CardDescription>
@@ -69,48 +69,48 @@ const breadcrumbs = computed<BreadcrumbItem[]>(() => [
       <form @submit.prevent="submit" class="space-y-6">
         <div class="grid gap-2">
           <Label for="first_name">{{ $t('auth.register.label_firstname') }}</Label>
-          <Input id="first_name" type="text" required autofocus v-model="form.first_name" :placeholder="t('auth.register.placeholder_firstname')" />
+          <Input class="dark:bg-white/10 bg-blue-200/20" id="first_name" type="text" required autofocus v-model="form.first_name" :placeholder="t('auth.register.placeholder_firstname')" />
           <InputError :message="form.errors.first_name" />
         </div>
 
         <div class="grid gap-2">
           <Label for="last_name">{{ $t('auth.register.label_lastname') }}</Label>
-          <Input id="last_name" type="text" required v-model="form.last_name" :placeholder="t('auth.register.placeholder_lastname')" />
+          <Input class="dark:bg-white/10 bg-blue-200/20" id="last_name" type="text" required v-model="form.last_name" :placeholder="t('auth.register.placeholder_lastname')" />
           <InputError :message="form.errors.last_name" />
         </div>
 
         <div class="grid gap-2">
           <Label for="company">{{ $t('auth.register.label_company') }}</Label>
-          <Input id="company" type="text" v-model="form.company" :placeholder="t('auth.register.placeholder_company')" />
+          <Input class="dark:bg-white/10 bg-blue-200/20" id="company" type="text" v-model="form.company" :placeholder="t('auth.register.placeholder_company')" />
           <InputError :message="form.errors.company" />
         </div>
 
         <div class="grid gap-2">
           <Label for="email">{{ $t('auth.register.label_email') }}</Label>
-          <Input id="email" type="email" required v-model="form.email" :placeholder="t('auth.register.placeholder_email')" />
+          <Input class="dark:bg-white/10 bg-blue-200/20" id="email" type="email" required v-model="form.email" :placeholder="t('auth.register.placeholder_email')" />
           <InputError :message="form.errors.email" />
         </div>
 
         <div class="grid gap-2">
           <Label for="password">{{ $t('auth.register.label_password') }}</Label>
-          <Input id="password" type="password" required v-model="form.password" :placeholder="t('auth.register.placeholder_password')" />
+          <Input class="dark:bg-white/10 bg-blue-200/20" id="password" type="password" required v-model="form.password" :placeholder="t('auth.register.placeholder_password')" />
           <InputError :message="form.errors.password" />
         </div>
 
         <div class="grid gap-2">
           <Label for="password_confirmation">{{ $t('auth.register.label_password_confirmation') }}</Label>
-          <Input id="password_confirmation" type="password" required v-model="form.password_confirmation" :placeholder="t('auth.register.placeholder_password')" />
+          <Input class="dark:bg-white/10 bg-blue-200/20" id="password_confirmation" type="password" required v-model="form.password_confirmation" :placeholder="t('auth.register.placeholder_password')" />
           <InputError :message="form.errors.password_confirmation" />
         </div>
 
         <div class="grid gap-2">
           <Label for="role">{{ $t('auth.register.label_role') }}</Label>
           <Select v-model="form.role">
-            <SelectTrigger id="role">
-              <SelectValue :placeholder="t('auth.register.placeholder_role')" />
+            <SelectTrigger class="dark:bg-white/10 bg-blue-200/20" id="role">
+              <SelectValue class="dark:bg-white/10 bg-blue-200/20" :placeholder="t('auth.register.placeholder_role')" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="Company">Company</SelectItem>
+              <SelectItem  value="Company">Company</SelectItem>
               <SelectItem value="Admin">Admin</SelectItem>
               <SelectItem value="Customer">Customer</SelectItem>
             </SelectContent>

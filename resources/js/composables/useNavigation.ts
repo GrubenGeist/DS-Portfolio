@@ -23,16 +23,17 @@ export function useNavigation() {
       title: t('nav.more_information'),
       show: true,
       children: [
-        { title: t('nav.projects'), href: route('projects'), show: !isGuest.value },
-        { title: t('nav.services'), href: route('services'), show: !isGuest.value },
-        { title: t('nav.about_me'), href: route('aboutme'), show: !isGuest.value },
+        // Öffentlich sichtbar
+        { title: t('nav.projects'), href: route('projects'), show: true },
+        { title: t('nav.about_me'), href: route('aboutme'), show: true },
       ],
     },
     {
       title: t('nav.application_documents'),
-      show: true,
+      show: !isGuest.value, // nur für eingeloggte User sichtbar
       children: [
         { title: t('nav.cv'), href: route('lebenslauf'), show: !isGuest.value },
+        { title: t('nav.cv'), href: route('services'), show: !isGuest.value },
       ],
     },
   ]);

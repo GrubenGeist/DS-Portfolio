@@ -75,7 +75,7 @@ const cardStyle = computed(() => {
   >
     <div class="card" :style="cardStyle">
       <div class="card__face card__face--front">
-        <img :src="frontImageUrl" alt="Karten-Vorderseite" class="w-full h-full object-cover rounded-xl shadow-lg" />
+        <img :src="frontImageUrl" alt="Karten-Vorderseite" class="w-full h-full object-cover rounded-sm shadow-lg" />
         <img
           v-if="characterImageUrl"
           :src="characterImageUrl"
@@ -84,7 +84,7 @@ const cardStyle = computed(() => {
         />
       </div>
       <div class="card__face card__face--back">
-        <img :src="backImageUrl" alt="Karten-Rückseite" class="w-full h-full object-cover rounded-xl shadow-lg" />
+        <img :src="backImageUrl" alt="Karten-Rückseite" class="w-full h-full object-cover rounded-sm shadow-lg" />
       </div>
     </div>
   </div>
@@ -113,7 +113,6 @@ const cardStyle = computed(() => {
 .card__face {
   position: absolute;
   width: 100%;
-  height: 100%;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
 }
