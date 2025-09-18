@@ -27,13 +27,13 @@ Route::get('/impressum', [PageController::class, 'imprint'])->name('imprint');
 Route::get('/datenschutz', [PageController::class, 'privacy'])->name('privacy');
 Route::post('/locale/switch', [LocaleController::class, 'switch'])->name('locale.switch');
 Route::post('/consent-event', [ConsentEventController::class, 'store'])->name('api.consent.store');
+Route::get('/projects', [PageController::class, 'projects'])->name('projects');
+Route::get('/aboutme', [PageController::class, 'aboutMe'])->name('aboutme');
 
 // --- GESCHÜTZTE ROUTEN ---
 Route::middleware(['auth', 'verified'])->group(function () {
     // Allgemeine Seiten
-    Route::get('/projects', [PageController::class, 'projects'])->name('projects')->middleware('role:Admin|Company');
     Route::get('/services', [PageController::class, 'services'])->name('services')->middleware('role:Admin|Company');
-    Route::get('/aboutme', [PageController::class, 'aboutMe'])->name('aboutme')->middleware('role:Admin|Company');
     Route::get('/lebenslauf', [PageController::class, 'lebenslauf'])->name('lebenslauf')->middleware('role:Admin|Company');
 
     // Dashboard nur für Admins

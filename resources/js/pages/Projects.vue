@@ -4,11 +4,15 @@ import type { BreadcrumbItem, Project, Skill } from '@/types';
 import { Head } from '@inertiajs/vue3';
 import { ref, computed } from 'vue'; // `computed` importieren
 import { useI18n } from 'vue-i18n'; // `useI18n` importieren
+import { usePage } from '@inertiajs/vue3';
 
 // Importiere die neuen Komponenten
 import ProjectCard from '@/components/ProjectCard.vue';
 import InteractiveCard from '@/components/InteractiveCard.vue';
 import SkillHexagon from '@/components/SkillHexagon.vue';
+
+const page = usePage();
+const currentUser = computed(() => page.props.auth?.user ?? null);
 
 // Holen Sie sich die Übersetzungsfunktion `t`
 const { t } = useI18n();
@@ -104,11 +108,17 @@ const skills = ref<Skill[]>([
                       <h2 class="text-3xl font-bold text-white">{{ $t('projects.headline') }}</h2>
                       <p class="text-slate-400 max-w-2xl mx-auto mt-2">{{ $t('projects.description') }}</p>
                  </div>
-                 <div class="grid auto-rows-min gap-8 md:grid-cols-2 lg:grid-cols-3">
+                 <div v-if="currentUser" class="grid auto-rows-min gap-8 md:grid-cols-2 lg:grid-cols-3">
                       <div v-for="project in projects" :key="project.title">
                            <ProjectCard :project="project" />
                       </div>
                  </div>
+                 <div class="grid auto-rows-min gap-8 md:grid-cols-2 lg:grid-cols-3 mt-6">
+                      <div v-for="project in projects" :key="project.title">
+                           <ProjectCard :project="project" />
+                      </div>
+                 </div>
+
             </section>
 
             <div class="p-0" id="Game Card">

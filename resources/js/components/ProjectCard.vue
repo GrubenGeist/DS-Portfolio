@@ -1,4 +1,12 @@
 <script setup lang="ts">
+import { usePage } from '@inertiajs/vue3';
+import { ref, computed } from 'vue'; // `computed` importieren
+
+const page = usePage();
+const currentUser = computed(() => page.props.auth?.user ?? null);
+
+
+
 interface Project {
   title: string;
   description: string;
@@ -29,7 +37,7 @@ defineProps<{
 
       <div class="mt-auto pt-4 flex gap-4">
         <a :href="project.liveUrl" target="_blank" class="w-full text-center bg-cyan-500 hover:bg-cyan-600 text-white font-semibold py-2 px-4 rounded-lg transition-colors">Live</a>
-        <a :href="project.repoUrl" target="_blank" class="w-full text-center bg-slate-700 hover:bg-slate-600 text-white font-semibold py-2 px-4 rounded-lg transition-colors">Code</a>
+        <a :href="project.repoUrl" target="_blank" v-if="currentUser" class="w-full text-center bg-slate-700 hover:bg-slate-600 text-white font-semibold py-2 px-4 rounded-lg transition-colors">Code</a>
       </div>
     </div>
   </div>

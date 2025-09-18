@@ -113,13 +113,13 @@ class PageController extends Controller
         }
 
         $visitsHistory = $visitsQuery->select(
-                DB::raw('DATE(created_at) as date'),
-                DB::raw("SUM(CASE WHEN device_type = 'desktop' THEN 1 ELSE 0 END) as desktop"),
-                DB::raw("SUM(CASE WHEN device_type = 'mobile' THEN 1 ELSE 0 END) as mobile")
-            )
-            ->groupBy('date')
-            ->orderBy('date')
-            ->get();
+            DB::raw('DATE(last_seen) as date'),
+            DB::raw("SUM(CASE WHEN device_type = 'desktop' THEN 1 ELSE 0 END) as desktop"),
+            DB::raw("SUM(CASE WHEN device_type = 'mobile' THEN 1 ELSE 0 END) as mobile")
+        )
+        ->groupBy('date')
+        ->orderBy('date')
+        ->get();
 
         $dbVisitorYears = Visit::query()->select(DB::raw('YEAR(created_at) as year'))->distinct()->pluck('year');
         $availableVisitorYears = $dbVisitorYears->push(now()->year)->unique()->sortDesc()->values();
