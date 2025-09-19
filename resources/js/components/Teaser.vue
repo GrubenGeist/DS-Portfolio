@@ -81,7 +81,7 @@ const imageOrderClass = computed(() =>
     :aria-label="headline"
     :class="backgroundColor"
   >
-    <div class="group grid grid-cols-1 gap-0" :class="layoutClasses">
+    <div class="bg-blue-900 group grid grid-cols-1 gap-0" :class="layoutClasses">
       <!-- Text -->
       <div class="dark:bg-yellow-400/80 p-8 md:p-12 lg:p-16 flex flex-col justify-center">
         <h2
