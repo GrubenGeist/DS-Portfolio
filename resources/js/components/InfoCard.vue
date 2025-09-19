@@ -22,27 +22,28 @@ useTilt(cardElement);
 </script>
 
 <template>
-    <div ref="cardElement" class="md:max-w-sm max-w-md w-full dark:text-white border-1-8 border-transparent rounded-md shadow-md space-y-2 overflow-hidden bg-white dark:bg-gray-800">
+    <div ref="cardElement" class="mt-4 w-full dark:text-white border-1-8 border dark:border-yellow-400 rounded-md shadow-md space-y-2 overflow-hidden bg-white dark:bg-yellow-400/20">
         <img class="rounded-t-md p-0 w-full h-48 object-cover" :src="imageUrl" alt="Card Image"> 
 
         <div class="px-6 py-4">
-            <div class="font-bold text-blue-600 dark:text-blue-400 text-xl mb-4">{{ title }}</div>
+            <div class="font-bold dark:text-yellow-400 text-blue-600 text-xl mb-4">{{ title }}</div>
 
-            <p class="text-gray-700 dark:text-gray-300 md:text-base mb:text-sm">
+            <p class="text-gray-700 dark:text-white md:text-base mb:text-sm">
                 {{ description }}
             </p>
         </div>
 
         <div class="px-6 pb-5">
-            <Link v-track-click="{ category: 'InfoCard Button', label: buttonText, requireConsent: true }" :href="buttonHref" class="block w-full text-center bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-full transition duration-300">
+            <Link v-track-click="{ category: 'InfoCard Button', label: buttonText, requireConsent: true }" :href="buttonHref" class="block w-full text-center bg-blue-900 dark:bg-yellow-400 dark:text-black dark:hover:bg-yellow-300 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-full transition duration-300">
                 {{ buttonText }}
             </Link>
         </div>
 
         <div v-if="tags && tags.length" class="px-6 pb-4">
-            <span v-for="tag in tags" :key="tag" class="inline-block bg-gray-200 dark:bg-gray-700 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 dark:text-gray-200 mr-2 mb-2">
+            <span v-for="tag in tags" :key="tag" class="inline-block bg-gray-200 dark:bg-orange-500/40 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 dark:text-white mr-2 mb-2">
                 #{{ tag }}
             </span>
         </div>
     </div>
+   
 </template>

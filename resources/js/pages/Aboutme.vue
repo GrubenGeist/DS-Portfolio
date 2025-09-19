@@ -4,6 +4,11 @@ import { Head, Link } from '@inertiajs/vue3';
 import { ref, onMounted, onUnmounted, defineAsyncComponent, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { type BreadcrumbItem } from '@/types';
+import Teaser from '@/components/Teaser.vue';
+import { usePage } from '@inertiajs/vue3';
+
+const page = usePage();
+const currentUser = computed(() => page.props.auth?.user ?? null);
 
 // Holen Sie sich die Übersetzungsfunktion `t`
 const { t } = useI18n();
@@ -68,103 +73,107 @@ const breadcrumbs = computed<BreadcrumbItem[]>(() => [
     },
 ]);
 
+// Teaser Sektion
+const teaserHeadline1 = computed(() => t('aboutme.teaser.headline'));
+const teasersubHeadline1 = computed(() => t('aboutme.teaser.subheadline'));
+const teaserParagraphs1 = computed(() => [
+    t('aboutme.teaser.p1'),
+    t('aboutme.teaser.p2'),
+    t('aboutme.teaser.p3'),
+    t('aboutme.teaser.p4'),
+    t('aboutme.teaser.p5'),
+]);
+
 </script>
 
 <template>
-    <Head :title="t('aboutme.head_title')"/>
-    <AppLayout :breadcrumbs="breadcrumbs">
-    <div class="space-y-8 py-12 px-4 sm:px-6 lg:px-32">
-        <!-- Sektion 1: Persönliche Vorstellung mit Bild -->
-        <section class="p-4 sm:p-10 bg-gray-100 dark:bg-slate-800/50 rounded-xl shadow-lg">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
-                <div class="md:col-span-1">
-                    <img
-                        :src="profileImageUrl"
-                        :alt="t('aboutme.profile_alt')"
-                        class="rounded-full mx-auto w-48 h-48 lg:w-64 lg:h-64 object-cover border-4 border-white dark:border-slate-700 shadow-md"
-                        onerror="this.onerror=null;this.src='https://placehold.co/256x256/E2E8F0/475569?text=Bild';"
-                        width="256" height="256"
-                        decoding="async"
-                        loading="lazy"
-                        fetchpriority="low"
-                    >
-                </div>
-                <div class="md:col-span-2 md:text-left mb:break-normal ">
-                    <h1 class="text-3xl sm:text-3xl font-bold tracking-tight text-gray-900 dark:text-white md:break-pretty">
-                        {{ $t('aboutme.intro.headline') }}
-                    </h1>
-                    <p class="mt-6 text-lg text-gray-600 dark:text-gray-400 text-pretty break-normal">
-                        {{ $t('aboutme.intro.p1') }}<br><br>
-                        {{ $t('aboutme.intro.p2') }}
-                        <br>
-                        {{ $t('aboutme.intro.p3') }}
-                        <br><br>
-                        {{ $t('aboutme.intro.p4') }}
-                        <br><br>
-                        {{ $t('aboutme.intro.p5') }}
-                    </p>
-                </div>
-            </div>
-        </section>
+  <Head :title="t('aboutme.head_title')" />
+  <AppLayout :breadcrumbs="breadcrumbs">
+    <div class="space-y-16 py-12 px-4 sm:px-6 lg:px-32">
 
-        <!-- Sektion 2: Tech Radar -->
-        <section class="p-4 sm:p-10 bg-gray-100 dark:bg-slate-800/50 rounded-xl shadow-lg">
-            <h2 class="md:text-center text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">{{ $t('aboutme.tech_radar.headline') }}</h2>
-            <p class="mt-4 text-lg text-gray-600 dark:text-gray-400 md:text-center" v-html="t('aboutme.tech_radar.description')"></p>
-            <div ref="radarContainer" class=" flex items-center justify-center">
-                <TechRadar v-if="showRadar" :skills="skills" />
-                <div v-else class="flex items-center justify-center h-full min-h-[550px] sm:min-h-[750px]">
-                    <svg class="animate-spin h-8 w-8 text-indigo-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                </div>
-            </div>
-        </section>
+      <!-- Hero Intro -->
+      <section class="relative grid grid-cols-1 md:grid-cols-1 gap-12 items-center">
+        <!-- Bild -->
+        <Teaser :imagePosition="'left'"
+                :headline="teaserHeadline1"
+                :subheadline="teasersubHeadline1"
+                :showSubheadline="true"
+                :paragraphs="teaserParagraphs1"
+                 portraitImageUrl="/images/elements/TeaserBildDennis.png"
+                 backgroundImageLightUrl="/images/elements/BgTeaserPortraitLight.png"
+                 backgroundImageDarkUrl="/images/elements/BgTeaserPortraitDark.png"
+                :backgroundHeight="'170%'"
+                :backgroundPositionX="'76%'"
+                :portraitPositionX="'60%'"
+                :portraitPositionY="'-0.5%'"
+                :enableAnimation="true"
+        />
+        <!-- Text -->
+        <div>
+          <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 dark:text-white mb-6">
+            {{ $t('aboutme.intro.headline') }}
+          </h1>
+          <p class="text-lg text-gray-600 dark:text-gray-300 leading-relaxed space-y-4">
+            {{ $t('aboutme.intro.p1') }}<br><br>
+            {{ $t('aboutme.intro.p2') }}<br><br>
+            {{ $t('aboutme.intro.p3') }}
+          </p>
+        </div>
+      </section>
 
-        <!-- Sektion 3: Meine Arbeitsphilosophie -->
-        <section class="p-4 sm:p-10 bg-gray-100 dark:bg-slate-800/50 rounded-xl shadow-lg">
-            <h2 class="text-2xl sm:text-3xl font-bold text-center text-gray-900 dark:text-white">{{ $t('aboutme.philosophy.headline') }}</h2>
-            <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
-                <div class="p-6 bg-gray-50 dark:bg-slate-800 rounded-xl">
-                    <div class="flex items-center justify-center h-12 w-12 rounded-lg bg-indigo-500 text-white mx-auto">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" /></svg>
-                    </div>
-                    <h3 class="mt-5 text-lg font-medium text-gray-900 dark:text-white">{{ $t('aboutme.philosophy.item1_title') }}</h3>
-                    <p class="mt-2 text-base text-gray-600 dark:text-gray-400">{{ $t('aboutme.philosophy.item1_desc') }}</p>
-                </div>
-                <div class="p-6 bg-gray-50 dark:bg-slate-800 rounded-xl">
-                    <div class="flex items-center justify-center h-12 w-12 rounded-lg bg-indigo-500 text-white mx-auto">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" /></svg>
-                    </div>
-                    <h3 class="mt-5 text-lg font-medium text-gray-900 dark:text-white">{{ $t('aboutme.philosophy.item2_title') }}</h3>
-                    <p class="mt-2 text-base text-gray-600 dark:text-gray-400">{{ $t('aboutme.philosophy.item2_desc') }}</p>
-                </div>
-                <div class="p-6 bg-gray-50 dark:bg-slate-800 rounded-xl">
-                     <div class="flex items-center justify-center h-12 w-12 rounded-lg bg-indigo-500 text-white mx-auto">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
-                     </div>
-                    <h3 class="mt-5 text-lg font-medium text-gray-900 dark:text-white">{{ $t('aboutme.philosophy.item3_title') }}</h3>
-                    <p class="mt-2 text-base text-gray-600 dark:text-gray-400">{{ $t('aboutme.philosophy.item3_desc') }}</p>
-                </div>
-            </div>
-        </section>
+      <!-- Tech Radar -->
+      <section class="bg-white dark:bg-stone-800 rounded-2xl shadow-lg p-8">
+        <h2 class="text-3xl font-bold text-center text-gray-900 dark:text-yellow-400">
+          {{ $t('aboutme.tech_radar.headline') }}
+        </h2>
+        <p class="mt-4 text-lg text-center text-gray-600 dark:text-gray-300" v-html="t('aboutme.tech_radar.description')"></p>
+        <div ref="radarContainer" class="mt-10 flex items-center justify-center">
+          <TechRadar v-if="showRadar" :skills="skills" />
+          <div v-else class="flex items-center justify-center h-[550px] sm:h-[750px]">
+            <!-- Loader -->
+            <svg class="animate-spin h-10 w-10 text-yellow-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0..."/>
+            </svg>
+          </div>
+        </div>
+      </section>
 
-        <!-- Sektion 4: Call to Action -->
-        <section class="md:text-center max-w-3xl mx-auto p-4 bg-gray-100 dark:bg-slate-800/50 rounded-2xl shadow-lg">
-            <h2 class="text-2xl sm:text-3xl font-bold tracking-tight text-gray-900 dark:text-white">
-                {{ $t('aboutme.cta.headline') }}
-            </h2>
-            <p class="mt-4 text-lg text-gray-600 dark:text-gray-400" v-html="t('aboutme.cta.description')"></p>
-            <div class="mt-8 flex justify-center gap-4">
-                <a href="#" class="inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700">
-                    {{ $t('aboutme.cta.button_cv') }}
-                </a>
-                <Link :href="route('contactform')" class="inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-indigo-700 bg-indigo-100 hover:bg-indigo-200 dark:text-white dark:bg-indigo-500 dark:hover:bg-indigo-600">
-                    {{ $t('aboutme.cta.button_contact') }}
-                </Link>
-            </div>
-        </section>
+      <!-- Arbeitsphilosophie -->
+      <section>
+        <h2 class="text-3xl font-bold text-center text-gray-900 dark:text-white">
+          {{ $t('aboutme.philosophy.headline') }}
+        </h2>
+        <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div class="p-6 rounded-xl shadow-md bg-gray-50 dark:bg-yellow-400/10 hover:scale-105 transition">
+            <h3 class="text-xl font-semibold text-blue-900 dark:text-yellow-400 mb-3">
+              {{ $t('aboutme.philosophy.item1_title') }}
+            </h3>
+            <p class="text-gray-600 dark:text-gray-300">{{ $t('aboutme.philosophy.item1_desc') }}</p>
+          </div>
+          <!-- item2 & item3 analog -->
+        </div>
+      </section>
+
+      <!-- Call to Action -->
+      <section class="text-center bg-blue-50 dark:bg-stone-800 rounded-2xl shadow-lg p-10">
+        <h2 class="text-3xl font-bold text-gray-900 dark:text-white">
+          {{ $t('aboutme.cta.headline') }}
+        </h2>
+        <p class="mt-4 text-lg text-gray-600 dark:text-gray-300" v-html="t('aboutme.cta.description')"></p>
+        <div class="mt-8 flex justify-center gap-4">
+          <a v-if="currentUser" href="#"
+             class="px-6 py-3 rounded-full font-bold bg-yellow-400 text-black hover:bg-yellow-300 transition">
+            {{ $t('aboutme.cta.button_cv') }}
+          </a>
+          <Link :href="route('contactform')"
+             class="px-6 py-3 rounded-full font-bold bg-blue-900 text-white hover:bg-blue-700 transition">
+            {{ $t('aboutme.cta.button_contact') }}
+          </Link>
+        </div>
+      </section>
+
     </div>
-    </AppLayout>
+  </AppLayout>
 </template>
+

@@ -109,6 +109,14 @@
     "teaser.p2": "Mit fundierten Kenntnissen in modernen Technologien wie Laravel, Drupal, Python, JavaScript und mehr sowie einem klaren Blick für sauberen, wartbaren Code entwickle ich leistungsstarke Anwendungen, die Prozesse optimieren und Nutzer begeistern.",
     "teaser.p3": "Hier finden Sie eine Auswahl meiner bisherigen Projekte, technischer Schwerpunkte und Informationen zu meinem beruflichen Werdegang. Ich freue mich, wenn Sie einen Einblick in meine Arbeit gewinnen und vielleicht schon bald den passenden Partner für Ihr nächstes Softwareprojekt gefunden haben.",
 
+    "aboutme.teaser.headline": "Hallo, ich bin Dennis",
+    "aboutme.teaser.subheadline": "Entwickler mit Herz für Technik & klare Lösungen",
+    "aboutme.teaser.p1": "Ich bin 32 Jahre alt und habe meine Leidenschaft für Technik schon früh entdeckt. Heute arbeite ich als Anwendungsentwickler mit dem Fokus auf Webentwicklung – am liebsten mit Laravel, Vue.js und TypeScript.",
+    "aboutme.teaser.p2": "Was mir wichtig ist? Code, der verständlich und sauber bleibt, und Projekte, die nicht nur funktionieren, sondern auch Spaß machen. Ich mag es, wenn Ideen aus einem Heraussprudeln und als echte Anwendung auf dem Bildschirm landen.",
+    "aboutme.teaser.p3": "Neben der Software bastle ich gern an Hardware, 3D-Druck-Projekten und kleinen Experimenten mit Mikrocontrollern. Diese Mischung aus Kreativität und Technik inspiriert mich, neue Wege zu finden und auch mal unkonventionelle Lösungen auszuprobieren.",
+    "aboutme.teaser.p4": "Außerdem habe ich ein gutes Auge für Details – mir fällt sofort auf, wenn etwas benutzerfreundlicher gestaltet werden kann. Auch bei optischen Feinheiten habe ich einen klaren Blick.",
+    "aboutme.teaser.p5": "Ich freue mich, wenn du dir ein Bild von meinen Projekten machst – vielleicht passt ja genau mein Ansatz zu deinem nächsten Vorhaben oder zu Ihrem Unternehmen.",
+
     "infocards.headline": "Ein Blick auf meine Arbeit & mehr",
     "infocards.projects.title": "Meine Projekte",
     "infocards.projects.description": "Entdecken Sie eine Auswahl meiner bisherigen Projekte",
@@ -350,7 +358,7 @@
     "userprofile.settings.title": "Profilinformationen",
     "userprofile.settings.description": "Aktualisieren Sie Ihren Namen und Ihre E-Mail-Adresse",
     "userprofile.settings.button_change": "Bearbeiten",
-    "userprofile.settings.aria_edit_profile":"Bearbeiten",
+    "userprofile.settings.aria_edit_profile": "Bearbeiten",
     "userprofile.settings.label_firstname": "Vorname",
     "userprofile.settings.label_lastname": "Nachname",
     "userprofile.settings.label_company": "Unternehmen",
@@ -370,7 +378,7 @@
     "userprofile.settings.password.title": "Passwort ändern",
     "userprofile.settings.password.description": "Stellen Sie sicher, dass Ihr Konto ein langes, zufälliges Passwort verwendet, um sicher zu bleiben.",
     "userprofile.settings.password.button_change": "Passwort aktualisieren",
-    "userprofile.settings.password.aria_change_password":"Passwort aktualisieren",
+    "userprofile.settings.password.aria_change_password": "Passwort aktualisieren",
     "userprofile.settings.password.label_current": "Aktuelles Passwort",
     "userprofile.settings.password.placeholder_current": "Aktuelles Passwort",
     "userprofile.settings.password.label_new": "Neues Passwort",
@@ -382,10 +390,9 @@
     "userprofile.settings.password.save_success_message": "Gespeichert.",
 
     "userprofile.settings.nav.new_user_register": "Benutzer Verwalten",
-    "settings.layout.nav.create_user":"Neuen Benutzer Anlegen",
+    "settings.layout.nav.create_user": "Neuen Benutzer Anlegen",
 
-    "settings.register.button_cancel":"Abbrechen",
-
+    "settings.register.button_cancel": "Abbrechen",
 
     "settings": {
         "layout": {
